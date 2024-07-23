@@ -136,7 +136,7 @@ void Updater::Update(std::string& status, std::string& currVersion, const std::s
           std::string path = g_dataFolder + m_versionAvailable + "/";
           if (Requests::DownloadUpdates(path, status) && Patch::NewVersion(path, gamePath, status))
           {
-            if (copyIni) { std::filesystem::copy_file(GetIniPath_Version(m_versionAvailable), GetIniPath_Duck()); }
+            if (copyIni || !m_updated) { std::filesystem::copy_file(GetIniPath_Version(m_versionAvailable), GetIniPath_Duck()); }
             m_updated = true;
             m_updateAvailable = false;
             currVersion = m_versionAvailable;
@@ -152,7 +152,7 @@ void Updater::Update(std::string& status, std::string& currVersion, const std::s
   );
 }
 
-const std::string Updater::GetVersionAvailableStatus()
+const std::string Updater::GetVersionAvailable()
 {
   return "Update available! v" + m_versionAvailable;
 }
@@ -163,9 +163,9 @@ void Updater::StartRoutine(const std::function<bool(void)>& func, RoutineStatus*
   m_routineMutex.lock();
   m_routineCount++;
   unsigned index = m_routineIndex++;
+  if (ret) { *ret = RoutineStatus::RUNNING; }
   m_asyncRefs[index] = std::async(std::launch::async, [this, func, ret, index]
     {
-      if (ret) { *ret = RoutineStatus::RUNNING; }
       bool result = func();
       if (ret) { *ret = result ? RoutineStatus::RET_TRUE : RoutineStatus::RET_FALSE; }
       m_routineMutex.lock();

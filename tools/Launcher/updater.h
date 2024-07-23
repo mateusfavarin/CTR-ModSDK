@@ -21,7 +21,7 @@ public:
 	void IsValidGame(RoutineStatus& ret, const std::string& path);
 	void CheckForUpdates(const std::string& currVersion);
 	void Update(std::string& status, std::string& currVersion, const std::string& gamePath, const std::string& biosPath);
-	const std::string GetVersionAvailableStatus();
+	const std::string GetVersionAvailable();
 
 private:
 	void StartRoutine(const std::function<bool(void)>& func, RoutineStatus* const ret = nullptr);

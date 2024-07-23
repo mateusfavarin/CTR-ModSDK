@@ -32,8 +32,9 @@ void UI::Render(int width, int height)
   ImGui::SetNextWindowSize(ImVec2(static_cast<float>(width), static_cast<float>(height)), ImGuiCond_Always);
   ImGui::Begin("Main", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
 
-  std::string icon = m_username.empty() ? ICON_FA_CIRCLE_XMARK : ICON_FA_CIRCLE_CHECK;
-  ImGui::InputText(("Username  " + icon).c_str(), &m_username, ImGuiInputTextFlags_CallbackCharFilter, FilterUsernameChar);
+  ImGui::InputText("##Username", &m_username, ImGuiInputTextFlags_CallbackCharFilter, FilterUsernameChar);
+  ImGui::SameLine();
+  IconText("Username", m_username.empty() ? IconType::FAIL : IconType::SUCCESS);
   if (m_username.size() > 9) { m_username = m_username.substr(0, 9); }
 
   auto CheckFile = [](RoutineStatus& routineStatus, bool runCheck, bool& result, std::string& currStr, std::string& lastStr, const std::function<void(RoutineStatus&, const std::string&)>& func)
@@ -95,22 +96,49 @@ void UI::Render(int width, int height)
   if (ImGui::Button("Update")) { m_updater.Update(m_status, m_version, m_gamePath, m_biosPath); }
   ImGui::EndDisabled();
 
-  std::string statusMessage = m_status;
-  AppendStatusMessage(biosRoutineStatus == RoutineStatus::RUNNING, statusMessage, "Calculating BIOS checksum...");
-  AppendStatusMessage(biosRoutineStatus == RoutineStatus::NONE && m_validBiosChecksum, statusMessage, "PS1 BIOS: ok.");
-  AppendStatusMessage(biosRoutineStatus == RoutineStatus::NONE && !m_validBiosChecksum, statusMessage, "Error: invalid PS1 bios file.");
-  AppendStatusMessage(gameRoutineStatus == RoutineStatus::RUNNING, statusMessage, "Calculating game checksum...");
-  AppendStatusMessage(gameRoutineStatus == RoutineStatus::NONE && m_validGameChecksum, statusMessage, "NTSC-U CTR: ok.");
-  AppendStatusMessage(gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum, statusMessage, "Warning: you may be using a modified version of NTSC-U CTR.");
-  AppendStatusMessage(m_updater.HasUpdateAvailable(), statusMessage, m_updater.GetVersionAvailableStatus());
-  if (!statusMessage.empty()) { ImGui::Text(statusMessage.c_str()); }
+  if (m_status.empty())
+  {
+    if (biosRoutineStatus == RoutineStatus::RUNNING) { ImGui::Text("Calculating BIOS checksum..."); }
+    if (biosRoutineStatus == RoutineStatus::NONE && m_validBiosChecksum) { IconText("PS1 BIOS.", IconType::SUCCESS); }
+    if (biosRoutineStatus == RoutineStatus::NONE && !m_validBiosChecksum) { IconText("Error: invalid PS1 bios file.", IconType::FAIL); }
+    if (gameRoutineStatus == RoutineStatus::RUNNING) { ImGui::Text("Calculating game checksum..."); }
+    if (gameRoutineStatus == RoutineStatus::NONE && m_validGameChecksum) { IconText("NTSC-U CTR.", IconType::SUCCESS); }
+    if (gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText("Warning: you may be using a modified version of NTSC-U CTR.", IconType::WARNING); }
+    if (m_updater.HasUpdateAvailable()) { IconText(m_updater.GetVersionAvailable(), IconType::WARNING); }
+  }
+  else { ImGui::Text(m_status.c_str()); }
 
   ImGui::End();
 }
 
-void UI::AppendStatusMessage(bool cond, std::string& statusMessage, const std::string& message)
+void UI::IconText(const std::string& str, IconType iconType)
 {
-  if (cond) { statusMessage += statusMessage.empty() ? message : "\n" + message; }
+  const ImVec4 redColor    = {247.0 / 255.0, 44.0 / 255.0, 37.0 / 255.0, 1.0};
+  const ImVec4 yellowColor = {255.0 / 255.0, 197.0 / 255.0, 0.0 / 58.0, 1.0};
+  const ImVec4 greenColor  = {99.0 / 255.0, 193.0 / 255.0, 70.0 / 255.0, 1.0};
+  const ImVec4 whiteColor  = {1.0, 1.0, 1.0, 1.0};
+
+  switch (iconType)
+  {
+  case IconType::FAIL:
+    ImGui::PushStyleColor(ImGuiCol_Text, redColor);
+    ImGui::Text(ICON_FA_CIRCLE_XMARK);
+    break;
+  case IconType::WARNING:
+    ImGui::PushStyleColor(ImGuiCol_Text, yellowColor);
+    ImGui::Text(ICON_FA_TRIANGLE_EXCLAMATION);
+    break;
+  case IconType::SUCCESS:
+    ImGui::PushStyleColor(ImGuiCol_Text, greenColor);
+    ImGui::Text(ICON_FA_CIRCLE_CHECK);
+    break;
+  default:
+    ImGui::PushStyleColor(ImGuiCol_Text, whiteColor);
+    break;
+  }
+  ImGui::PopStyleColor();
+  ImGui::SameLine();
+  ImGui::Text(str.c_str());
 }
 
 bool UI::SelectFile(std::string& str, const std::string& label, const std::vector<std::string>& ext, const std::vector<std::string>& filters, const std::string& tip)
@@ -132,9 +160,13 @@ bool UI::SelectFile(std::string& str, const std::string& label, const std::vecto
           if (lowercaseStr.ends_with(s)) { return true; }
         }
       }
+      return false;
     };
-  std::string icon = checkValidPath() ? ICON_FA_CIRCLE_CHECK : ICON_FA_CIRCLE_XMARK;
-  ImGui::InputText((label + " " + icon).c_str(), &str);
+
+  ImGui::InputText(("##" + label).c_str(), &str);
+  ImGui::SameLine();
+  IconType icon = checkValidPath() ? IconType::SUCCESS : IconType::FAIL;
+  IconText(label, icon);
   if (!tip.empty()) { ImGui::SetItemTooltip(tip.c_str()); }
   ImGui::SameLine();
   if (ImGui::Button(("...##" + label).c_str()))
@@ -149,8 +181,10 @@ bool UI::SelectFile(std::string& str, const std::string& label, const std::vecto
 bool UI::SelectFolder(std::string& str, const std::string& label, const std::string& tip)
 {
   bool validPath = std::filesystem::is_directory(str);
-  std::string icon = validPath ? ICON_FA_CIRCLE_CHECK : ICON_FA_CIRCLE_XMARK;
-  ImGui::InputText((label + " " + icon).c_str(), &str);
+  ImGui::InputText(("##" + label).c_str(), &str);
+  ImGui::SameLine();
+  IconType icon = validPath ? IconType::SUCCESS : IconType::FAIL;
+  IconText(label, icon);
   if (!tip.empty()) { ImGui::SetItemTooltip(tip.c_str()); }
   ImGui::SameLine();
   if (ImGui::Button(("...##" + label).c_str()))

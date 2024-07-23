@@ -35,7 +35,7 @@ bool Requests::DownloadFile(const std::string& domain, const std::string& sitePa
 
 bool Requests::CheckUpdates(std::string& version)
 {
-	httplib::SSLClient request("www.online-ctr.com");
+	httplib::SSLClient request("online-ctr.com");
 	httplib::Result response = request.Get("/wp-content/uploads/onlinectr_patches/build.txt");
   if (response && response->status == 200) {
     version = response->body;
@@ -46,7 +46,7 @@ bool Requests::CheckUpdates(std::string& version)
 
 bool Requests::DownloadUpdates(const std::string& path, std::string& status)
 {
-  const std::string octrDomain = "www.online-ctr.com";
+  const std::string octrDomain = "online-ctr.com";
   const std::string octrPath = "/wp-content/uploads/onlinectr_patches/";
   const std::vector<std::string> files = { g_clientString, g_patchString, g_configString };
   if (!std::filesystem::is_directory(path)) { std::filesystem::create_directory(path); }

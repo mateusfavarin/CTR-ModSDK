@@ -6,6 +6,13 @@
 #include <string>
 #include <vector>
 
+enum class IconType
+{
+	FAIL,
+	WARNING,
+	SUCCESS,
+};
+
 class UI
 {
 public:
@@ -13,7 +20,7 @@ public:
 	void Render(int width, int height);
 
 private:
-	void AppendStatusMessage(bool cond, std::string& statusMessage, const std::string& message);
+	void IconText(const std::string& str, IconType iconType);
 	bool SelectFile(std::string& str, const std::string& label, const std::vector<std::string>& ext, const std::vector<std::string>& filters, const std::string& tip);
 	bool SelectFolder(std::string& str, const std::string& label, const std::string& tip);
 
