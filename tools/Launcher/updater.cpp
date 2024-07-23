@@ -4,6 +4,7 @@
 #include "patch.h"
 #include "io.h"
 
+#include <CRC.h>
 #include <fstream>
 #include <filesystem>
 
@@ -13,26 +14,63 @@ Updater::Updater()
   g_dataManager.BindData(&m_hasDuckstation, DataType::BOOL, "Duck");
 }
 
-bool Updater::IsUpdated()
+bool Updater::HasValidUpdate()
 {
   return m_updated;
 }
 
 bool Updater::IsBusy()
 {
-	return m_routineRunning;
+  m_routineMutex.lock();
+  bool ret = m_routineCount > 0;
+  m_routineMutex.unlock();
+	return ret;
 }
 
-bool Updater::IsValidBios(const std::string& path)
+bool Updater::HasUpdateAvailable()
 {
-  std::vector<char> v;
-  IO::ReadBinaryFile(v, path);
-  return v.size() == static_cast<size_t>(0x80000);
+  return m_updateAvailable;
 }
 
-bool Updater::CheckForUpdates(std::string& status, const std::string& currVersion)
+void Updater::IsValidBios(RoutineStatus& ret, const std::string& path)
 {
-  return StartRoutine([&]
+  StartRoutine(
+    [&path]
+    {
+      /* All NTSC-U BIOS CRC32: https://github.com/brad-lin/FreePSXBoot?tab=readme-ov-file#downloads */
+      const std::vector<uint32_t> biosChecksums = { 0x55847d8c, 0xaff00f2f, 0x37157331, 0x8d8cb7e4, 0x502224b6, 0x6a0e22a0, 0x171bdcec };
+      std::vector<char> v;
+      IO::ReadBinaryFile(v, path);
+      uint32_t fileChecksum = CRC::Calculate(v.data(), v.size(), CRC::CRC_32());
+      for (uint32_t checksum : biosChecksums)
+      {
+        if (checksum == fileChecksum) { return true; }
+      }
+      return false;
+    },
+    &ret
+  );
+}
+
+void Updater::IsValidGame(RoutineStatus& ret, const std::string& path)
+{
+  StartRoutine(
+    [&path]
+    {
+      const uint32_t gameChecksum = 0x9A742438;
+      std::vector<char> v;
+      IO::ReadBinaryFile(v, path);
+      if (CRC::Calculate(v.data(), v.size(), CRC::CRC_32()) == gameChecksum) { return true; }
+      return false;
+    },
+    &ret
+  );
+}
+
+void Updater::CheckForUpdates(const std::string& currVersion)
+{
+  StartRoutine(
+    [this, &currVersion]
     {
       std::string version;
       Requests::CheckUpdates(version);
@@ -40,15 +78,17 @@ bool Updater::CheckForUpdates(std::string& status, const std::string& currVersio
       {
         m_updateAvailable = true;
         m_versionAvailable = version;
-        status = "Update available! v" + m_versionAvailable;
+        return true;
       }
+      return false;
     }
   );
 }
 
-bool Updater::Update(std::string& status, std::string& currVersion, const std::string& gamePath, const std::string& biosPath)
+void Updater::Update(std::string& status, std::string& currVersion, const std::string& gamePath, const std::string& biosPath)
 {
-  return StartRoutine([&]
+  StartRoutine(
+    [this, &status, &currVersion, &gamePath, &biosPath]
     {
       std::string version;
       bool copyIni = false;
@@ -112,12 +152,33 @@ bool Updater::Update(std::string& status, std::string& currVersion, const std::s
   );
 }
 
-bool Updater::StartRoutine(const std::function<void(void)>& func)
+const std::string Updater::GetVersionAvailableStatus()
 {
-  if (m_routineRunning) { return false; }
+  return "Update available! v" + m_versionAvailable;
+}
 
-  m_routine = func;
-  m_routineRunning = true;
-  m_updateRoutine = std::async(std::launch::async, [&] { m_routine(); m_routineRunning = false; });
-  return true;
+void Updater::StartRoutine(const std::function<bool(void)>& func, RoutineStatus* const ret)
+{
+  KillRoutines();
+  m_routineMutex.lock();
+  m_routineCount++;
+  unsigned index = m_routineIndex++;
+  m_asyncRefs[index] = std::async(std::launch::async, [this, func, ret, index]
+    {
+      if (ret) { *ret = RoutineStatus::RUNNING; }
+      bool result = func();
+      if (ret) { *ret = result ? RoutineStatus::RET_TRUE : RoutineStatus::RET_FALSE; }
+      m_routineMutex.lock();
+      m_routineCount--;
+      m_routineMutex.unlock();
+    }
+  );
+  m_routineMutex.unlock();
+}
+
+void Updater::KillRoutines()
+{
+  m_routineMutex.lock();
+  if (m_routineCount == 0 && !m_asyncRefs.empty()) { m_asyncRefs.clear(); }
+  m_routineMutex.unlock();
 }

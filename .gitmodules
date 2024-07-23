@@ -23,3 +23,6 @@
 	path = externals/cpp-httplib
 	url = https://github.com/yhirose/cpp-httplib
 
+[submodule "externals/CRCpp"]
+	path = externals/CRCpp
+	url = https://github.com/d-bahr/CRCpp
