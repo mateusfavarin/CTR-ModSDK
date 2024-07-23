@@ -27,6 +27,9 @@ private:
 	void StartRoutine(const std::function<bool(void)>& func, RoutineStatus* const ret = nullptr);
 	void KillRoutines();
 
+public:
+	bool m_deleteOldVersions = true;
+
 private:
 	std::string m_versionAvailable;
 	bool m_updateAvailable = false;

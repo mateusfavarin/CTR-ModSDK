@@ -97,8 +97,12 @@ void UI::Render(int width, int height)
   {
     ImGui::Checkbox("Skip game checksum", &m_skipChecksum);
     ImGui::SetItemTooltip("Ignore the game checksum while applying the xdelta patch.\nThis may result in patching errors.");
+    ImGui::Checkbox("Delete old versions", &m_updater.m_deleteOldVersions);
+    ImGui::SetItemTooltip("Automatically deletes the patched file\nfor obsolete versions during new updates.");
     ImGui::TreePop();
   }
+
+  ImGui::SeparatorText("Information");
 
   if (m_status.empty())
   {

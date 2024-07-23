@@ -12,6 +12,7 @@ Updater::Updater()
 {
   g_dataManager.BindData(&m_updated, DataType::BOOL, "Updated");
   g_dataManager.BindData(&m_hasDuckstation, DataType::BOOL, "Duck");
+  g_dataManager.BindData(&m_deleteOldVersions, DataType::BOOL, "DeleteOldVersions");
 }
 
 bool Updater::HasValidUpdate()
@@ -130,7 +131,8 @@ void Updater::Update(std::string& status, std::string& currVersion, const std::s
       status = "Checking for new updates...";
       if (m_updateAvailable || Requests::CheckUpdates(version))
       {
-        if (m_updateAvailable || version != currVersion || !std::filesystem::exists(GetPatchedGamePath(currVersion)))
+        const std::string prevPatchedGamePath = GetPatchedGamePath(currVersion);
+        if (m_updateAvailable || version != currVersion || !std::filesystem::exists(prevPatchedGamePath))
         {
           m_versionAvailable = m_updateAvailable ? m_versionAvailable : version;
           std::string path = g_dataFolder + m_versionAvailable + "/";
@@ -139,6 +141,7 @@ void Updater::Update(std::string& status, std::string& currVersion, const std::s
             if (copyIni || !m_updated) { std::filesystem::copy_file(GetIniPath_Version(m_versionAvailable), GetIniPath_Duck()); }
             m_updated = true;
             m_updateAvailable = false;
+            if (m_deleteOldVersions && std::filesystem::exists(prevPatchedGamePath)) { std::filesystem::remove(prevPatchedGamePath); }
             currVersion = m_versionAvailable;
             status = "Update completed.";
             return true;
