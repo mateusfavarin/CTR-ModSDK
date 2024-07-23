@@ -33,4 +33,12 @@ private:
 	std::string m_gamePath;
 	std::string m_username;
 	std::string m_status;
+	/* Game Settings */
+	float m_fx = 1.0f;
+	float m_music = 1.0f;
+	float m_voice = 1.0f;
+	bool m_stereo = true;
+	bool m_vibration = false;
+	/* Advanced Settings */
+	bool m_skipChecksum = false;
 };

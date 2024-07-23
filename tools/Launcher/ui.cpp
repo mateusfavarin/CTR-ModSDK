@@ -11,6 +11,12 @@ UI::UI()
 {
   g_dataManager.BindData(&m_validBiosChecksum, DataType::BOOL, "BiosChecksum");
   g_dataManager.BindData(&m_validGameChecksum, DataType::BOOL, "GameChecksum");
+  g_dataManager.BindData(&m_skipChecksum, DataType::BOOL, "SkipChecksum");
+  g_dataManager.BindData(&m_stereo, DataType::BOOL, "Stereo");
+  g_dataManager.BindData(&m_vibration, DataType::BOOL, "Vibration");
+  g_dataManager.BindData(&m_fx, DataType::FLOAT, "FXVolume");
+  g_dataManager.BindData(&m_music, DataType::FLOAT, "MusicVolume");
+  g_dataManager.BindData(&m_voice, DataType::FLOAT, "VoiceVolume");
   g_dataManager.BindData(&m_biosPath, DataType::STRING, "BiosPath");
   g_dataManager.BindData(&m_gamePath, DataType::STRING, "GamePath");
   g_dataManager.BindData(&m_version, DataType::STRING, "GameVersion");
@@ -31,6 +37,8 @@ void UI::Render(int width, int height)
   ImGui::SetNextWindowPos(ImVec2(.0f, .0f), ImGuiCond_Always);
   ImGui::SetNextWindowSize(ImVec2(static_cast<float>(width), static_cast<float>(height)), ImGuiCond_Always);
   ImGui::Begin("Main", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
+
+  ImGui::Text(("Version: " + m_version).c_str());
 
   ImGui::InputText("##Username", &m_username, ImGuiInputTextFlags_CallbackCharFilter, FilterUsernameChar);
   ImGui::SameLine();
@@ -71,10 +79,42 @@ void UI::Render(int width, int height)
   bool validGamePath = SelectFile(m_gamePath, "Game Path", {".bin", ".img", ".iso"}, {"Game Files", "*.bin *.img *.iso"}, "Path to the clean NTSC-U version of CTR");
   CheckFile(gameRoutineStatus, validGamePath, m_validGameChecksum, m_gamePath, gameRead, [this](RoutineStatus& routineStatus, const std::string& path) { m_updater.IsValidGame(routineStatus, path); });
 
-  bool correctSettings = m_validBiosChecksum && validGamePath;
-  ImGui::Text(("Version: " + m_version).c_str());
+  bool correctSettings = m_skipChecksum ? (m_validBiosChecksum && validGamePath) : (m_validBiosChecksum && m_validGameChecksum);
 
-  ImGui::BeginDisabled(m_updater.IsBusy() || !m_updater.HasValidUpdate() || !correctSettings);
+  if (ImGui::TreeNode("Game Settings"))
+  {
+    ImGui::SliderFloat("FX", &m_fx, 0.0f, 1.0f, "%.2f");
+    ImGui::SliderFloat("Music", &m_music, 0.0f, 1.0f, "%.2f");
+    ImGui::SliderFloat("Voice", &m_voice, 0.0f, 1.0f, "%.2f");
+    if (ImGui::RadioButton("Stereo", m_stereo)) { m_stereo = true; }
+    ImGui::SameLine();
+    if (ImGui::RadioButton("Mono", !m_stereo)) { m_stereo = false; }
+    ImGui::Checkbox("Vibration", &m_vibration);
+    ImGui::TreePop();
+  }
+
+  if (ImGui::TreeNode("Advanced Settings"))
+  {
+    ImGui::Checkbox("Skip game checksum", &m_skipChecksum);
+    ImGui::SetItemTooltip("Ignore the game checksum while applying the xdelta patch.\nThis may result in patching errors.");
+    ImGui::TreePop();
+  }
+
+  if (m_status.empty())
+  {
+    if (biosRoutineStatus == RoutineStatus::RUNNING) { ImGui::Text("Calculating BIOS checksum..."); }
+    if (biosRoutineStatus == RoutineStatus::NONE && m_validBiosChecksum) { IconText("PS1 BIOS.", IconType::SUCCESS); }
+    if (biosRoutineStatus == RoutineStatus::NONE && !m_validBiosChecksum) { IconText("Invalid PS1 bios file.", IconType::FAIL); }
+    if (gameRoutineStatus == RoutineStatus::RUNNING) { ImGui::Text("Calculating game checksum..."); }
+    if (gameRoutineStatus == RoutineStatus::NONE && m_validGameChecksum) { IconText("NTSC-U CTR.", IconType::SUCCESS); }
+    if (m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText("Using a modified version of NTSC-U CTR.\nThis may result in patching errors.", IconType::WARNING); }
+    if (!m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText("Invalid NTSC-U CTR game file.", IconType::FAIL); }
+    if (m_updater.HasUpdateAvailable()) { IconText(m_updater.GetVersionAvailable(), IconType::WARNING); }
+  }
+  else { ImGui::Text(m_status.c_str()); }
+
+  bool launchDisabled = m_updater.IsBusy() || !m_updater.HasValidUpdate() || !correctSettings;
+  ImGui::BeginDisabled(launchDisabled);
   if (ImGui::Button("Launch Game"))
   {
     const std::string s_clientPath = GetClientPath(m_version);
@@ -84,39 +124,30 @@ void UI::Render(int width, int height)
     else
     {
       g_dataManager.SaveData();
-      const std::string duckCommand = "start /b \"\" \"" + g_duckExecutable + "\" \"" + s_patchedPath + "\" &";
+      const std::string duckCommand = "start /b \"\" \"" + g_duckExecutable + "\" \"" + s_patchedPath + "\"";
       std::system(duckCommand.c_str());
-      const std::string clientCommand = "start /b \"\" \"" + std::filesystem::current_path().string() + "/" + GetClientPath(m_version) + "\" " + m_username + " &";
+      const std::string clientCommand = "start /b \"\" \"" + std::filesystem::current_path().string() + "/" + GetClientPath(m_version) + "\" " + m_username;
       std::system(clientCommand.c_str());
     }
   }
+  if (launchDisabled) { ImGui::SetItemTooltip("Update the game and make sure\nall settings are correct."); }
   ImGui::EndDisabled();
   ImGui::SameLine();
-  ImGui::BeginDisabled(m_updater.IsBusy() || !correctSettings);
+  bool updateDisabled = m_updater.IsBusy() || !correctSettings;
+  ImGui::BeginDisabled(updateDisabled);
   if (ImGui::Button("Update")) { m_updater.Update(m_status, m_version, m_gamePath, m_biosPath); }
+  if (updateDisabled) { ImGui::SetItemTooltip("Provide a correct nickname, bios file\nand game file before updating."); }
   ImGui::EndDisabled();
-
-  if (m_status.empty())
-  {
-    if (biosRoutineStatus == RoutineStatus::RUNNING) { ImGui::Text("Calculating BIOS checksum..."); }
-    if (biosRoutineStatus == RoutineStatus::NONE && m_validBiosChecksum) { IconText("PS1 BIOS.", IconType::SUCCESS); }
-    if (biosRoutineStatus == RoutineStatus::NONE && !m_validBiosChecksum) { IconText("Error: invalid PS1 bios file.", IconType::FAIL); }
-    if (gameRoutineStatus == RoutineStatus::RUNNING) { ImGui::Text("Calculating game checksum..."); }
-    if (gameRoutineStatus == RoutineStatus::NONE && m_validGameChecksum) { IconText("NTSC-U CTR.", IconType::SUCCESS); }
-    if (gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText("Warning: you may be using a modified version of NTSC-U CTR.", IconType::WARNING); }
-    if (m_updater.HasUpdateAvailable()) { IconText(m_updater.GetVersionAvailable(), IconType::WARNING); }
-  }
-  else { ImGui::Text(m_status.c_str()); }
 
   ImGui::End();
 }
 
 void UI::IconText(const std::string& str, IconType iconType)
 {
-  const ImVec4 redColor    = {247.0 / 255.0, 44.0 / 255.0, 37.0 / 255.0, 1.0};
-  const ImVec4 yellowColor = {255.0 / 255.0, 197.0 / 255.0, 0.0 / 58.0, 1.0};
-  const ImVec4 greenColor  = {99.0 / 255.0, 193.0 / 255.0, 70.0 / 255.0, 1.0};
-  const ImVec4 whiteColor  = {1.0, 1.0, 1.0, 1.0};
+  const ImVec4 redColor    = {247.0f / 255.0f, 44.0f / 255.0f, 37.0f / 255.0f, 1.0f};
+  const ImVec4 yellowColor = {255.0f / 255.0f, 197.0f / 255.0f, 0.0f / 58.0f, 1.0f};
+  const ImVec4 greenColor  = {99.0f / 255.0f, 193.0f / 255.0f, 70.0f / 255.0f, 1.0f};
+  const ImVec4 whiteColor  = {1.0f, 1.0f, 1.0f, 1.0f};
 
   switch (iconType)
   {
