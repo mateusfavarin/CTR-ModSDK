@@ -107,15 +107,17 @@ void UI::Render(int width, int height)
   if (m_status.empty())
   {
     if (biosRoutineStatus == RoutineStatus::RUNNING) { ImGui::Text("Calculating BIOS checksum..."); }
-    if (biosRoutineStatus == RoutineStatus::NONE && m_validBiosChecksum) { IconText("PS1 BIOS.", IconType::SUCCESS); }
-    if (biosRoutineStatus == RoutineStatus::NONE && !m_validBiosChecksum) { IconText("Invalid PS1 bios file.", IconType::FAIL); }
+    if (biosRoutineStatus == RoutineStatus::NONE && m_validBiosChecksum) { IconText("PS1 BIOS", IconType::SUCCESS); }
+    if (biosRoutineStatus == RoutineStatus::NONE && !m_validBiosChecksum) { IconText("Invalid PS1 bios file", IconType::FAIL); }
     if (gameRoutineStatus == RoutineStatus::RUNNING) { ImGui::Text("Calculating game checksum..."); }
-    if (gameRoutineStatus == RoutineStatus::NONE && m_validGameChecksum) { IconText("NTSC-U CTR.", IconType::SUCCESS); }
-    if (m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText("Using a modified version of NTSC-U CTR.\nThis may result in patching errors.", IconType::WARNING); }
-    if (!m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText("Invalid NTSC-U CTR game file.", IconType::FAIL); }
+    if (gameRoutineStatus == RoutineStatus::NONE && m_validGameChecksum) { IconText("NTSC-U CTR", IconType::SUCCESS); }
+    if (m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText("Using a modified version of NTSC-U CTR\nThis may result in patching errors", IconType::WARNING); }
+    if (!m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText("Invalid NTSC-U CTR game file", IconType::FAIL); }
     if (m_updater.HasUpdateAvailable()) { IconText(m_updater.GetVersionAvailable(), IconType::WARNING); }
   }
   else { ImGui::Text(m_status.c_str()); }
+
+  ImGui::Separator();
 
   bool launchDisabled = m_updater.IsBusy() || !m_updater.HasValidUpdate() || !correctSettings;
   ImGui::BeginDisabled(launchDisabled);
