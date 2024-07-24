@@ -1,7 +1,9 @@
 #include "ui.h"
 #include "dataManager.h"
+#include "languages.h"
 #include "IconsFontAwesome6.h"
 
+#include <imgui_internal.h>
 #include <misc/cpp/imgui_stdlib.h>
 #include <portable-file-dialogs.h>
 #include <filesystem>
@@ -38,11 +40,29 @@ void UI::Render(int width, int height)
   ImGui::SetNextWindowSize(ImVec2(static_cast<float>(width), static_cast<float>(height)), ImGuiCond_Always);
   ImGui::Begin("Main", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
 
-  ImGui::Text(("Version: " + m_version).c_str());
+  const std::string versionStr = g_lang["OnlineCTR Version"] + ": " + m_version;
+  ImGui::Text(versionStr.c_str());
+  ImGui::SameLine();
+  ImGui::ItemSize(ImVec2(385.0f - ImGui::CalcTextSize(versionStr.c_str()).x, 0));
+  ImGui::SameLine();
+  ImGui::Text(g_lang["Language"].c_str());
+  ImGui::SameLine();
+  if (ImGui::BeginCombo("##lang", g_lang.m_langs[g_lang.m_langIndex].c_str(), ImGuiComboFlags_WidthFitPreview))
+  {
+    for (size_t i = 0; i < g_lang.m_langs.size(); i++)
+    {
+      bool selected = i == g_lang.m_langIndex;
+      if (ImGui::Selectable(g_lang.m_langs[i].c_str(), selected)) { g_lang.m_langIndex = i; }
+      if (selected) { ImGui::SetItemDefaultFocus(); }
+    }
+    ImGui::EndCombo();
+  }
 
   ImGui::InputText("##Username", &m_username, ImGuiInputTextFlags_CallbackCharFilter, FilterUsernameChar);
   ImGui::SameLine();
-  IconText("Username", m_username.empty() ? IconType::FAIL : IconType::SUCCESS);
+  ImGui::ItemSize(ImVec2(17.0f, 0));
+  ImGui::SameLine();
+  IconText(g_lang["Username"], m_username.empty() ? IconType::FAIL : IconType::SUCCESS);
   if (m_username.size() > 9) { m_username = m_username.substr(0, 9); }
 
   auto CheckFile = [](RoutineStatus& routineStatus, bool runCheck, bool& result, std::string& currStr, std::string& lastStr, const std::function<void(RoutineStatus&, const std::string&)>& func)
@@ -71,29 +91,29 @@ void UI::Render(int width, int height)
 
   static std::string biosRead = m_validBiosChecksum ? m_biosPath : std::string();
   static RoutineStatus biosRoutineStatus = RoutineStatus::NONE;
-  bool validBiosPath = SelectFile(m_biosPath, "Bios Path   ", {".bin"}, {"PSX Bios File", "*.bin"}, "Path to a PS1 NTSC-U bios.");
+  bool validBiosPath = SelectFile(m_biosPath, g_lang["Bios File"], {".bin"}, {"PSX Bios File", "*.bin"}, g_lang["Path to a PS1 NTSC-U bios."]);
   CheckFile(biosRoutineStatus, validBiosPath, m_validBiosChecksum, m_biosPath, biosRead, [this](RoutineStatus& routineStatus, const std::string& path) { m_updater.IsValidBios(routineStatus, path); });
 
   static std::string gameRead = m_validGameChecksum ? m_gamePath : std::string();
   static RoutineStatus gameRoutineStatus = RoutineStatus::NONE;
-  bool validGamePath = SelectFile(m_gamePath, "Game Path", {".bin", ".img", ".iso"}, {"Game Files", "*.bin *.img *.iso"}, "Path to the clean NTSC-U version of CTR");
+  bool validGamePath = SelectFile(m_gamePath, g_lang["Game File"], {".bin", ".img", ".iso"}, {"Game Files", "*.bin *.img *.iso"}, g_lang["Path to the original NTSC-U CTR."]);
   CheckFile(gameRoutineStatus, validGamePath, m_validGameChecksum, m_gamePath, gameRead, [this](RoutineStatus& routineStatus, const std::string& path) { m_updater.IsValidGame(routineStatus, path); });
 
   bool correctSettings = m_skipChecksum ? (m_validBiosChecksum && validGamePath) : (m_validBiosChecksum && m_validGameChecksum);
 
-  if (ImGui::TreeNode("Game Settings"))
+  if (ImGui::TreeNode(g_lang["Game Settings"].c_str()))
   {
     ImGui::SliderFloat("FX", &m_fx, 0.0f, 1.0f, "%.2f");
-    ImGui::SliderFloat("Music", &m_music, 0.0f, 1.0f, "%.2f");
-    ImGui::SliderFloat("Voice", &m_voice, 0.0f, 1.0f, "%.2f");
+    ImGui::SliderFloat(g_lang["Music"].c_str(), &m_music, 0.0f, 1.0f, "%.2f");
+    ImGui::SliderFloat(g_lang["Voice"].c_str(), &m_voice, 0.0f, 1.0f, "%.2f");
     if (ImGui::RadioButton("Stereo", m_stereo)) { m_stereo = true; }
     ImGui::SameLine();
     if (ImGui::RadioButton("Mono", !m_stereo)) { m_stereo = false; }
-    ImGui::Checkbox("Vibration", &m_vibration);
+    ImGui::Checkbox(g_lang["Vibration"].c_str(), &m_vibration);
     ImGui::TreePop();
   }
 
-  if (ImGui::TreeNode("Advanced Settings"))
+  if (ImGui::TreeNode(g_lang["Advanced Settings"].c_str()))
   {
     ImGui::Checkbox("Skip game checksum", &m_skipChecksum);
     ImGui::SetItemTooltip("Ignore the game checksum while applying the xdelta patch.\nThis may result in patching errors.");
@@ -102,7 +122,7 @@ void UI::Render(int width, int height)
     ImGui::TreePop();
   }
 
-  ImGui::SeparatorText("Information");
+  ImGui::SeparatorText(g_lang["Information"].c_str());
 
   if (m_status.empty())
   {
@@ -112,7 +132,7 @@ void UI::Render(int width, int height)
     if (gameRoutineStatus == RoutineStatus::RUNNING) { ImGui::Text("Calculating game checksum..."); }
     if (gameRoutineStatus == RoutineStatus::NONE && m_validGameChecksum) { IconText("NTSC-U CTR", IconType::SUCCESS); }
     if (m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText("Using a modified version of NTSC-U CTR\nThis may result in patching errors", IconType::WARNING); }
-    if (!m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText("Invalid NTSC-U CTR game file", IconType::FAIL); }
+    if (!m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText("Invalid original NTSC-U CTR game file", IconType::FAIL); }
     if (m_updater.HasUpdateAvailable()) { IconText(m_updater.GetVersionAvailable(), IconType::WARNING); }
   }
   else { ImGui::Text(m_status.c_str()); }
@@ -202,17 +222,18 @@ bool UI::SelectFile(std::string& str, const std::string& label, const std::vecto
 
   ImGui::InputText(("##" + label).c_str(), &str);
   ImGui::SameLine();
-  IconType icon = checkValidPath() ? IconType::SUCCESS : IconType::FAIL;
-  IconText(label, icon);
-  if (!tip.empty()) { ImGui::SetItemTooltip(tip.c_str()); }
-  ImGui::SameLine();
   if (ImGui::Button(("...##" + label).c_str()))
   {
     auto selection = pfd::open_file(label, str, filters).result();
     if (selection.empty()) { return false; }
     str = selection.front();
   }
-  return checkValidPath();
+  ImGui::SameLine();
+  bool validPath = checkValidPath();
+  IconType icon = validPath ? IconType::SUCCESS : IconType::FAIL;
+  IconText(label, icon);
+  if (!tip.empty()) { ImGui::SetItemTooltip(tip.c_str()); }
+  return validPath;
 }
 
 bool UI::SelectFolder(std::string& str, const std::string& label, const std::string& tip)
@@ -220,15 +241,15 @@ bool UI::SelectFolder(std::string& str, const std::string& label, const std::str
   bool validPath = std::filesystem::is_directory(str);
   ImGui::InputText(("##" + label).c_str(), &str);
   ImGui::SameLine();
-  IconType icon = validPath ? IconType::SUCCESS : IconType::FAIL;
-  IconText(label, icon);
-  if (!tip.empty()) { ImGui::SetItemTooltip(tip.c_str()); }
-  ImGui::SameLine();
   if (ImGui::Button(("...##" + label).c_str()))
   {
     auto selection = pfd::select_folder(label).result();
     if (selection.empty()) { return false; }
     str = selection;
   }
+  ImGui::SameLine();
+  IconType icon = validPath ? IconType::SUCCESS : IconType::FAIL;
+  IconText(label, icon);
+  if (!tip.empty()) { ImGui::SetItemTooltip(tip.c_str()); }
   return validPath;
 }

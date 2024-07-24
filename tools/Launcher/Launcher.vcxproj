@@ -152,6 +152,7 @@
     <ClCompile Include="app.cpp" />
     <ClCompile Include="dataManager.cpp" />
     <ClCompile Include="io.cpp" />
+    <ClCompile Include="languages.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="patch.cpp" />
     <ClCompile Include="requests.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="dataManager.h" />
     <ClInclude Include="IconsFontAwesome6.h" />
     <ClInclude Include="io.h" />
+    <ClInclude Include="languages.h" />
     <ClInclude Include="patch.h" />
     <ClInclude Include="requests.h" />
     <ClInclude Include="ui.h" />

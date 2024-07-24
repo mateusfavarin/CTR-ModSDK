@@ -69,6 +69,9 @@ void DataManager::BindData(void* data, DataType dataType, const std::string& id)
 		case DataType::FLOAT:
 			*static_cast<float*>(data) = m_json[id];
 			break;
+		case DataType::SIZE_T:
+			*static_cast<size_t*>(data) = m_json[id];
+			break;
 		}
 	}
 	m_dataMap[id] = {data, dataType};
@@ -89,6 +92,9 @@ void DataManager::SaveData()
 			break;
 		case DataType::FLOAT:
 			m_json[key] = *(static_cast<float*>(pData));
+			break;
+		case DataType::SIZE_T:
+			m_json[key] = *(static_cast<size_t*>(pData));
 			break;
 		}
 	}

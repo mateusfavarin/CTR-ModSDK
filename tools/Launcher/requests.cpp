@@ -1,5 +1,6 @@
 #include "requests.h"
 #include "dataManager.h"
+#include "languages.h"
 
 #define CPPHTTPLIB_OPENSSL_SUPPORT
 #include <httplib.h>
@@ -52,10 +53,10 @@ bool Requests::DownloadUpdates(const std::string& path, std::string& status)
   if (!std::filesystem::is_directory(path)) { std::filesystem::create_directory(path); }
   for (const std::string& file : files)
   {
-    status = "Downloading " + file + "...";
+    status = g_lang["Downloading"] + " " + file + "...";
     if (!DownloadFile(octrDomain, octrPath + file, path + file))
     {
-      status = "Error downloading " + file;
+      status = g_lang["Error downloading"] + " " + file;
       return false;
     }
   }

@@ -1,6 +1,7 @@
 #include "patch.h"
 #include "dataManager.h"
 #include "io.h"
+#include "languages.h"
 
 #include <xdelta3.h>
 
@@ -24,16 +25,16 @@ static bool DecompressXDelta(const std::string& xdeltaPath, const std::string& i
 
 bool Patch::NewVersion(const std::string& path, const std::string& gamePath, std::string& status)
 {
-  status = "Decompressing " + g_clientExecutable + "...";
+  status = g_lang["Decompressing"] + " " + g_clientExecutable + "...";
   if (!IO::DecompressFiles(path, g_clientString))
   {
-    status = "Error decompressing " + g_clientExecutable;
+    status = g_lang["Error decompressing"] + " " + g_clientExecutable;
     return false;
   }
-  status = "Applying xdelta patch...";
+  status = g_lang["Applying xdelta patch..."];
   if (!DecompressXDelta(path + g_patchString, gamePath, ".bin"))
   {
-    status = "Error applying xdelta patch";
+    status = g_lang["Error applying xdelta patch"];
     return false;
   }
   return true;

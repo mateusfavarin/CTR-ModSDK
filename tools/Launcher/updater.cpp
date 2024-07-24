@@ -3,6 +3,7 @@
 #include "dataManager.h"
 #include "patch.h"
 #include "io.h"
+#include "languages.h"
 
 #include <CRC.h>
 #include <fstream>
@@ -95,21 +96,21 @@ void Updater::Update(std::string& status, std::string& currVersion, const std::s
       bool copyIni = false;
       if (!m_hasDuckstation)
       {
-        status = "Downloading Duckstation...";
+        status = g_lang["Downloading Duckstation..."];
         std::filesystem::create_directory(g_duckFolder);
         const std::string duckArchive = "duckstation.zip";
         if (!Requests::DownloadFile("github.com", "/stenzek/duckstation/releases/download/preview/duckstation-windows-x64-release.zip", g_duckFolder + duckArchive))
         {
-          status = "Error: could not download Duckstation.";
+          status = g_lang["Error: could not download Duckstation."];
           return false;
         }
-        status = "Decompressing Duckstation...";
+        status = g_lang["Decompressing Duckstation..."];
         if (!IO::DecompressFiles(g_duckFolder, duckArchive))
         {
-          status = "Error: could not decompress Duckstation.";
+          status = g_lang["Error: could not decompress Duckstation."];
           return false;
         }
-        status = "Installing custom settings...";
+        status = g_lang["Installing OnlineCTR settings..."];
         const std::string g_biosFolder = g_duckFolder + "bios/";
         std::filesystem::create_directory(g_biosFolder);
         std::string biosName;
@@ -128,7 +129,7 @@ void Updater::Update(std::string& status, std::string& currVersion, const std::s
         m_hasDuckstation = true;
         copyIni = true;
       }
-      status = "Checking for new updates...";
+      status = g_lang["Checking for new updates..."];
       if (m_updateAvailable || Requests::CheckUpdates(version))
       {
         const std::string prevPatchedGamePath = GetPatchedGamePath(currVersion);
@@ -143,13 +144,13 @@ void Updater::Update(std::string& status, std::string& currVersion, const std::s
             m_updateAvailable = false;
             if (m_deleteOldVersions && std::filesystem::exists(prevPatchedGamePath)) { std::filesystem::remove(prevPatchedGamePath); }
             currVersion = m_versionAvailable;
-            status = "Update completed.";
+            status = g_lang["Update completed."];
             return true;
           }
         }
-        else { status = "Already on the latest patch"; }
+        else { status = g_lang["Already on the latest patch"]; }
       }
-      else { status = "Error: could not establish connection"; }
+      else { status = g_lang["Error: could not establish connection to online-ctr.com"]; }
       return false;
     }
   );
@@ -157,7 +158,7 @@ void Updater::Update(std::string& status, std::string& currVersion, const std::s
 
 const std::string Updater::GetVersionAvailable()
 {
-  return "Update available! v" + m_versionAvailable;
+  return g_lang["Update available"] + "! v" + m_versionAvailable;
 }
 
 void Updater::StartRoutine(const std::function<bool(void)>& func, RoutineStatus* const ret)

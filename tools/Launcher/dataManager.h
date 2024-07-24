@@ -23,7 +23,7 @@ using json = nlohmann::json;
 
 enum class DataType
 {
-	STRING, BOOL, FLOAT,
+	STRING, BOOL, FLOAT, SIZE_T
 };
 
 class DataManager
