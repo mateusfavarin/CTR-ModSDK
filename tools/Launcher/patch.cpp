@@ -17,7 +17,7 @@ static bool DecompressXDelta(const std::string& xdeltaPath, const std::string& i
   if (result != 0) { return false; }
 
   patchedGame.resize(patchedGameSize);
-  std::string filename = xdeltaPath.substr(0, xdeltaPath.find(".")) + ext;
+  std::string filename = GetPathWithoutExtension(xdeltaPath) + ext;
   IO::WriteBinaryFile(patchedGame, filename);
   return true;
 }

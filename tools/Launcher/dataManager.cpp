@@ -11,6 +11,20 @@ const std::string g_clientExecutable = "Client.exe";
 const std::string g_patchString = "ctr-u_Online30.xdelta";
 const std::string g_configString = "SCUS-94426.ini";
 
+std::string GetPathWithoutExtension(const std::string& path)
+{
+	int pos = 0;
+	for (int i = static_cast<int>(path.size()) - 1; i >= 0; i--)
+	{
+		if (path[i] == '.')
+		{
+			pos = i;
+			break;
+		}
+	}
+	return path.substr(0, pos);
+}
+
 const std::string GetClientPath(const std::string& version)
 {
 	return g_dataFolder + version + "/" + g_clientExecutable;
@@ -19,7 +33,7 @@ const std::string GetClientPath(const std::string& version)
 const std::string GetPatchedGamePath(const std::string& version)
 {
 	std::string s_patch = g_dataFolder + version + "/" + g_patchString;
-	return s_patch.substr(0, s_patch.find(".")) + ".bin";
+	return GetPathWithoutExtension(s_patch) + ".bin";
 }
 
 const std::string GetIniPath_Version(const std::string& version)
