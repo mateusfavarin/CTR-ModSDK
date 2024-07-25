@@ -45,7 +45,7 @@ void UI::Render(int width, int height)
   ImGui::SameLine();
   ImGui::ItemSize(ImVec2(385.0f - ImGui::CalcTextSize(versionStr.c_str()).x, 0));
   ImGui::SameLine();
-  ImGui::Text(g_lang["Language"].c_str());
+  ImGui::Text((g_lang["Language"] + ":").c_str());
   ImGui::SameLine();
   if (ImGui::BeginCombo("##lang", g_lang.m_langs[g_lang.m_langIndex].c_str(), ImGuiComboFlags_WidthFitPreview))
   {
@@ -60,7 +60,7 @@ void UI::Render(int width, int height)
 
   ImGui::InputText("##Username", &m_username, ImGuiInputTextFlags_CallbackCharFilter, FilterUsernameChar);
   ImGui::SameLine();
-  ImGui::ItemSize(ImVec2(17.0f, 0));
+  ImGui::ItemSize(ImVec2(20.0f, 0));
   ImGui::SameLine();
   IconText(g_lang["Username"], m_username.empty() ? IconType::FAIL : IconType::SUCCESS);
   if (m_username.size() > 9) { m_username = m_username.substr(0, 9); }
@@ -106,6 +106,8 @@ void UI::Render(int width, int height)
     ImGui::SliderFloat("FX", &m_fx, 0.0f, 1.0f, "%.2f");
     ImGui::SliderFloat(g_lang["Music"].c_str(), &m_music, 0.0f, 1.0f, "%.2f");
     ImGui::SliderFloat(g_lang["Voice"].c_str(), &m_voice, 0.0f, 1.0f, "%.2f");
+    ImGui::Text(g_lang["Audio:"].c_str());
+    ImGui::SameLine();
     if (ImGui::RadioButton("Stereo", m_stereo)) { m_stereo = true; }
     ImGui::SameLine();
     if (ImGui::RadioButton("Mono", !m_stereo)) { m_stereo = false; }
@@ -115,38 +117,35 @@ void UI::Render(int width, int height)
 
   if (ImGui::TreeNode(g_lang["Advanced Settings"].c_str()))
   {
-    ImGui::Checkbox("Skip game checksum", &m_skipChecksum);
-    ImGui::SetItemTooltip("Ignore the game checksum while applying the xdelta patch.\nThis may result in patching errors.");
-    ImGui::Checkbox("Delete old versions", &m_updater.m_deleteOldVersions);
-    ImGui::SetItemTooltip("Automatically deletes the patched file\nfor obsolete versions during new updates.");
+    ImGui::Checkbox(g_lang["Skip game checksum"].c_str(), &m_skipChecksum);
+    ImGui::SetItemTooltip(g_lang["Ignore the game checksum while applying the xdelta patch.\nThis may result in patching errors."].c_str());
+    ImGui::Checkbox(g_lang["Delete old versions"].c_str(), &m_updater.m_deleteOldVersions);
+    ImGui::SetItemTooltip(g_lang["Automatically deletes the patched file\nfor obsolete versions during new updates."].c_str());
     ImGui::TreePop();
   }
 
   ImGui::SeparatorText(g_lang["Information"].c_str());
 
-  if (m_status.empty())
-  {
-    if (biosRoutineStatus == RoutineStatus::RUNNING) { ImGui::Text("Calculating BIOS checksum..."); }
-    if (biosRoutineStatus == RoutineStatus::NONE && m_validBiosChecksum) { IconText("PS1 BIOS", IconType::SUCCESS); }
-    if (biosRoutineStatus == RoutineStatus::NONE && !m_validBiosChecksum) { IconText("Invalid PS1 bios file", IconType::FAIL); }
-    if (gameRoutineStatus == RoutineStatus::RUNNING) { ImGui::Text("Calculating game checksum..."); }
-    if (gameRoutineStatus == RoutineStatus::NONE && m_validGameChecksum) { IconText("NTSC-U CTR", IconType::SUCCESS); }
-    if (m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText("Using a modified version of NTSC-U CTR\nThis may result in patching errors", IconType::WARNING); }
-    if (!m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText("Invalid original NTSC-U CTR game file", IconType::FAIL); }
-    if (m_updater.HasUpdateAvailable()) { IconText(m_updater.GetVersionAvailable(), IconType::WARNING); }
-  }
-  else { ImGui::Text(m_status.c_str()); }
+  if (biosRoutineStatus == RoutineStatus::RUNNING) { ImGui::Text(g_lang["Calculating BIOS checksum..."].c_str()); }
+  if (biosRoutineStatus == RoutineStatus::NONE && m_validBiosChecksum) { IconText("PS1 BIOS " + g_lang["detected"], IconType::SUCCESS); }
+  if (biosRoutineStatus == RoutineStatus::NONE && !m_validBiosChecksum) { IconText(g_lang["Invalid PS1 bios file"], IconType::FAIL); }
+  if (gameRoutineStatus == RoutineStatus::RUNNING) { ImGui::Text(g_lang["Calculating game checksum..."].c_str()); }
+  if (gameRoutineStatus == RoutineStatus::NONE && m_validGameChecksum) { IconText("NTSC-U CTR " + g_lang["detected"], IconType::SUCCESS); }
+  if (m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText(g_lang["Modified version of NTSC-U CTR detected\nThis may result in patching errors"], IconType::WARNING); }
+  if (!m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText(g_lang["Invalid original NTSC-U CTR game file"], IconType::FAIL); }
+  if (m_updater.HasUpdateAvailable()) { IconText(m_updater.GetVersionAvailable(), IconType::WARNING); }
+  if (!m_status.empty()) { ImGui::Text(g_lang[m_status].c_str()); }
 
   ImGui::Separator();
 
   bool launchDisabled = m_updater.IsBusy() || !m_updater.HasValidUpdate() || !correctSettings;
   ImGui::BeginDisabled(launchDisabled);
-  if (ImGui::Button("Launch Game"))
+  if (ImGui::Button(g_lang["Launch Game"].c_str()))
   {
     const std::string s_clientPath = GetClientPath(m_version);
     const std::string s_patchedPath = GetPatchedGamePath(m_version);
-    if (!std::filesystem::exists(s_clientPath)) { m_status = "Error: could not find " + s_clientPath; }
-    else if (!std::filesystem::exists(s_patchedPath)) { m_status = "Error: could not find " + s_patchedPath; }
+    if (!std::filesystem::exists(std::u8string(s_clientPath.begin(), s_clientPath.end()))) { m_status = g_lang["Error: could not find"] + " " + s_clientPath; }
+    else if (!std::filesystem::exists(std::u8string(s_patchedPath.begin(), s_patchedPath.end()))) { m_status = g_lang["Error: could not find"] + " " + s_patchedPath; }
     else
     {
       g_dataManager.SaveData();
@@ -156,13 +155,13 @@ void UI::Render(int width, int height)
       std::system(clientCommand.c_str());
     }
   }
-  if (launchDisabled) { ImGui::SetItemTooltip("Update the game and make sure\nall settings are correct."); }
+  if (launchDisabled) { ImGui::SetItemTooltip(g_lang["Update the game and make sure\nall settings are correct."].c_str()); }
   ImGui::EndDisabled();
   ImGui::SameLine();
   bool updateDisabled = m_updater.IsBusy() || !correctSettings;
   ImGui::BeginDisabled(updateDisabled);
-  if (ImGui::Button("Update")) { m_updater.Update(m_status, m_version, m_gamePath, m_biosPath); }
-  if (updateDisabled) { ImGui::SetItemTooltip("Provide a correct nickname, bios file\nand game file before updating."); }
+  if (ImGui::Button(g_lang["Update"].c_str())) { m_updater.Update(m_status, m_version, m_gamePath, m_biosPath); }
+  if (updateDisabled) { ImGui::SetItemTooltip(g_lang["Provide a correct nickname, bios file\nand game file before updating."].c_str()); }
   ImGui::EndDisabled();
 
   ImGui::End();
@@ -210,7 +209,7 @@ bool UI::SelectFile(std::string& str, const std::string& label, const std::vecto
 
   auto checkValidPath = [&]
     {
-      if (std::filesystem::exists(str))
+      if (std::filesystem::exists(std::u8string(str.begin(), str.end())))
       {
         for (const std::string& s : ext)
         {
@@ -238,7 +237,7 @@ bool UI::SelectFile(std::string& str, const std::string& label, const std::vecto
 
 bool UI::SelectFolder(std::string& str, const std::string& label, const std::string& tip)
 {
-  bool validPath = std::filesystem::is_directory(str);
+  bool validPath = std::filesystem::is_directory(std::u8string(str.begin(), str.end()));
   ImGui::InputText(("##" + label).c_str(), &str);
   ImGui::SameLine();
   if (ImGui::Button(("...##" + label).c_str()))

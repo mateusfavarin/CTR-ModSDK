@@ -76,7 +76,8 @@ void Updater::CheckForUpdates(const std::string& currVersion)
     {
       std::string version;
       Requests::CheckUpdates(version);
-      if (currVersion != version || !std::filesystem::exists(GetPatchedGamePath(currVersion)))
+      const std::string patchedGame = GetPatchedGamePath(currVersion);
+      if (currVersion != version || !std::filesystem::exists(std::u8string(patchedGame.begin(), patchedGame.end())))
       {
         m_updateAvailable = true;
         m_versionAvailable = version;
@@ -97,7 +98,7 @@ void Updater::Update(std::string& status, std::string& currVersion, const std::s
       if (!m_hasDuckstation)
       {
         status = g_lang["Downloading Duckstation..."];
-        std::filesystem::create_directory(g_duckFolder);
+        std::filesystem::create_directory(std::u8string(g_duckFolder.begin(), g_duckFolder.end()));
         const std::string duckArchive = "duckstation.zip";
         if (!Requests::DownloadFile("github.com", "/stenzek/duckstation/releases/download/preview/duckstation-windows-x64-release.zip", g_duckFolder + duckArchive))
         {
@@ -112,7 +113,7 @@ void Updater::Update(std::string& status, std::string& currVersion, const std::s
         }
         status = g_lang["Installing OnlineCTR settings..."];
         const std::string g_biosFolder = g_duckFolder + "bios/";
-        std::filesystem::create_directory(g_biosFolder);
+        std::filesystem::create_directory(std::u8string(g_biosFolder.begin(), g_biosFolder.end()));
         std::string biosName;
         for (int i = static_cast<int>(biosPath.size()) - 1; i >= 0; i--)
         {
@@ -122,7 +123,8 @@ void Updater::Update(std::string& status, std::string& currVersion, const std::s
             break;
           }
         }
-        std::filesystem::copy_file(biosPath, g_biosFolder + biosName);
+        const std::string concatBios = g_biosFolder + biosName;
+        std::filesystem::copy_file(std::u8string(biosPath.begin(), biosPath.end()), std::u8string(concatBios.begin(), concatBios.end()));
         const std::string duckPortable = g_duckFolder + "portable.txt";
         std::ofstream portableFile(duckPortable.c_str());
         portableFile.close();
@@ -132,14 +134,20 @@ void Updater::Update(std::string& status, std::string& currVersion, const std::s
       status = g_lang["Checking for new updates..."];
       if (m_updateAvailable || Requests::CheckUpdates(version))
       {
-        const std::string prevPatchedGamePath = GetPatchedGamePath(currVersion);
+        const std::string patchedGame = GetPatchedGamePath(currVersion);
+        const std::filesystem::path prevPatchedGamePath = std::u8string(patchedGame.begin(), patchedGame.end());
         if (m_updateAvailable || version != currVersion || !std::filesystem::exists(prevPatchedGamePath))
         {
           m_versionAvailable = m_updateAvailable ? m_versionAvailable : version;
           std::string path = g_dataFolder + m_versionAvailable + "/";
           if (Requests::DownloadUpdates(path, status) && Patch::NewVersion(path, gamePath, status))
           {
-            if (copyIni || !m_updated) { std::filesystem::copy_file(GetIniPath_Version(m_versionAvailable), GetIniPath_Duck()); }
+            if (copyIni || !m_updated)
+            {
+              const std::string iniVersion = GetIniPath_Version(m_versionAvailable);
+              const std::string iniDuck = GetIniPath_Duck();
+              std::filesystem::copy_file(std::u8string(iniVersion.begin(), iniVersion.end()), std::u8string(iniDuck.begin(), iniDuck.end()));
+            }
             m_updated = true;
             m_updateAvailable = false;
             if (m_deleteOldVersions && std::filesystem::exists(prevPatchedGamePath)) { std::filesystem::remove(prevPatchedGamePath); }

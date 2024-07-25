@@ -48,7 +48,7 @@ bool App::InitSDL()
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
   SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
   const std::string title = "Online CTR Launcher " + m_version;
-  m_window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 500, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+  m_window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 530, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
   if (!m_window) { return false; }
 
   m_glContext = SDL_GL_CreateContext(m_window);
@@ -88,11 +88,36 @@ void App::InitFonts()
   ImFontConfig config;
   ImGuiIO& io = ImGui::GetIO();
   const float fontSize = 18.0f;
-  io.Fonts->AddFontFromFileTTF((g_dataFolder + "Karla-Regular.ttf").c_str(), fontSize, &config);
-  config.SizePixels = fontSize;
+  static const ImWchar fontRanges[] =
+  {
+    0x0020, 0x007F, // Basic Latin
+    0x00A0, 0x00FF, // Latin-1 Supplement
+    0x0100, 0x017F, // Latin Extended - A
+    0x0180, 0x024F, // Latin Extended - B
+    0x0370, 0x03FF, // Greek and Coptic
+    0x0400, 0x04FF, // Cyrillic
+    0x0500, 0x052F, // Cyrillic Supplementary
+    0
+  };
+  io.Fonts->AddFontFromFileTTF((g_dataFolder + "NotoSans-Regular.ttf").c_str(), fontSize + 2.0f, &config, fontRanges);
   config.MergeMode = true;
-  static const ImWchar icon_ranges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};
-  io.Fonts->AddFontFromFileTTF((g_dataFolder + FONT_ICON_FILE_NAME_FAS).c_str(), fontSize, &config, icon_ranges);
+  static const ImWchar arabicFontRanges[] =
+  {
+    0x0600, 0x06FF //	Arabic
+  };
+  io.Fonts->AddFontFromFileTTF((g_dataFolder + "NotoSansArabic-Regular.ttf").c_str(), fontSize + 2.0f, &config, arabicFontRanges);
+  static const ImWchar jpFontRanges[] =
+  {
+    0x2E80, 0x2EFF, // CJK Radicals Supplement
+    0x3000, 0x303F, // CJK Symbols and Punctuation
+    0x3040, 0x309F, // Hiragana
+    0x30A0, 0x30FF, // Katakana
+    0x3400, 0x4DBF, // CJK Unified Ideographs Extension A
+    0x4E00, 0x9FFF, // CJK Unified Ideographs
+  };
+  io.Fonts->AddFontFromFileTTF((g_dataFolder + "NotoSansJP-Regular.ttf").c_str(), fontSize + 2.0f, &config, jpFontRanges);
+  static const ImWchar iconRanges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};
+  io.Fonts->AddFontFromFileTTF((g_dataFolder + FONT_ICON_FILE_NAME_FAS).c_str(), fontSize, &config, iconRanges);
 }
 
 void App::Init()

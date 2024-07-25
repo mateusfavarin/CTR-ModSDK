@@ -50,8 +50,9 @@ DataManager g_dataManager;
 
 DataManager::DataManager()
 {
-	if (!std::filesystem::is_directory(g_dataFolder)) { std::filesystem::create_directory(g_dataFolder); }
-	if (std::filesystem::exists(m_path)) { m_json = json::parse(std::ifstream(m_path)); }
+	std::filesystem::path u8dataFolder = std::u8string(g_dataFolder.begin(), g_dataFolder.end());
+	if (!std::filesystem::is_directory(u8dataFolder)) { std::filesystem::create_directory(u8dataFolder); }
+	if (std::filesystem::exists(std::u8string(m_path.begin(), m_path.end()))) { m_json = json::parse(std::ifstream(m_path)); }
 }
 
 void DataManager::BindData(void* data, DataType dataType, const std::string& id)

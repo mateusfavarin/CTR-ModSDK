@@ -50,7 +50,8 @@ bool Requests::DownloadUpdates(const std::string& path, std::string& status)
   const std::string octrDomain = "online-ctr.com";
   const std::string octrPath = "/wp-content/uploads/onlinectr_patches/";
   const std::vector<std::string> files = { g_clientString, g_patchString, g_configString };
-  if (!std::filesystem::is_directory(path)) { std::filesystem::create_directory(path); }
+  std::filesystem::path u8path = std::u8string(path.begin(), path.end());
+  if (!std::filesystem::is_directory(u8path)) { std::filesystem::create_directory(u8path); }
   for (const std::string& file : files)
   {
     status = g_lang["Downloading"] + " " + file + "...";

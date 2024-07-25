@@ -36,7 +36,8 @@ bool IO::DecompressFiles(const std::string& path, const std::string& filename)
       std::string archiveName(zipStat.name);
       if (archiveName.back() == '/' || archiveName.back() == '\\')
       {
-        std::filesystem::create_directory(path + archiveName);
+        const std::string concatPath = path + archiveName;
+        std::filesystem::create_directory(std::u8string(concatPath.begin(), concatPath.end()));
       }
       else
       {
