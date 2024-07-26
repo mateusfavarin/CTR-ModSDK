@@ -131,8 +131,8 @@ void UI::Render(int width, int height)
   if (biosRoutineStatus == RoutineStatus::NONE && !m_validBiosChecksum) { IconText(g_lang["Invalid PS1 bios file"], IconType::FAIL); }
   if (gameRoutineStatus == RoutineStatus::RUNNING) { ImGui::Text(g_lang["Calculating game checksum..."].c_str()); }
   if (gameRoutineStatus == RoutineStatus::NONE && m_validGameChecksum) { IconText("NTSC-U CTR " + g_lang["detected"], IconType::SUCCESS); }
-  if (m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText(g_lang["Modified version of NTSC-U CTR detected\nThis may result in patching errors"], IconType::WARNING); }
-  if (!m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText(g_lang["Invalid original NTSC-U CTR game file"], IconType::FAIL); }
+  if (m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText(g_lang["Invalid ROM or modified version of NTSC-U CTR detected\nThis may result in patching errors"], IconType::WARNING); }
+  if (!m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText(g_lang["Game path does not match with an original NTSC-U CTR game file"], IconType::FAIL); }
   if (m_updater.HasUpdateAvailable()) { IconText(m_updater.GetVersionAvailable(), IconType::WARNING); }
   if (!m_status.empty()) { ImGui::Text(g_lang[m_status].c_str()); }
 
@@ -151,6 +151,7 @@ void UI::Render(int width, int height)
       g_dataManager.SaveData();
       const std::string duckCommand = "start /b \"\" \"" + g_duckExecutable + "\" \"" + s_patchedPath + "\"";
       std::system(duckCommand.c_str());
+      std::this_thread::sleep_for(std::chrono::seconds(5)); // wait for potato computers to hopefully load duckstation
       const std::string clientCommand = "start /b \"\" \"" + std::filesystem::current_path().string() + "/" + GetClientPath(m_version) + "\" " + m_username;
       std::system(clientCommand.c_str());
     }
