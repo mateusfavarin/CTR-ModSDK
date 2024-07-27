@@ -5,6 +5,7 @@
 #include <imgui.h>
 #include <backends/imgui_impl_sdl2.h>
 #include <backends/imgui_impl_opengl3.h>
+#include <SDL_image.h>
 #if defined(IMGUI_IMPL_OPENGL_ES2)
 #include <SDL_opengles2.h>
 #else
@@ -51,6 +52,9 @@ bool App::InitSDL()
   m_window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 530, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
   if (!m_window) { return false; }
 
+  SDL_Surface* icon = IMG_Load((g_dataFolder + "octr.ico").c_str());
+  SDL_SetWindowIcon(m_window, icon);
+  SDL_FreeSurface(icon);
   m_glContext = SDL_GL_CreateContext(m_window);
   SDL_GL_MakeCurrent(m_window, m_glContext);
   SDL_GL_SetSwapInterval(1); // Enable vsync
