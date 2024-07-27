@@ -1,17 +1,11 @@
 #pragma once
 
 #include "updater.h"
+#include "dataManager.h"
 
 #include <imgui.h>
 #include <string>
 #include <vector>
-
-enum class IconType
-{
-	FAIL,
-	WARNING,
-	SUCCESS,
-};
 
 class UI
 {
@@ -33,6 +27,7 @@ private:
 	std::string m_gamePath;
 	std::string m_username;
 	std::string m_status;
+	IconType m_statusIcon;
 	/* Game Settings */
 	float m_fx = 1.0f;
 	float m_music = 1.0f;

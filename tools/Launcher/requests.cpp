@@ -1,5 +1,4 @@
 #include "requests.h"
-#include "dataManager.h"
 #include "languages.h"
 
 #define CPPHTTPLIB_OPENSSL_SUPPORT
@@ -45,7 +44,7 @@ bool Requests::CheckUpdates(std::string& version)
   return false;
 }
 
-bool Requests::DownloadUpdates(const std::string& path, std::string& status)
+bool Requests::DownloadUpdates(const std::string& path, std::string& status, IconType& statusIcon)
 {
   const std::string octrDomain = "online-ctr.com";
   const std::string octrPath = "/wp-content/uploads/onlinectr_patches/";
@@ -55,9 +54,11 @@ bool Requests::DownloadUpdates(const std::string& path, std::string& status)
   for (const std::string& file : files)
   {
     status = g_lang["Downloading"] + " " + file + "...";
+    statusIcon = IconType::RUNNING;
     if (!DownloadFile(octrDomain, octrPath + file, path + file))
     {
       status = g_lang["Error downloading"] + " " + file;
+      statusIcon = IconType::FAIL;
       return false;
     }
   }

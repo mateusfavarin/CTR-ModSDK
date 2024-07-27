@@ -25,7 +25,7 @@ private:
 
 private:
 	UI ui;
-	const std::string m_version = "v0.33 - BETA";
+	const std::string m_version = "v0.34 - BETA";
 	std::string m_glslVer;
 	SDL_GLContext m_glContext;
 	SDL_Window* m_window;

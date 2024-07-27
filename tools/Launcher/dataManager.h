@@ -21,6 +21,14 @@ const std::string GetIniPath_Duck();
 
 using json = nlohmann::json;
 
+enum class IconType
+{
+	FAIL,
+	WARNING,
+	SUCCESS,
+	RUNNING,
+};
+
 enum class DataType
 {
 	STRING, BOOL, FLOAT, SIZE_T

@@ -1,5 +1,4 @@
 #include "ui.h"
-#include "dataManager.h"
 #include "languages.h"
 #include "IconsFontAwesome6.h"
 
@@ -126,15 +125,15 @@ void UI::Render(int width, int height)
 
   ImGui::SeparatorText(g_lang["Information"].c_str());
 
-  if (biosRoutineStatus == RoutineStatus::RUNNING) { ImGui::Text(g_lang["Calculating BIOS checksum..."].c_str()); }
+  if (biosRoutineStatus == RoutineStatus::RUNNING) { IconText(g_lang["Calculating BIOS checksum..."], IconType::RUNNING); }
   if (biosRoutineStatus == RoutineStatus::NONE && m_validBiosChecksum) { IconText("PS1 BIOS " + g_lang["detected"], IconType::SUCCESS); }
   if (biosRoutineStatus == RoutineStatus::NONE && !m_validBiosChecksum) { IconText(g_lang["Invalid PS1 bios file"], IconType::FAIL); }
-  if (gameRoutineStatus == RoutineStatus::RUNNING) { ImGui::Text(g_lang["Calculating game checksum..."].c_str()); }
+  if (gameRoutineStatus == RoutineStatus::RUNNING) { IconText(g_lang["Calculating game checksum..."], IconType::RUNNING); }
   if (gameRoutineStatus == RoutineStatus::NONE && m_validGameChecksum) { IconText("NTSC-U CTR " + g_lang["detected"], IconType::SUCCESS); }
   if (m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText(g_lang["Invalid ROM or modified version of NTSC-U CTR detected\nThis may result in patching errors"], IconType::WARNING); }
   if (!m_skipChecksum && gameRoutineStatus == RoutineStatus::NONE && !m_validGameChecksum) { IconText(g_lang["Game path does not match with an original NTSC-U CTR game file"], IconType::FAIL); }
   if (m_updater.HasUpdateAvailable()) { IconText(m_updater.GetVersionAvailable(), IconType::WARNING); }
-  if (!m_status.empty()) { ImGui::Text(g_lang[m_status].c_str()); }
+  if (!m_status.empty()) { IconText(g_lang[m_status], m_statusIcon); }
 
   ImGui::Separator();
 
@@ -144,8 +143,16 @@ void UI::Render(int width, int height)
   {
     const std::string s_clientPath = GetClientPath(m_version);
     const std::string s_patchedPath = GetPatchedGamePath(m_version);
-    if (!std::filesystem::exists(std::u8string(s_clientPath.begin(), s_clientPath.end()))) { m_status = g_lang["Error: could not find"] + " " + s_clientPath; }
-    else if (!std::filesystem::exists(std::u8string(s_patchedPath.begin(), s_patchedPath.end()))) { m_status = g_lang["Error: could not find"] + " " + s_patchedPath; }
+    if (!std::filesystem::exists(std::u8string(s_clientPath.begin(), s_clientPath.end())))
+    {
+      m_status = g_lang["Error: could not find"] + " " + s_clientPath;
+      m_statusIcon = IconType::FAIL;
+    }
+    else if (!std::filesystem::exists(std::u8string(s_patchedPath.begin(), s_patchedPath.end())))
+    {
+      m_status = g_lang["Error: could not find"] + " " + s_patchedPath;
+      m_statusIcon = IconType::FAIL;
+    }
     else
     {
       g_dataManager.SaveData();
@@ -161,7 +168,7 @@ void UI::Render(int width, int height)
   ImGui::SameLine();
   bool updateDisabled = m_updater.IsBusy() || !correctSettings;
   ImGui::BeginDisabled(updateDisabled);
-  if (ImGui::Button(g_lang["Update"].c_str())) { m_updater.Update(m_status, m_version, m_gamePath, m_biosPath); }
+  if (ImGui::Button(g_lang["Update"].c_str())) { m_updater.Update(m_status, m_statusIcon, m_version, m_gamePath, m_biosPath); }
   if (updateDisabled) { ImGui::SetItemTooltip(g_lang["Provide a correct nickname, bios file\nand game file before updating."].c_str()); }
   ImGui::EndDisabled();
 
@@ -173,6 +180,7 @@ void UI::IconText(const std::string& str, IconType iconType)
   const ImVec4 redColor    = {247.0f / 255.0f, 44.0f / 255.0f, 37.0f / 255.0f, 1.0f};
   const ImVec4 yellowColor = {255.0f / 255.0f, 197.0f / 255.0f, 0.0f / 58.0f, 1.0f};
   const ImVec4 greenColor  = {99.0f / 255.0f, 193.0f / 255.0f, 70.0f / 255.0f, 1.0f};
+  const ImVec4 blueColor = {63.0f / 255.0f, 136.0f / 255.0f, 197.0f / 255.0f, 1.0f};
   const ImVec4 whiteColor  = {1.0f, 1.0f, 1.0f, 1.0f};
 
   switch (iconType)
@@ -188,6 +196,10 @@ void UI::IconText(const std::string& str, IconType iconType)
   case IconType::SUCCESS:
     ImGui::PushStyleColor(ImGuiCol_Text, greenColor);
     ImGui::Text(ICON_FA_CIRCLE_CHECK);
+    break;
+  case IconType::RUNNING:
+    ImGui::PushStyleColor(ImGuiCol_Text, blueColor);
+    ImGui::Text(ICON_FA_CIRCLE_INFO);
     break;
   default:
     ImGui::PushStyleColor(ImGuiCol_Text, whiteColor);

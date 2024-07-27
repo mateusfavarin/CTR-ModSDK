@@ -1,5 +1,7 @@
 #pragma once
 
+#include "dataManager.h"
+
 #include <string>
 #include <unordered_map>
 #include <mutex>
@@ -20,7 +22,7 @@ public:
 	void IsValidBios(RoutineStatus& ret, const std::string& path);
 	void IsValidGame(RoutineStatus& ret, const std::string& path);
 	void CheckForUpdates(const std::string& currVersion);
-	void Update(std::string& status, std::string& currVersion, const std::string& gamePath, const std::string& biosPath);
+	void Update(std::string& status, IconType& statusIcon, std::string& currVersion, const std::string& gamePath, const std::string& biosPath);
 	const std::string GetVersionAvailable();
 
 private:
