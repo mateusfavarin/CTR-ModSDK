@@ -4,7 +4,7 @@
 #include <string>
 #include <unordered_map>
 
-#define TRANSLATE(EN, PT, IT, RU, FI, AR, DE, ID, FR, IS, ES, JP) {EN,{{"English", EN}, {"Português", PT}, {"Italiano", IT}, {"Pусский", RU}, {"Suomi", FI}, {"عربي", AR}, {"Deutsch", DE}, {"Indonesia", ID}, {"Français", FR}, {"Íslenska", IS}, {"Español", ES}, {"日本語", JP}}}
+#define TRANSLATE(EN, PT, IT, RU, FI, AR, DE, ID, FR, IS, ES, JP, GE) {EN,{{"English", EN}, {"Português", PT}, {"Italiano", IT}, {"Pусский", RU}, {"Suomi", FI}, {"عربي", AR}, {"Deutsch", DE}, {"Indonesia", ID}, {"Français", FR}, {"Íslenska", IS}, {"Español", ES}, {"日本語", JP}, {"ქართული", GE}}}
 
 class Languages
 {
@@ -14,7 +14,7 @@ public:
 
 public:
 	size_t m_langIndex = 1; // Default to english
-	const std::vector<std::string> m_langs = {"Deutsch", "English", "عربي", "Español", "Français", "Íslenska", "Indonesia", "Italiano", "日本語", "Português", "Pусский", "Suomi"};
+	const std::vector<std::string> m_langs = {"Deutsch", "English", "عربي", "Español", "Français", "ქართული", "Íslenska", "Indonesia", "Italiano", "日本語", "Português", "Pусский", "Suomi"};
 
 private:
 	const std::unordered_map<std::string, std::unordered_map<std::string, std::string>> m_translations = {
@@ -31,7 +31,8 @@ private:
 			"Décompression",
 			"Afþjappar gögn",
 			"Descomprimiendo",
-			"解凍しています"
+			"解凍しています",
+			"დეკომპრესირება"
 		),
 		TRANSLATE(
 			"Error decompressing",
@@ -45,7 +46,8 @@ private:
 			"Erreur de décompression",
 			"Villa við afþjöppun gagna",
 			"Error al descomprimir",
-			"解凍エラー"
+			"解凍エラー",
+			"შეცდომა დეკომპრესირების დროს"
 		),
 		TRANSLATE(
 			"Applying xdelta patch...",
@@ -59,7 +61,8 @@ private:
 			"Application du patch XDELTA...",
 			"Stagar xdelta bót...",
 			"Aplicando parche xdelta...",
-			"xdeltaパッチを適用しています..."
+			"xdeltaパッチを適用しています...",
+			"xdelta პატჩის განთავსება..."
 		),
 		TRANSLATE(
 			"Error applying xdelta patch",
@@ -73,7 +76,8 @@ private:
 			"Erreur lors de l'application du patch XDELTA",
 			"Villa við stögum xdelta bótar",
 			"Error al aplicar parche xdelta",
-			"xdeltaパッチの適用エラー"
+			"xdeltaパッチの適用エラー",
+			"xdelta პატჩის შეცდომა"
 		),
 		/* requests.cpp */
 		TRANSLATE(
@@ -88,7 +92,8 @@ private:
 			"Téléchargement",
 			"Sækir skjöl",
 			"Descargando",
-			"ダウンロードしています"
+			"ダウンロードしています",
+			"გადმოწერა"
 		),
 		TRANSLATE(
 			"Error downloading",
@@ -102,7 +107,8 @@ private:
 			"Échec du telechargement",
 			"Villa við niðurhalningu",
 			"Error al descargar",
-			"ダウンロードエラー"
+			"ダウンロードエラー",
+			"გადმოწერის შეცდომა"
 		),
 		/* updater.cpp */
 		TRANSLATE(
@@ -117,7 +123,8 @@ private:
 			"Téléchargement de Duckstation...",
 			"Sækir Duckstation...",
 			"Descargando Duckstation...",
-			"Duckstationをダウンロードしています..."
+			"Duckstationをダウンロードしています...",
+			"Duckstation-ის გადმოწერა..."
 		),
 		TRANSLATE(
 			"Error: could not download Duckstation.",
@@ -131,7 +138,8 @@ private:
 			"Erreur: échec du téléchargement de Duckstation.",
 			"Villa: ekki var hægt að sækja Duckstation.",
 			"Error: no se pudo descargar Duckstation.",
-			"エラー: Duckstationがダウンロードできませんでした."
+			"エラー: Duckstationがダウンロードできませんでした.",
+			"შეცდომა: Duckstation-ის გადმოწერა ვერ მოხერხდა."
 		),
 		TRANSLATE(
 			"Decompressing Duckstation...",
@@ -145,7 +153,8 @@ private:
 			"Décompression de Duckstation...",
 			"Afþjappar Duckstation...",
 			"Descomprimiendo Duckstation...",
-			"DuckStationを解凍しています..."
+			"DuckStationを解凍しています...",
+			"Duckstation-ის დეკომპრესირება..."
 		),
 		TRANSLATE(
 			"Error: could not decompress Duckstation.",
@@ -159,7 +168,8 @@ private:
 			"Erreur: échec de la décompression de Duckstation.",
 			"Villa: ekki var hægt að afþjappa Duckstation.",
 			"Error: no se pudo descomprimir Duckstation.",
-			"エラー: Duckstationが解凍できませんでした."
+			"エラー: Duckstationが解凍できませんでした.",
+			"შეცდომა: ვერ დეკომპრესირდა Duckstation."
 		),
 		TRANSLATE(
 			"Installing OnlineCTR settings...",
@@ -173,7 +183,8 @@ private:
 			"Instalation des paramètres de OnlineCTR...",
 			"Vistar stillingar fyrir OnlineCTR...",
 			"Instalando configuraciones de OnlineCTR...",
-			"OnlineCTR設定をインストールしています..."
+			"OnlineCTR設定をインストールしています...",
+			"OnlineCTR-ის პარამეტრების დაყენება..."
 		),
 		TRANSLATE(
 			"Checking for new updates...",
@@ -187,7 +198,8 @@ private:
 			"Vérification des nouvelles mises à jour...",
 			"Uppfærslu athugun...",
 			"Buscando actualizaciones...",
-			"新しいアップデートを確認しています..."
+			"新しいアップデートを確認しています...",
+			"განახლებეების ძებნა..."
 		),
 		TRANSLATE(
 			"Update completed.",
@@ -201,7 +213,8 @@ private:
 			"Mise à jour terminée.",
 			"Uppfærsla klár.",
 			"Actualizado correctamente.",
-			"アップデートが完了しました."
+			"アップデートが完了しました.",
+			"განახლება დასრულდა."
 		),
 		TRANSLATE(
 			"Already on the latest patch",
@@ -215,7 +228,8 @@ private:
 			"Le dernier patch a déjà été installé",
 			"Þú ert með nýjustu útgáfuna.",
 			"Ya estás en el último parche",
-			"既に最新のパッチです"
+			"既に最新のパッチです",
+			"თქვენ უახლესი ვერსია გაქვთ."
 		),
 		TRANSLATE(
 			"Error: could not establish connection to online-ctr.com",
@@ -229,7 +243,8 @@ private:
 			"Erreur: impossible de se connecter à online-ctr.com",
 			"Villa: næst ekki sambandi við online-ctr.com",
 			"Error: no se pudo establecer una conexión con online-ctr.com",
-			"エラー: online-ctr.comとの接続を確立できませんでした."
+			"エラー: online-ctr.comとの接続を確立できませんでした.",
+			"შეცდომა: ვერ დავუკავშირდით online-ctr.com"
 		),
 		TRANSLATE(
 			"Update available",
@@ -243,7 +258,8 @@ private:
 			"Mise à jour disponible",
 			"Uppfærsla í boði",
 			"Actualización disponible",
-			"アップデートがあります"
+			"アップデートがあります",
+			"განახლება ხელმისაწვდომია"
 		),
 		/* ui.cpp */
 		TRANSLATE(
@@ -258,7 +274,8 @@ private:
 			"OnlineCTR version",
 			"Útgáfa OnlineCTR",
 			"Versión de OnlineCTR",
-			"OnlineCTRバージョン"
+			"OnlineCTRバージョン",
+			"ვერსია"
 		),
 		TRANSLATE(
 			"Language",
@@ -272,7 +289,8 @@ private:
 			"Langue",
 			"Tungumál",
 			"Idioma",
-			"言語"
+			"言語",
+			"ენა"
 		),
 		TRANSLATE(
 			"Username",
@@ -286,7 +304,8 @@ private:
 			"Pseudonyme",
 			"Notandanafn",
 			"Nombre de usuario",
-			"ユーザー名"
+			"ユーザー名",
+			"სახელი"
 		),
 		TRANSLATE(
 			"Bios File",
@@ -300,7 +319,8 @@ private:
 			"Fichier BIOS",
 			"BIOS skjal",
 			"Archivo de la BIOS",
-			"BIOSファイル"
+			"BIOSファイル",
+			"BIOS ფაილი"
 		),
 		TRANSLATE(
 			"Path to a PS1 NTSC-U bios.",
@@ -314,7 +334,8 @@ private:
 			"Chemin d'accès du fichier BIOS PS1 de la version NTSC-U.",
 			"Gagnaslóð að PS1 NTSC-U Bios skjali.",
 			"Ruta de una bios PS1 NTSC-U.",
-			"PS1 NTSC-U BIOSへのパス."
+			"PS1 NTSC-U BIOSへのパス.",
+			"BIOS NTSC-U ფაილის ადგილი."
 		),
 		TRANSLATE(
 			"Game File",
@@ -328,7 +349,8 @@ private:
 			"Fichier de jeu",
 			"Leikja skjal",
 			"Archivo del Juego",
-			"ゲームファイル"
+			"ゲームファイル",
+			"თამაშის ფაილი"
 		),
 		TRANSLATE(
 			"Path to the original NTSC-U CTR.",
@@ -342,7 +364,8 @@ private:
 			"Chemin d'accès vers le fichier de jeu original CTR version NTSC-U.",
 			"Slóð að óbreyttu NTSC-U CTR skjali.",
 			"Ruta hacia CTR NTSC-U original.",
-			"オリジナル版NTSC-U CTRへのパス."
+			"オリジナル版NTSC-U CTRへのパス.",
+			"CTR NTSC-U ადგილი."
 		),
 		TRANSLATE(
 			"Game Settings",
@@ -356,7 +379,8 @@ private:
 			"Paramètres",
 			"Hljóðstillingar",
 			"Opciones del juego",
-			"ゲーム設定"
+			"ゲーム設定",
+			"თამაშის პარამეტრები"
 		),
 		TRANSLATE(
 			"Music",
@@ -370,7 +394,8 @@ private:
 			"Musique",
 			"Tónlist",
 			"Música",
-			"BGM"
+			"BGM",
+			"მუსიკა"
 		),
 		TRANSLATE(
 			"Voice",
@@ -384,7 +409,8 @@ private:
 			"Voix",
 			"Raddir",
 			"Voz",
-			"ボイス"
+			"ボイス",
+			"საუბარი"
 		),
 		TRANSLATE(
 			"Audio:",
@@ -398,7 +424,8 @@ private:
 			"Audio:",
 			"Hljóð:",
 			"Audio:",
-			"オーディオ:"
+			"オーディオ:",
+			"ხმა:"
 		),
 		TRANSLATE(
 			"Vibration",
@@ -412,7 +439,8 @@ private:
 			"Vibration",
 			"Titringur",
 			"Vibración",
-			"振動"
+			"振動",
+			"ვიბრაცია"
 		),
 		TRANSLATE(
 			"Advanced Settings",
@@ -426,7 +454,8 @@ private:
 			"Paramètres Avancés",
 			"Fleiri stillingar",
 			"Opciones Avanzadas",
-			"詳細設定"
+			"詳細設定",
+			"დამატებითი პარამეტრები"
 		),
 		TRANSLATE(
 			"Information",
@@ -440,7 +469,8 @@ private:
 			"Information",
 			"Upplýsingar",
 			"Informacion",
-			"情報"
+			"情報",
+			"ინფორმაცია"
 		),
 		TRANSLATE(
 			"Skip game checksum",
@@ -454,7 +484,8 @@ private:
 			"Ignorer la somme de contrôle des fichiers",
 			"Hunsa prófsummu leiks",
 			"Saltar checksum del juego",
-			"ゲームチェックサムを無視"
+			"ゲームチェックサムを無視",
+			"საკონტროლო ჯამის შემოწმების გამოტოვება"
 		),
 		TRANSLATE(
 			"Ignore the game checksum while applying the xdelta patch.\nThis may result in patching errors.",
@@ -468,7 +499,8 @@ private:
 			"Ignorer la somme de contrôle pour l'application du patch XDELTA.\nCela peut potentiellement entraîner des erreurs.",
 			"Hunsa prófsummu leiks þegar xdelta bót er stöguð. \nÞað getur komið fram villa ef þessi stilling er notuð.",
 			"Saltar el checksum del juego mientras se aplica el parche xdelta.\nEsto puede causar errores al parchear.",
-			"xdeltaパッチ適用中のゲームチェックサムを無視します.\nパッチエラーが発生する可能性があります."
+			"xdeltaパッチ適用中のゲームチェックサムを無視します.\nパッチエラーが発生する可能性があります.",
+			"არ ამოწმებს საკონტროლო ჯამს. \nშესაძლოა შეცდომები გამოიწვიოს"
 		),
 		TRANSLATE(
 			"Delete old versions",
@@ -482,7 +514,8 @@ private:
 			"Supprimer les versions précédentes",
 			"Eyða gömlum útgáfum",
 			"Borrar versiones antiguas",
-			"旧バージョンの削除"
+			"旧バージョンの削除",
+			"ძველი ვერსიების წაშლა"
 		),
 		TRANSLATE(
 			"Automatically deletes the patched file\nfor obsolete versions during new updates.",
@@ -496,7 +529,8 @@ private:
 			"Suppression automatique des versions obsolètes pendant\nl'installation d'une nouvelle mise à jour.",
 			"Eyðir sjálfkrafa gömlum útgáfum þegar nýjar útgáfur eru í boði.",
 			"Elimina archivos antiguos automáticamente\ndurante nuevas actualizaciones.",
-			"廃止されたバージョンのパッチ適用済みファイルを新しいアップデート中に自動的に削除します."
+			"廃止されたバージョンのパッチ適用済みファイルを\n新しいアップデート中に自動的に削除します.",
+			"ავტომატურად შლის ძველ ვერსიებს\nგანახლების შემდეგ ძველი ვერსიებისთვის."
 		),
 		TRANSLATE(
 			"Calculating BIOS checksum...",
@@ -510,7 +544,8 @@ private:
 			"Calcul de la somme de contrôle du fichier BIOS...",
 			"Athugar BIOS prófsummu...",
 			"Calculando el checksum de la BIOS...",
-			"BIOSチェックサムを計算しています..."
+			"BIOSチェックサムを計算しています...",
+			"BIOS-ის ჯამის შემოწმება..."
 		),
 		TRANSLATE(
 			"detected",
@@ -524,7 +559,8 @@ private:
 			"détecté",
 			"fundið",
 			"detectada",
-			"を検出しました"
+			"を検出しました",
+			"აღმოჩენილია"
 		),
 		TRANSLATE(
 			"Invalid PS1 bios file",
@@ -538,7 +574,8 @@ private:
 			"Fichier BIOS PS1 invalide",
 			"Ógilt PS1 bios skjal",
 			"Archivo de bios de PS1 inválido",
-			"不正なPS1 BIOSファイルです"
+			"不正なPS1 BIOSファイルです",
+			"არასწორი BIOS"
 		),
 		TRANSLATE(
 			"Calculating game checksum...",
@@ -552,7 +589,8 @@ private:
 			"Calcul de la somme de contrôle du jeu...",
 			"Reiknar prófsummu leiks...",
 			"Calculando el checksum del juego...",
-			"ゲームチェックサムを計算しています..."
+			"ゲームチェックサムを計算しています...",
+			"თამაშის ჯამის შემოწმება..."
 		),
 		TRANSLATE(
 			"Invalid ROM or modified version of NTSC-U CTR detected\nThis may result in patching errors",
@@ -566,7 +604,8 @@ private:
 			"Fichier de jeu invalide ou version modifié de CTR NTSC-U détecté\nCela peut potentiellement entraîner des erreurs.",
 			"Ógilt eða breytt ROM skjal fundið\nÞað getur komið fram villa ef þetta skjal er notað.",
 			"ROM invalida o versión modificada de CTR NTSC-U detectada\nEsto puede causar errores al parchear",
-			"不正なROMまたは変更済みのNTSC-U CTRを検出しました\nパッチエラーが発生する可能性があります"
+			"不正なROMまたは変更済みのNTSC-U CTRを検出しました\nパッチエラーが発生する可能性があります",
+			"არასწორი ROM-ი ან შეცვლილი ვერსია\nშესაძლია შეცდომები გამოიწვიოს"
 		),
 		TRANSLATE(
 			"Game path does not match with an original NTSC-U CTR game file",
@@ -580,7 +619,8 @@ private:
 			"Le chemin d'accès ne contient aucun fichier de jeu original CTR version NTSC-U",
 			"Leikjarslóð bendir ekki að óbreyttu NSTC-U CTR ROM skjali",
 			"Este archivo no corresponde con un juego CTR NTSC-U original",
-			"ゲームパスのゲームファイルがオリジナル版NTSC-U CTRと一致しません"
+			"ゲームパスのゲームファイルがオリジナル版NTSC-U CTRと一致しません",
+			"ადგილი არ შეესაბამება თამაშს"
 		),
 		TRANSLATE(
 			"Launch Game",
@@ -594,7 +634,8 @@ private:
 			"Lancer le jeu",
 			"Spila leik",
 			"Jugar",
-			"ゲームを始める"
+			"ゲームを始める",
+			"ჩართვა"
 		),
 		TRANSLATE(
 			"Error: could not find",
@@ -608,7 +649,8 @@ private:
 			"Erreur: impossible de trouver le fichier",
 			"Villa: fann ekki",
 			"Error: no se pudo encontrar",
-			"エラー: 見つけられませんでした"
+			"エラー: 見つけられませんでした",
+			"შეცდომა: ვერ მოიძებნა"
 		),
 		TRANSLATE(
 			"Update the game and make sure\nall settings are correct.",
@@ -622,7 +664,8 @@ private:
 			"Installer la mise à jour et vérifier\nque tous les paramètres sont corrects.",
 			"Uppfærðu leikinn og passaðu\nað allar stillingar séu réttar.",
 			"Actualiza el juego y verifica que\ntodas las configuraciones son correctas.",
-			"ゲームをアップデートして、設定が正しいか確認してください."
+			"ゲームをアップデートして、設定が正しいか確認してください.",
+			"გაანახლეთ თამაში და შეამოწმეთ პარამეტრები."
 		),
 		TRANSLATE(
 			"Update",
@@ -636,7 +679,8 @@ private:
 			"Mise à jour",
 			"Uppfæra",
 			"Actualizar",
-			"アップデートする"
+			"アップデートする",
+			"განახლება"
 		),
 		TRANSLATE(
 			"Provide a correct nickname, bios file\nand game file before updating.",
@@ -650,7 +694,8 @@ private:
 			"Vérifier que votre pseudo, le fichier BIOS et le\nfichier de jeu sont corrects avant la mise à jour.",
 			"Passaðu að notandanafn, BIOS skjal\nog leikjarskal er rétt fyrir uppfærslu.",
 			"Inserta correctamente un nombre de usuario, archivo de bios\ny el archivo del juego antes de actualizar.",
-			"アップデート前に、ユーザー名、BIOSファイル、ゲームファイルを設定してください."
+			"アップデート前に、ユーザー名、BIOSファイル、ゲームファイルを設定してください.",
+			"მიუთითეთ სწორი სახელი, BIOS ფაილი\nდა თამაშის ფაილი განახლებამდე."
 		),
 	};
 };

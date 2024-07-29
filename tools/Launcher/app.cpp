@@ -105,9 +105,16 @@ void App::InitFonts()
   };
   io.Fonts->AddFontFromFileTTF((g_dataFolder + "NotoSans-Regular.ttf").c_str(), fontSize + 2.0f, &config, fontRanges);
   config.MergeMode = true;
+  static const ImWchar georgianFontRanges[] =
+  {
+    0x10A0, 0x10FF,
+    0
+  };
+  io.Fonts->AddFontFromFileTTF((g_dataFolder + "NotoSansGeorgian-Regular.ttf").c_str(), fontSize + 2.0f, &config, georgianFontRanges);
   static const ImWchar arabicFontRanges[] =
   {
-    0x0600, 0x06FF //	Arabic
+    0x0600, 0x06FF, //	Arabic
+    0
   };
   io.Fonts->AddFontFromFileTTF((g_dataFolder + "NotoSansArabic-Regular.ttf").c_str(), fontSize + 2.0f, &config, arabicFontRanges);
   static const ImWchar jpFontRanges[] =
@@ -118,6 +125,7 @@ void App::InitFonts()
     0x30A0, 0x30FF, // Katakana
     0x3400, 0x4DBF, // CJK Unified Ideographs Extension A
     0x4E00, 0x9FFF, // CJK Unified Ideographs
+    0
   };
   io.Fonts->AddFontFromFileTTF((g_dataFolder + "NotoSansJP-Regular.ttf").c_str(), fontSize + 2.0f, &config, jpFontRanges);
   static const ImWchar iconRanges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};
