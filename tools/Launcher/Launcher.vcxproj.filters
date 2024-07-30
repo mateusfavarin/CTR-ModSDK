@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
@@ -25,11 +21,11 @@
     <Filter Include="xdelta3">
       <UniqueIdentifier>{a5ac9002-c6a1-46a7-9148-b92c30d3ea73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{430ecbb3-d41c-403b-a31f-e32abf6b1deb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\externals\imgui\imgui.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
@@ -51,63 +47,66 @@
     <ClCompile Include="..\..\externals\imgui\backends\imgui_impl_sdl2.cpp">
       <Filter>ImGui\backends</Filter>
     </ClCompile>
-    <ClCompile Include="app.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dataManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\externals\imgui\misc\cpp\imgui_stdlib.cpp">
       <Filter>ImGui\misc</Filter>
-    </ClCompile>
-    <ClCompile Include="requests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="patch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="io.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="third_party\xdelta3\xdelta3.c">
       <Filter>xdelta3</Filter>
     </ClCompile>
-    <ClCompile Include="updater.cpp">
+    <ClCompile Include="src\app.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="languages.cpp">
+    <ClCompile Include="src\dataManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\languages.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\requests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\updater.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="app.h">
+    <ClInclude Include="src\app.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ui.h">
+    <ClInclude Include="src\dataManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="dataManager.h">
+    <ClInclude Include="src\IconsFontAwesome6.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IconsFontAwesome6.h">
+    <ClInclude Include="src\io.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="requests.h">
+    <ClInclude Include="src\languages.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="patch.h">
+    <ClInclude Include="src\patch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="io.h">
+    <ClInclude Include="src\requests.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="updater.h">
+    <ClInclude Include="src\ui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="languages.h">
+    <ClInclude Include="src\updater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
