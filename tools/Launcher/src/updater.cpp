@@ -163,7 +163,11 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
             return true;
           }
         }
-        else { updateStatus("Already on the latest patch", IconType::SUCCESS); }
+        else
+        {
+          Patch::PatchGame(g_dataFolder + currVersion + "/", gamePath, status, statusIcon);
+          updateStatus("Successfully patched the game.", IconType::SUCCESS);
+        }
       }
       else { updateStatus("Error: could not establish connection to online-ctr.com", IconType::FAIL); }
       return false;
