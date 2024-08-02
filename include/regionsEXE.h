@@ -2175,7 +2175,7 @@ struct Data
 	// 80085D0C
 	// used in the same function as
 	// MetaDataSaveLoad, but usage is unknown
-	short unk_80085d0c_LoadSave[4];
+	short spinOffset_LoadSave[4];
 
 	// 80085d14
 	short lngIndex_LoadSave[4];
@@ -3217,7 +3217,7 @@ struct sData
 	// 4 - MC_SCREEN_LOADING
 	// 5 - MC_SCREEN_CHECKING
 	// 6 - MC_SCREEN_ERROR_FULL
-	// 7 - MC_SCREEN_ERROR_READ
+	// 7 - MC_SCREEN_ERROR_TIMEOUT
 	// 8 - MC_SCREEN_NULL
 	// 9 - MC_SCREEN_ERROR_NODATA
 
@@ -4101,6 +4101,12 @@ struct sData
 	// 8008dcac -- EurRetail
 	// 80090d20 -- JpnRetail
 	#if BUILD >= SepReview && BUILD <= EurRetail
+	
+	// ---
+	// 8008d904 - timerSaveComplete
+	// 8008d906 - oskSaveNameType
+	// --
+	
 	char data10_bbb[0x10];
 	#elif BUILD == JpnRetail
 	char data14_bbb[0x14];
@@ -4128,7 +4134,7 @@ struct sData
 	// 8008c870 -- JpnTrial
 	// 8008dccc -- EurRetail
 	// 80090d44 -- JpnRetail
-	int unk_saveGame_related;
+	int boolSaveCupProgress;
 
 	// 8008d91c
 	int advCharSelectIndex_prev;
@@ -4212,8 +4218,8 @@ struct sData
 	// 8008d964
 	int unk8008d964;
 
-	// 8008d968 boolWipeMemcard (why?)
-	int unk8008d968;
+	// 8008d968
+	int boolAdvProfilesChecked;
 
 	// 8008d96c
 	int advProfileIndex;
@@ -4251,7 +4257,7 @@ struct sData
 	int demoModeIndex;
 
 	// 8008d984
-	int unkBool1111;
+	int boolError;
 
 	// 8008d988
 	// root counter

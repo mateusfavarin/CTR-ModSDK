@@ -415,6 +415,8 @@ void FUN_80047198(undefined2 param_1)
 {
   DAT_8008d478 = param_1;
   DAT_8008d964 = 0;
+  
+  // boolError
   DAT_8008d984 = 0;
   return;
 }
@@ -446,15 +448,15 @@ void FUN_800471c4(undefined2 param_1)
 void FUN_800471e8(void)
 
 {
-  // if data has not been wiped to "default state"
-  // before reading memcard, then wipe it now
+  // boolAdvProfilesChecked
   if (DAT_8008d968 == 0)
   {
-	// 8008d474 is ptr to memcard data
 	// GAMEPROG_InitFullMemcard
+	// 8008d474 is ptr to memcard data,
+	// reset and reload with new memcard
     FUN_80026c24(PTR_DAT_8008d474);
 
-	// dont do this a second time
+	// boolAdvProfilesChecked
     DAT_8008d968 = 1;
   }
 
@@ -556,6 +558,7 @@ void FUN_800472d0(void)
 	// memcard action = null
 	DAT_8008d478 = 2;
 	
+	// boolError
     DAT_8008d984 = 1;
     break;
 
@@ -589,10 +592,15 @@ void FUN_800472d0(void)
 	puVar7 = (undefined4 *)0x0;
     local_20 = (undefined *)0x0;
     local_1c = 0;
+	
 LAB_80047544:
-    FUN_80046b1c(0,uVar5,pcVar6,puVar7,local_20,local_1c);
-    DAT_8008d984 = 0;
-    break;
+    
+	FUN_80046b1c(0,uVar5,pcVar6,puVar7,local_20,local_1c);
+    
+	// boolError
+	DAT_8008d984 = 0;
+    
+	break;
 	
   // MC_SCREEN_CHECKING
   // MC_SCREEN_ERROR_FULL
@@ -601,7 +609,7 @@ LAB_80047544:
     bVar1 = true;
     break;
 	
-  // MC_SCREEN_ERROR_READ
+  // MC_SCREEN_ERROR_TIMEOUT
   // MC_SCREEN_NULL
   // MC_SCREEN_ERROR_NODATA
   case 7:
@@ -617,8 +625,11 @@ LAB_80047544:
 	  // 3 = MC_ACTION_Load
 	  FUN_80046b1c(0,3,&DAT_8009aa60 + (int)DAT_8009aa5a * 0x34,0,DAT_8008d754,0x3e00);
     }
-    else {
-      if (DAT_8008d478 < 6) 
+	
+    else 
+	{
+	  // < 6
+	  if (DAT_8008d478 < 6) 
 	  {
 		// MC_START_SAVE_MAIN
         if (DAT_8008d478 == 3) 
@@ -649,7 +660,9 @@ LAB_8004753c:
           goto LAB_80047544;
         }
       }
-      else {
+      
+	  // >= 6
+	  else {
         
 		// MC_START_SAVE_GHOST
 		if (DAT_8008d478 == 6) 
@@ -682,8 +695,10 @@ LAB_8004753c:
 			// 5 = MC_ACTION_Erase
             FUN_80046b1c(0,5,&DAT_80099284,0,0,0);
 
+			// boolError
             DAT_8008d984 = 0;
-            iVar2 = ((int)DAT_8009aa5c + -1) - (int)DAT_8009aa56;
+            
+			iVar2 = ((int)DAT_8009aa5c + -1) - (int)DAT_8009aa56;
             if (iVar2 != 0)
 			{
 			  // Get byte index, given array index
@@ -715,10 +730,14 @@ LAB_8004753c:
 
           goto LAB_8004753c;
         }
-      }
+      
+		// if 7 or more?
+	  }
     }
 LAB_800475b4:
     bVar1 = true;
+	
+	// boolError
     DAT_8008d984 = 1;
   }
   
@@ -773,7 +792,8 @@ LAB_800479bc:
 			
             DAT_8008d95c = 0;
             
-			// reset gameProg (again?)
+			// boolAdvProfilesChecked
+			// reload with new memory card
 			DAT_8008d968 = 0;
 			
 			// RefreshCard_SetScreenText(MC_SCREEN_LOADING)
@@ -800,7 +820,9 @@ LAB_800479f4:
 			// action is save/load/format/erase
 			FUN_80046b1c(0,uVar5,pcVar6,puVar7,local_20,local_1c);
 			
+			// boolError
             DAT_8008d984 = 0;
+			
             goto LAB_80047a08;
           }
 		  
@@ -825,6 +847,7 @@ LAB_800479f4:
 		  iVar2 = FUN_80046a90(7);
           if (iVar2 == 0) goto LAB_80047a08;
           
+		  // boolError
 		  DAT_8008d984 = 1;
           
 		  // MC_SCREEN_SAVING
@@ -922,7 +945,9 @@ LAB_800479f4:
                 else {
 
 				  // if you are deleting data
-                  if (DAT_8008d978 == 2) {
+                  if (DAT_8008d978 == 2) 
+				  {
+					// boolError
                     DAT_8008d984 = 1;
                   }
                 }
@@ -996,7 +1021,10 @@ LAB_800479f4:
 		{
 		  // the save is not outdated
           DAT_8008d944 = 0;
+		  
           FUN_800471e8();
+		  
+		  // boolError
           DAT_8008d984 = 1;
 		  
 		  // MC_SCREEN_ERROR_NODATA
@@ -1021,6 +1049,7 @@ LAB_800479f4:
 		  }
 			
 LAB_80047984:
+		  // boolError
           DAT_8008d984 = 1;
 		  
 		  // RefreshCard_SetScreenText
@@ -1037,7 +1066,7 @@ LAB_80047984:
 	  // TIMEOUT (no card)
       FUN_800471e8();
 	  
-	  // MC_SCREEN_ERROR_READ
+	  // MC_SCREEN_ERROR_TIMEOUT
       local_1c = 7;
     }
   }
@@ -1060,9 +1089,13 @@ LAB_800476b4:
   // 1 = MC_ACTION_GetInfo
   FUN_80046b1c(0,1,s_BASCUS_94426_SLOTS_800859e4,0,0,0);
 
+  // boolError
   DAT_8008d984 = 1;
+  
   bVar1 = false;
+
 LAB_80047a08:
+
   if ((bVar1) && (iVar2 = FUN_80046a90(8), iVar2 == 0))
   {
 	// 1 = MC_ACTION_GetInfo
