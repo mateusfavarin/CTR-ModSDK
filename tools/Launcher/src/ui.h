@@ -18,6 +18,9 @@ private:
 	bool SelectFile(std::string& str, const std::string& label, const std::vector<std::string>& ext, const std::vector<std::string>& filters, const std::string& tip);
 	bool SelectFolder(std::string& str, const std::string& label, const std::string& tip);
 
+public:
+	bool m_runClient = false;
+
 private:
 	Updater m_updater;
 	bool m_validBiosChecksum = false;
@@ -27,7 +30,7 @@ private:
 	std::string m_gamePath;
 	std::string m_username;
 	std::string m_status;
-	IconType m_statusIcon;
+	IconType m_statusIcon = IconType::NONE;
 	/* Game Settings */
 	float m_fx = 1.0f;
 	float m_music = 1.0f;

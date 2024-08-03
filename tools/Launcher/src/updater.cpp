@@ -38,8 +38,9 @@ void Updater::IsValidBios(RoutineStatus& ret, const std::string& path)
   StartRoutine(
     [&path]
     {
-      /* All NTSC-U BIOS CRC32: https://github.com/brad-lin/FreePSXBoot?tab=readme-ov-file#downloads */
-      const std::vector<uint32_t> biosChecksums = { 0x55847d8c, 0xaff00f2f, 0x37157331, 0x8d8cb7e4, 0x502224b6, 0x6a0e22a0, 0x171bdcec };
+      /* All NTSC-U BIOS CRC32: https://github.com/brad-lin/FreePSXBoot?tab=readme-ov-file#downloads
+        openbios.bin and openbios-fastboot.bin */
+      const std::vector<uint32_t> biosChecksums = { 0x55847d8c, 0xaff00f2f, 0x37157331, 0x8d8cb7e4, 0x502224b6, 0x6a0e22a0, 0x171bdcec, 0x68363af6, 0x6f86246d };
       std::vector<char> v;
       IO::ReadBinaryFile(v, path);
       uint32_t fileChecksum = CRC::Calculate(v.data(), v.size(), CRC::CRC_32());
@@ -165,8 +166,8 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
         }
         else
         {
-          Patch::PatchGame(g_dataFolder + currVersion + "/", gamePath, status, statusIcon);
-          updateStatus("Successfully patched the game.", IconType::SUCCESS);
+          if (Patch::PatchGame(g_dataFolder + currVersion + "/", gamePath, status, statusIcon))
+          { updateStatus("Successfully patched the game.", IconType::SUCCESS); }
         }
       }
       else { updateStatus("Error: could not establish connection to online-ctr.com", IconType::FAIL); }

@@ -4,6 +4,7 @@
 #include <filesystem>
 
 const std::string g_dataFolder = "data/";
+const std::string g_openBiosPath = g_dataFolder + "openbios-fastboot.bin";
 const std::string g_duckFolder = g_dataFolder + "duckstation/";
 const std::string g_duckExecutable = g_duckFolder + "duckstation-qt-x64-ReleaseLTCG.exe";
 const std::string g_clientString = "client.zip";

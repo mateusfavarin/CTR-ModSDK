@@ -149,6 +149,7 @@
     <ClCompile Include="..\..\externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\externals\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\..\externals\imgui\misc\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="client.cpp" />
     <ClCompile Include="src\app.cpp" />
     <ClCompile Include="src\dataManager.cpp" />
     <ClCompile Include="src\io.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="third_party\xdelta3\xdelta3.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="client.h" />
     <ClInclude Include="src\app.h" />
     <ClInclude Include="src\dataManager.h" />
     <ClInclude Include="src\IconsFontAwesome6.h" />

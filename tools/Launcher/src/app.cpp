@@ -107,7 +107,7 @@ void App::InitFonts()
   config.MergeMode = true;
   static const ImWchar georgianFontRanges[] =
   {
-    0x10A0, 0x10FF,
+    0x10A0, 0x10FF, // Georgian
     0
   };
   io.Fonts->AddFontFromFileTTF((g_dataFolder + "NotoSansGeorgian-Regular.ttf").c_str(), fontSize + 2.0f, &config, georgianFontRanges);
@@ -174,6 +174,10 @@ void App::Main()
   int width, height;
   SDL_GetWindowSize(m_window, &width, &height);
   ui.Render(width, height);
+  if (ui.m_runClient)
+  {
+
+  }
 }
 
 void App::Close()

@@ -19,6 +19,14 @@ UI::UI()
   g_dataManager.BindData(&m_music, DataType::FLOAT, "MusicVolume");
   g_dataManager.BindData(&m_voice, DataType::FLOAT, "VoiceVolume");
   g_dataManager.BindData(&m_biosPath, DataType::STRING, "BiosPath");
+  if (m_biosPath.empty())
+  {
+    m_biosPath = std::filesystem::current_path().string() + "/" + g_openBiosPath;
+#ifdef WIN32
+    std::replace(m_biosPath.begin(), m_biosPath.end(), '/', '\\');
+#endif
+    m_validBiosChecksum = true;
+  }
   g_dataManager.BindData(&m_gamePath, DataType::STRING, "GamePath");
   g_dataManager.BindData(&m_version, DataType::STRING, "GameVersion");
   g_dataManager.BindData(&m_username, DataType::STRING, "Username");
@@ -88,17 +96,10 @@ void UI::Render(int width, int height)
       }
     };
 
-  static std::string biosRead = m_validBiosChecksum ? m_biosPath : std::string();
-  static RoutineStatus biosRoutineStatus = RoutineStatus::NONE;
-  bool validBiosPath = SelectFile(m_biosPath, g_lang["Bios File"], {".bin"}, {"PSX Bios File", "*.bin"}, g_lang["Path to a PS1 NTSC-U bios."]);
-  CheckFile(biosRoutineStatus, validBiosPath, m_validBiosChecksum, m_biosPath, biosRead, [this](RoutineStatus& routineStatus, const std::string& path) { m_updater.IsValidBios(routineStatus, path); });
-
   static std::string gameRead = m_validGameChecksum ? m_gamePath : std::string();
   static RoutineStatus gameRoutineStatus = RoutineStatus::NONE;
   bool validGamePath = SelectFile(m_gamePath, g_lang["Game File"], {".bin", ".img", ".iso"}, {"Game Files", "*.bin *.img *.iso"}, g_lang["Path to the original NTSC-U CTR."]);
   CheckFile(gameRoutineStatus, validGamePath, m_validGameChecksum, m_gamePath, gameRead, [this](RoutineStatus& routineStatus, const std::string& path) { m_updater.IsValidGame(routineStatus, path); });
-
-  bool correctSettings = m_skipChecksum ? (m_validBiosChecksum && validGamePath) : (m_validBiosChecksum && m_validGameChecksum);
 
   if (ImGui::TreeNode(g_lang["Game Settings"].c_str()))
   {
@@ -114,15 +115,20 @@ void UI::Render(int width, int height)
     ImGui::TreePop();
   }
 
+  static RoutineStatus biosRoutineStatus = RoutineStatus::NONE;
   if (ImGui::TreeNode(g_lang["Advanced Settings"].c_str()))
   {
     ImGui::Checkbox(g_lang["Skip game checksum"].c_str(), &m_skipChecksum);
     ImGui::SetItemTooltip(g_lang["Ignore the game checksum while applying the xdelta patch.\nThis may result in patching errors."].c_str());
     ImGui::Checkbox(g_lang["Delete old versions"].c_str(), &m_updater.m_deleteOldVersions);
     ImGui::SetItemTooltip(g_lang["Automatically deletes the patched file\nfor obsolete versions during new updates."].c_str());
+    static std::string biosRead = m_validBiosChecksum ? m_biosPath : std::string();
+    bool validBiosPath = SelectFile(m_biosPath, g_lang["Bios File"], {".bin"}, {"PSX Bios File", "*.bin"}, g_lang["Path to a PS1 NTSC-U bios."]);
+    CheckFile(biosRoutineStatus, validBiosPath, m_validBiosChecksum, m_biosPath, biosRead, [this](RoutineStatus& routineStatus, const std::string& path) { m_updater.IsValidBios(routineStatus, path); });
     ImGui::TreePop();
   }
 
+  bool correctSettings = m_skipChecksum ? (m_validBiosChecksum && validGamePath) : (m_validBiosChecksum && m_validGameChecksum);
   ImGui::SeparatorText(g_lang["Information"].c_str());
 
   if (biosRoutineStatus == RoutineStatus::RUNNING) { IconText(g_lang["Calculating BIOS checksum..."], IconType::RUNNING); }
@@ -159,8 +165,7 @@ void UI::Render(int width, int height)
       const std::string duckCommand = "start /b \"\" \"" + g_duckExecutable + "\" \"" + s_patchedPath + "\"";
       std::system(duckCommand.c_str());
       std::this_thread::sleep_for(std::chrono::seconds(5)); // wait for potato computers to hopefully load duckstation
-      const std::string clientCommand = "start /b \"\" \"" + std::filesystem::current_path().string() + "/" + GetClientPath(m_version) + "\" " + m_username;
-      std::system(clientCommand.c_str());
+      m_runClient = true;
     }
   }
   if (launchDisabled) { ImGui::SetItemTooltip(g_lang["Update the game and make sure\nall settings are correct."].c_str()); }
@@ -180,7 +185,7 @@ void UI::IconText(const std::string& str, IconType iconType)
   const ImVec4 redColor    = {247.0f / 255.0f, 44.0f / 255.0f, 37.0f / 255.0f, 1.0f};
   const ImVec4 yellowColor = {255.0f / 255.0f, 197.0f / 255.0f, 0.0f / 58.0f, 1.0f};
   const ImVec4 greenColor  = {99.0f / 255.0f, 193.0f / 255.0f, 70.0f / 255.0f, 1.0f};
-  const ImVec4 blueColor = {63.0f / 255.0f, 136.0f / 255.0f, 197.0f / 255.0f, 1.0f};
+  const ImVec4 blueColor   = {63.0f / 255.0f, 136.0f / 255.0f, 197.0f / 255.0f, 1.0f};
   const ImVec4 whiteColor  = {1.0f, 1.0f, 1.0f, 1.0f};
 
   switch (iconType)

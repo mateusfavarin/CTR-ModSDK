@@ -6,6 +6,7 @@
 #include <string>
 
 extern const std::string g_dataFolder;
+extern const std::string g_openBiosPath;
 extern const std::string g_duckFolder;
 extern const std::string g_duckExecutable;
 extern const std::string g_clientString;
@@ -23,6 +24,7 @@ using json = nlohmann::json;
 
 enum class IconType
 {
+	NONE,
 	FAIL,
 	WARNING,
 	SUCCESS,
