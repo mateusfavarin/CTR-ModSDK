@@ -397,7 +397,10 @@ void FUN_800485cc(uint param_1)
   psVar13 = &DAT_80085c64;
 
   uVar12 = 0;
+  
+  // = 0x8009A9A0
   piVar10 = (int *)DAT_8008d8f4[1];
+  
   pbVar9 = &DAT_80085c70;
   piVar11 = piVar10 + 2;
   do {
@@ -459,6 +462,7 @@ void FUN_800485cc(uint param_1)
           *(undefined2 *)(iVar5 + 0x1e) = uVar3;
           *(undefined2 *)(iVar5 + 0x1c) = uVar3;
 
+		  // rot (x,y,z)
           *(undefined2 *)((int)piVar11 + -2) = 0;
           *(undefined2 *)(piVar11 + -1) = 0;
           *(undefined2 *)piVar11 =
@@ -788,6 +792,8 @@ void FUN_80048e2c(undefined4 param_1)
   DAT_8008d8fe = 0;
   DAT_8008d900 = 0;
   DAT_8008d902 = 0;
+  
+  // timerSaveComplete
   DAT_8008d904 = 0;
 
   // SelectProfile_UnMuteCursors
@@ -803,7 +809,9 @@ void FUN_80048e2c(undefined4 param_1)
   // SelectProfile_Init
   FUN_800485cc((int)(short)DAT_80085b9c);
 
+  // menuFourAdvProfiles.rowSelected
   DAT_80085ba2 = DAT_8008d73c;
+  
   DAT_8008d8fa = 0;
   return;
 }
@@ -927,6 +935,7 @@ uint FUN_80048f0c(int param_1,short param_2,uint param_3)
 
         uVar5 = 1;
 
+		// MC_SCREEN_WARNING_UNFORMATTED
         if (DAT_8008d47a == 1)
 		{
 		  // back to the first row
@@ -1032,9 +1041,13 @@ void FUN_800490c4(int param_1)
 
   bVar2 = false;
   local_40 = 0;
+  
+  // MC_SCREEN_WARNING_NOCARD
   if (DAT_8008d47a == 0) {
     DAT_8008d900 = 0;
   }
+  
+  // NO CARD, UNFORMATTED, or FORMATTING
   if (DAT_8008d47a < 2) {
     DAT_8008d8fa = 0;
   }
@@ -1113,6 +1126,7 @@ void FUN_800490c4(int param_1)
 	  // clear gamepad input (for menus)
       FUN_80046404();
 
+	  // menuOverwriteGhost.rowSelected
 	  DAT_80085d76 = DAT_80085d4a;
     }
     goto LAB_800499e4;
@@ -1127,7 +1141,8 @@ void FUN_800490c4(int param_1)
 	  // if enough room remains on memory card to save ghost
       uVar24 = (uint)((int)DAT_8008d8ac < 0x3e00) ^ 1;
 
-	  // bool is enough room left
+	  // canChooseEmptySlot
+	  // is there room to save another
 	  local_40 = (short)uVar24;
 
 	  // DAT_8009aa5c = number of ghosts saved
@@ -1142,13 +1157,17 @@ void FUN_800490c4(int param_1)
 		// assume only 7 are saved
         uVar24 = 7;
 
-		// can't save another
+		// canChooseEmptySlot
+		// can not save another
         local_40 = 0;
       }
     }
 
 	// if you are loading
-    else {
+    else 
+	{
+	  // canChooseEmptySlot
+	  // can load empty ghost
       local_40 = 1;
 
 	  // number of ghsots saved, plus 1,
@@ -1181,10 +1200,15 @@ LAB_800495a0:
 LAB_800495ac:
     iVar10 = iVar10 << 0x10;
   }
-  else {
-    if (DAT_8008d8f8 != 0x40) {
-      uVar14 = 0;
-      if (
+  else 
+  {
+    if (DAT_8008d8f8 != 0x40) 
+	{
+      
+	  uVar14 = 0;
+      
+	  if (
+			// NO CARD, UNFORMATTED, or FORMATTING
 			(DAT_8008d47a < 2) ||
 			(
 				(
@@ -1198,21 +1222,27 @@ LAB_800495ac:
 	  {
         uVar14 = 1;
       }
-      if (DAT_8008d47a < 2) {
+      
+	  // NO CARD, UNFORMATTED, or FORMATTING
+	  if (DAT_8008d47a < 2) {
         uVar14 = uVar14 | 2;
       }
+	  
       iVar10 = 4;
       iVar23 = (int)(short)uVar14;
       goto LAB_800495a0;
     }
-    if (DAT_8008d47a == 0) {
-
+	
+	// MC_SCREEN_WARNING_NOCARD
+    if (DAT_8008d47a == 0) 
+	{
 	  // If you press Cross or Circle
       if ((DAT_8009a990 & 0x50) != 0)
 	  {
 		// OtherFX_Play
         FUN_80028468(1,1);
 
+		// boolSaveCupProgress
         if (DAT_8008d918 == 0)
 		{
 		  // MainGameEnd_SoloRaceSaveHighScore
@@ -1229,7 +1259,10 @@ LAB_800495ac:
       }
       goto LAB_800495ac;
     }
-    if (DAT_8008d47a == 1) {
+    
+	// MC_SCREEN_WARNING_UNFORMATTED
+	if (DAT_8008d47a == 1) 
+	{
       iVar10 = 0;
 
 	  // If you press Circle
@@ -1247,7 +1280,9 @@ LAB_800495ac:
         iVar10 = 0;
       }
     }
-    else {
+    
+	else 
+	{
       if (
 			(
 				(
@@ -1260,7 +1295,7 @@ LAB_800495ac:
 				(
 					iVar10 = 0,
 
-					// if you are not saving data
+					// if not MC_START_SAVE_MAIN
 					DAT_8008d978 != 1
 				)
 			) &&
@@ -1272,6 +1307,7 @@ LAB_800495ac:
 			)
 		)
 	{
+		// boolSaveCupProgress
         if (DAT_8008d918 == 0)
 		{
 		  // MainGameEnd_SoloRaceSaveHighScore
@@ -1332,11 +1368,15 @@ LAB_800495b0:
     DAT_8008d8fc = 1;
     goto LAB_800499e4;
   }
-  if (DAT_8008d47a == 0) {
+  
+  // MC_SCREEN_WARNING_NOCARD
+  if (DAT_8008d47a == 0) 
+  {
     bVar1 = false;
 
-	// if you are saving data
-    if (DAT_8008d978 == 1) {
+	// MC_START_SAVE_MAIN
+    if (DAT_8008d978 == 1) 
+	{
       DAT_8008d8fa = DAT_8008d978;
       DAT_8008d8fe = DAT_8008d978;
       goto LAB_80049624;
@@ -1354,6 +1394,7 @@ LAB_800495b0:
 LAB_80049634:
     if (
 			(
+				// if not MC_SCREEN_WARNING_UNFORMATTED
 				(DAT_8008d47a != 1) &&
 
 				// if not enough room on memcard
@@ -1365,11 +1406,16 @@ LAB_80049634:
       bVar1 = false;
     }
   }
-  else {
+  
+  else 
+  {
 LAB_80049624:
     if (DAT_8008d8f8 != 0x30) goto LAB_80049634;
   }
+  
   if (!bVar1) goto LAB_800499e4;
+  
+  // MC_SCREEN_WARNING_UNFORMATTED
   if (DAT_8008d47a == 1) 
   {
 	// (MC_START_LOAD_MAIN)
@@ -1377,6 +1423,7 @@ LAB_80049624:
     
 	goto LAB_800499e4;
   }
+  
   if ((DAT_8008d95c == 0) && (DAT_8008d928 == 0)) goto LAB_800499e4;
 
   // if you are saving data
@@ -1396,15 +1443,27 @@ LAB_80049624:
     }
 
 	// if you are handling adventure data
-    else {
-      if ((DAT_8008d902 == 0) && (DAT_8008d47a == 7)) {
+    else 
+	{
+      if (
+			(DAT_8008d902 == 0) && 
+			
+			// MC_SCREEN_ERROR_TIMEOUT
+			(DAT_8008d47a == 7)
+		) 
+	  {
         DAT_8008d902 = 1;
         goto LAB_800499e4;
       }
 
 	  // 8008d474 is ptr to memcard data
-      if ((-1 < *(short *)(PTR_DAT_8008d474 + (int)*(short *)(param_1 + 0x1a) * 0x50 + 0x2e)) &&
-         ((int)*(short *)(param_1 + 0x1a) != (int)DAT_8008d96c)) {
+      if (
+			// memcard advProfile[rowSelected] HubLevYouSavedOn
+			(-1 < *(short *)(PTR_DAT_8008d474 + (int)*(short *)(param_1 + 0x1a) * 0x50 + 0x2e)) &&
+			
+			// rowSelected != advProfileIndex
+			((int)*(short *)(param_1 + 0x1a) != (int)DAT_8008d96c)
+		) {
         DAT_80085d4a = 1;
         DAT_80085d76 = 1;
         DAT_8008d900 = 1;
@@ -1447,7 +1506,9 @@ LAB_80049624:
     }
 
 	// if you are handling adventure data
-	else {
+	else 
+	{
+	  // MC_SCREEN_ERROR_TIMEOUT
       if (DAT_8008d47a == 7) {
         DAT_8008d8fa = 1;
         DAT_8008d8fc = 1;
@@ -1455,6 +1516,7 @@ LAB_80049624:
       }
 
 	  // 8008d474 is ptr to memcard data
+	  // memcard advProfile[rowSelected] HubLevYouSavedOn
       if (-1 < *(short *)(PTR_DAT_8008d474 + (int)*(short *)(param_1 + 0x1a) * 0x50 + 0x2e))
 	  {
 		// GAMEPROG_SyncGameAndCard
@@ -1545,8 +1607,20 @@ LAB_80049624:
 LAB_800499e0:
     DAT_8008d8fa = 1;
   }
+
 LAB_800499e4:
-  if (((DAT_8008d47a == 7) && (DAT_8008d8fc == 0)) && (DAT_8008d8fe == 0)) {
+  
+  if (
+		(
+			// MC_SCREEN_ERROR_TIMEOUT
+			(DAT_8008d47a == 7) && 
+			
+			(DAT_8008d8fc == 0)
+		) && 
+		
+		(DAT_8008d8fe == 0)
+	) 
+  {
     DAT_8008d8fa = 0;
     DAT_8008d900 = 0;
   }
@@ -1668,14 +1742,30 @@ LAB_800499e4:
       DAT_8008d928 = 1;
       DAT_8008d8fa = 1;
     }
+	
+	// timerSaveComplete
     DAT_8008d904 = 0x3c;
   }
-  if (*(short *)(param_1 + 0x1e) == 1) {
+  
+  if (*(short *)(param_1 + 0x1e) == 1) 
+  {
     bVar1 = false;
-    if (((DAT_8008d8fa == 0) && (DAT_8008d95c != 0)) && ((DAT_8008d928 != 0 || (DAT_8008d47a == 8)))
-       ) {
+    if (
+			(
+				(DAT_8008d8fa == 0) && 
+				(DAT_8008d95c != 0)
+			) && 
+			(
+				(DAT_8008d928 != 0 || 
+				
+				// MC_SCREEN_NULL
+				(DAT_8008d47a == 8))
+			)
+       ) 
+	{
       bVar1 = true;
     }
+	
     if (
 		(
 			// If you are loading data
@@ -1684,7 +1774,21 @@ LAB_800499e4:
 			// if you are handling time trial ghosts
 			(DAT_8008d8f8 == 0x30)
 		) &&
-       (((DAT_8008d47a == 9 || (DAT_8008d47a == 0)) && ((uVar24 & 0xffff) != 0)))) {
+		(
+			(
+				// MC_SCREEN_ERROR_NODATA
+				(DAT_8008d47a == 9 || 
+				
+				// MC_SCREEN_WARNING_NOCARD
+				(DAT_8008d47a == 0)) 
+				&&
+				
+				// rowSelected?
+				((uVar24 & 0xffff) != 0)
+			)
+		)
+	   ) 
+	{
       bVar1 = true;
     }
     uVar14 = DAT_8008d47a;
@@ -1692,9 +1796,14 @@ LAB_800499e4:
 	// If you are saving data
     if (DAT_8008d978 == 1)
 	{
-      if ((uint)DAT_8008d47a - 8 < 2) {
+	  // MC_SCREEN_NULL or MC_SCREEN_ERROR_NODATA
+      if ((uint)DAT_8008d47a - 8 < 2) 
+	  {
         bVar1 = false;
-        if (bVar2) {
+		
+        if (bVar2) 
+		{
+		  // MC_SCREEN_SAVING
           uVar14 = 3;
         }
 
@@ -1706,8 +1815,11 @@ LAB_800499e4:
             bVar1 = true;
 
 			// if not enough room to save ghost
-			if (((int)DAT_8008d8ac < 0x3e00) && (local_48 == 0)) {
+			if (((int)DAT_8008d8ac < 0x3e00) && (local_48 == 0)) 
+			{
               bVar1 = false;
+			  
+			  // MC_SCREEN_ERROR_FULL
               uVar14 = 6;
             }
           }
@@ -1718,13 +1830,17 @@ LAB_800499e4:
             bVar1 = true;
 
 			// if not enough room to save profile
-			if ((DAT_8008d8ac < 0x1680) && (DAT_8008d928 == 0)) {
+			if ((DAT_8008d8ac < 0x1680) && (DAT_8008d928 == 0)) 
+			{
+			  // MC_SCREEN_ERROR_FULL
               uVar14 = 6;
               bVar1 = false;
             }
           }
         }
       }
+	  
+	  // MC_SCREEN_ERROR_TIMEOUT
       if ((uVar14 == 7) && (DAT_8008d902 != 0)) {
         bVar1 = true;
       }
@@ -1800,11 +1916,16 @@ LAB_800499e4:
 		  // pointer to first profile
           puVar20 = &DAT_8009aa60;
 
+		  // numGhosts + canChooseEmptySlot
           local_38 = DAT_8009aa5c + local_40;
           iVar10 = 0;
-          if (0 < (int)((uint)local_38 << 0x10)) {
+		  
+		  // Loop through all menu options
+          if (0 < (int)((uint)local_38 << 0x10)) 
+		  {
             iVar23 = (int)(short)uVar24;
-            do {
+            do 
+			{
               if (uVar21 << 0x10 == (uint)local_48 << 0x10) {
                 puVar20 = (undefined *)0x0;
               }
@@ -1836,11 +1957,21 @@ LAB_800499e4:
               }
 
 			  // Draw Profile
-              FUN_80048a30(puVar20,iVar8,((int)sVar22 + 6 + (iVar9 - iVar12)) * 0x10000 >> 0x10,
-                           (uint)(sVar5 == *(short *)(param_1 + 0x1a)),(int)sVar5,uVar24,
+              FUN_80048a30(
+				puVar20,
+				iVar8,
+				((int)sVar22 + 6 + (iVar9 - iVar12)) * 0x10000 >> 0x10,
+				
+				// bool flashing highlight
+				(uint)(sVar5 == *(short *)(param_1 + 0x1a)),
+				
+				(int)sVar5,
+				uVar24,
 
-						   // If you are loading
-						   (uint)(DAT_8008d978 == 0),uVar18);
+				// If you are loading
+				(uint)(DAT_8008d978 == 0),
+				
+				uVar18);
 
 			  uVar21 = uVar21 + 1;
               if ((int)sVar5 == iVar23) break;
@@ -1954,14 +2085,26 @@ LAB_800499e4:
         }
       }
     }
-    else {
+    else 
+	{
       DAT_8008d900 = 0;
-      if (((DAT_8008d8fa == 0) ||
-          (((DAT_8008d964 == 0 || (DAT_8008d8fc != 0)) || (DAT_8008d8fe != 0)))) ||
-         (DAT_8008d904 == 0)) {
+      
+	  if (
+			
+			((DAT_8008d8fa == 0) ||
+			(((DAT_8008d964 == 0 || 
+			(DAT_8008d8fc != 0)) || 
+			(DAT_8008d8fe != 0)))) ||
+			
+			// timerSaveComplete
+			(DAT_8008d904 == 0)
+		) 
+	  {
+		// mcScreenText
         iVar10 = (int)(short)uVar14 * 4;
         uVar19 = *(ushort *)(iVar10 + -0x7ff7a4fc); // 0x80085B04
-        if (((int)(short)uVar14 == 9) && (DAT_8008d8f8 == 0x40)) {
+        
+		if (((int)(short)uVar14 == 9) && (DAT_8008d8f8 == 0x40)) {
           uVar19 = 0xffff;
         }
         iVar23 = (uint)uVar19 << 0x10;
@@ -2084,12 +2227,46 @@ LAB_800499e4:
       }
     }
   }
+  
+  // timerSaveComplete
   sVar22 = DAT_8008d904;
-  if ((((DAT_8008d8fa != 0) && (DAT_8008d984 != 0)) &&
-      ((DAT_8008d964 != 0 || ((DAT_8008d8fc != 0 || (DAT_8008d8fe != 0)))))) &&
-     ((DAT_8008d8fa == 0 ||
-      ((((DAT_8008d964 == 0 || (DAT_8008d8fc != 0)) || (DAT_8008d8fe != 0)) ||
-       (sVar22 = DAT_8008d904 + -1, DAT_8008d904 == 0))))))
+  
+  if (
+		(
+			(
+				(DAT_8008d8fa != 0) && 
+				
+				// boolError
+				(DAT_8008d984 != 0)
+			) &&
+			(
+				(
+					DAT_8008d964 != 0 || 
+					(
+						(DAT_8008d8fc != 0 || 
+						(DAT_8008d8fe != 0))
+					)
+				)
+			)
+		) &&
+		((
+			DAT_8008d8fa == 0 ||
+			(
+				(
+					(
+						(DAT_8008d964 == 0 || 
+						(DAT_8008d8fc != 0)) || 
+						(DAT_8008d8fe != 0)
+					) ||
+					(
+						// timerSaveComplete
+						sVar22 = DAT_8008d904 + -1, 
+						DAT_8008d904 == 0
+					)
+				)
+			))
+		)
+	  )
   {
 	// SelectProfile_InitAndDestroy
 	FUN_80048edc();
@@ -2129,6 +2306,8 @@ LAB_800499e4:
 		// Get from the Adventure Profile that you are loading
         *(int *)(PTR_DAT_8008d2ac + 0x1eb0) = (int)DAT_8008fbd2;
         DAT_80085b76 = 3;
+		
+		// timerSaveComplete
         sVar22 = DAT_8008d904;
       }
       else
@@ -2137,6 +2316,8 @@ LAB_800499e4:
         DAT_8008d924 = &DAT_80085b5c;
 
         DAT_80085b76 = 3;
+		
+		// timerSaveComplete
         sVar22 = DAT_8008d904;
       }
     }
@@ -2221,6 +2402,8 @@ LAB_800499e4:
 
 		  // SelectProfile_Destroy
           FUN_800488e0();
+		  
+		  // boolSaveCupProgress
           if (DAT_8008d918 == 0) {
             *(uint *)(PTR_DAT_8008d2ac + 0x1d44) = *(uint *)(PTR_DAT_8008d2ac + 0x1d44) & 0xf6ffffff
             ;
@@ -2280,11 +2463,13 @@ LAB_800499e4:
 	  // change active Menu to QueueLoadTrack
       DAT_8008d924 = (undefined *)FUN_80043c04();
 
+	  // timerSaveComplete
 	  sVar22 = DAT_8008d904;
     }
   }
-                    // WARNING: Read-only address (ram,0x8008fbce) is written
-                    // WARNING: Read-only address (ram,0x8008fbd2) is written
+
+  // timerSaveComplete
   DAT_8008d904 = sVar22;
+  
   return;
 }
