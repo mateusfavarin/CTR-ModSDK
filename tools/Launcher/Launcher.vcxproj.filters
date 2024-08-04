@@ -80,7 +80,7 @@
     <ClCompile Include="src\updater.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="client.cpp">
+    <ClCompile Include="src\client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -112,7 +112,7 @@
     <ClInclude Include="src\updater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="client.h">
+    <ClInclude Include="src\client.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

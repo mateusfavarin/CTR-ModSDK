@@ -1,5 +1,6 @@
 #include "app.h"
 #include "dataManager.h"
+#include "client.h"
 #include "IconsFontAwesome6.h"
 
 #include <imgui.h>
@@ -137,6 +138,7 @@ void App::Init()
   InitSDL();
   InitImGui();
   InitFonts();
+  g_client.Init();
 }
 
 void App::Run()
@@ -174,10 +176,7 @@ void App::Main()
   int width, height;
   SDL_GetWindowSize(m_window, &width, &height);
   ui.Render(width, height);
-  if (ui.m_runClient)
-  {
-
-  }
+  g_client.Run();
 }
 
 void App::Close()

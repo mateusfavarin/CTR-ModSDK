@@ -1,28 +1,23 @@
 #include "ui.h"
 #include "languages.h"
+#include "client.h"
 #include "IconsFontAwesome6.h"
 
 #include <imgui_internal.h>
 #include <misc/cpp/imgui_stdlib.h>
 #include <portable-file-dialogs.h>
 #include <filesystem>
-#include <cstdlib>
 
 UI::UI()
 {
   g_dataManager.BindData(&m_validBiosChecksum, DataType::BOOL, "BiosChecksum");
   g_dataManager.BindData(&m_validGameChecksum, DataType::BOOL, "GameChecksum");
   g_dataManager.BindData(&m_skipChecksum, DataType::BOOL, "SkipChecksum");
-  g_dataManager.BindData(&m_stereo, DataType::BOOL, "Stereo");
-  g_dataManager.BindData(&m_vibration, DataType::BOOL, "Vibration");
-  g_dataManager.BindData(&m_fx, DataType::FLOAT, "FXVolume");
-  g_dataManager.BindData(&m_music, DataType::FLOAT, "MusicVolume");
-  g_dataManager.BindData(&m_voice, DataType::FLOAT, "VoiceVolume");
   g_dataManager.BindData(&m_biosPath, DataType::STRING, "BiosPath");
   if (m_biosPath.empty())
   {
     m_biosPath = std::filesystem::current_path().string() + "/" + g_openBiosPath;
-#ifdef WIN32
+#ifdef _WIN32
     std::replace(m_biosPath.begin(), m_biosPath.end(), '/', '\\');
 #endif
     m_validBiosChecksum = true;
@@ -103,15 +98,15 @@ void UI::Render(int width, int height)
 
   if (ImGui::TreeNode(g_lang["Game Settings"].c_str()))
   {
-    ImGui::SliderFloat("FX", &m_fx, 0.0f, 1.0f, "%.2f");
-    ImGui::SliderFloat(g_lang["Music"].c_str(), &m_music, 0.0f, 1.0f, "%.2f");
-    ImGui::SliderFloat(g_lang["Voice"].c_str(), &m_voice, 0.0f, 1.0f, "%.2f");
+    ImGui::SliderFloat("FX", &g_client.m_fx, 0.0f, 1.0f, "%.2f");
+    ImGui::SliderFloat(g_lang["Music"].c_str(), &g_client.m_music, 0.0f, 1.0f, "%.2f");
+    ImGui::SliderFloat(g_lang["Voice"].c_str(), &g_client.m_voice, 0.0f, 1.0f, "%.2f");
     ImGui::Text(g_lang["Audio:"].c_str());
     ImGui::SameLine();
-    if (ImGui::RadioButton("Stereo", m_stereo)) { m_stereo = true; }
+    if (ImGui::RadioButton("Stereo", g_client.m_stereo)) { g_client.m_stereo = true; }
     ImGui::SameLine();
-    if (ImGui::RadioButton("Mono", !m_stereo)) { m_stereo = false; }
-    ImGui::Checkbox(g_lang["Vibration"].c_str(), &m_vibration);
+    if (ImGui::RadioButton("Mono", !g_client.m_stereo)) { g_client.m_stereo = false; }
+    ImGui::Checkbox(g_lang["Vibration"].c_str(), &g_client.m_vibration);
     ImGui::TreePop();
   }
 
@@ -161,11 +156,8 @@ void UI::Render(int width, int height)
     }
     else
     {
-      g_dataManager.SaveData();
-      const std::string duckCommand = "start /b \"\" \"" + g_duckExecutable + "\" \"" + s_patchedPath + "\"";
-      std::system(duckCommand.c_str());
-      std::this_thread::sleep_for(std::chrono::seconds(5)); // wait for potato computers to hopefully load duckstation
-      m_runClient = true;
+      g_client.m_duckCommand = "\"" + g_duckExecutable + "\" \"" + s_patchedPath + "\"";
+      g_client.m_reset = true;
     }
   }
   if (launchDisabled) { ImGui::SetItemTooltip(g_lang["Update the game and make sure\nall settings are correct."].c_str()); }
