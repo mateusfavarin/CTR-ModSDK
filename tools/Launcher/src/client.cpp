@@ -4,7 +4,7 @@
 #ifdef _WIN32
 #include <Windows.h>
 
-static int Fork(const std::string& command)
+static std::tuple<int, void*> Fork(const std::string& command)
 {
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
@@ -26,19 +26,27 @@ static int Fork(const std::string& command)
     &si,                                // Pointer to STARTUPINFO structure
     &pi))                               // Pointer to PROCESS_INFORMATION structure
   {
-    return -1;
+    return {-1, nullptr};
   }
-  CloseHandle(pi.hProcess);
   CloseHandle(pi.hThread);
-  return static_cast<int>(pi.dwProcessId);
+  return {pi.dwProcessId, pi.hProcess};
 }
 
-static bool Kill(int pid)
+static const void* GetDuckRAM(const std::string& mapName, size_t size)
 {
-  HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, static_cast<DWORD>(pid));
+  std::wstring wideMapName = std::wstring(mapName.begin(), mapName.end());
+  HANDLE hFile = OpenFileMapping(FILE_MAP_READ | FILE_MAP_WRITE, FALSE, const_cast<wchar_t*>(wideMapName.c_str()));
+  if (!hFile) { return nullptr; }
+  return MapViewOfFile(hFile, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, size);
+}
+
+static void Kill(int pid) {} /* Linux implementation only */
+
+static bool Kill(void* duckProc)
+{
   bool ret = true;
-  if (!TerminateProcess(hProcess, 0)) { ret = false; }
-  CloseHandle(hProcess);
+  if (!TerminateProcess(duckProc, 0)) { ret = false; }
+  CloseHandle(duckProc);
   return ret;
 }
 #else
@@ -62,18 +70,42 @@ void Client::Run()
   {
     SpawnDuck();
     ResetState();
+    m_reset = false;
   }
   if (!m_active) { return; }
 
 }
 
+void Client::CloseDuck()
+{
+  if (m_duckHandle != nullptr) { Kill(m_duckHandle); } /* Windows only */
+  else if (m_duckPid != 0) { Kill(m_duckPid); } /* Linux only */
+}
+
+template<typename T>
+inline T Client::ReadRAMData(size_t addr)
+{
+  return m_duckRAM[addr];
+}
+
+template<typename T>
+inline void Client::WriteRAMData(const T& var, size_t addr)
+{
+  m_duckRAM[addr] = var;
+}
+
 void Client::SpawnDuck()
 {
-  if (m_duckPid != 0) { Kill(m_duckPid); }
-  int pid = Fork(m_duckCommand);
+  const size_t PSX_RAM_SIZE = 0x800000;
+  CloseDuck();
+  auto proc = Fork(m_duckCommand);
+  int pid = std::get<int>(proc);
+  void* handle = std::get<void*>(proc);
   if (pid == -1) { return; }
   m_duckPid = pid;
-  m_reset = false;
+  m_duckHandle = handle;
+  m_duckRAM = GetDuckRAM("duckstation_" + std::to_string(m_duckPid), PSX_RAM_SIZE);
+  if (m_duckRAM == nullptr) { return; }
   m_active = true;
 }
 

@@ -104,18 +104,25 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
       {
         updateStatus("Downloading Duckstation...", IconType::RUNNING);
         std::filesystem::create_directory(std::u8string(g_duckFolder.begin(), g_duckFolder.end()));
+#ifdef _WIN32
         const std::string duckArchive = "duckstation.zip";
-        if (!Requests::DownloadFile("github.com", "/stenzek/duckstation/releases/download/preview/duckstation-windows-x64-release.zip", g_duckFolder + duckArchive))
+        const std::string duckPath = "/stenzek/duckstation/releases/download/preview/duckstation-windows-x64-release.zip";
+#else
+        const std::string duckPath = "/stenzek/duckstation/releases/download/preview/DuckStation-x64.AppImage";
+#endif
+        if (!Requests::DownloadFile("github.com", duckPath, g_duckFolder + duckArchive))
         {
           updateStatus("Error: could not download Duckstation.", IconType::FAIL);
           return false;
         }
+#ifdef _WIN32
         updateStatus("Decompressing Duckstation...", IconType::RUNNING);
         if (!IO::DecompressFiles(g_duckFolder, duckArchive))
         {
           updateStatus("Error: could not decompress Duckstation.", IconType::FAIL);
           return false;
         }
+#endif
         updateStatus("Installing OnlineCTR settings...", IconType::RUNNING);
         const std::string g_biosFolder = g_duckFolder + "bios/";
         std::filesystem::create_directory(std::u8string(g_biosFolder.begin(), g_biosFolder.end()));

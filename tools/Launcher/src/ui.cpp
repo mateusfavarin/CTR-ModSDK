@@ -156,7 +156,7 @@ void UI::Render(int width, int height)
     }
     else
     {
-      g_client.m_duckCommand = "\"" + g_duckExecutable + "\" \"" + s_patchedPath + "\"";
+      g_client.m_duckCommand = "\"" + g_duckExecutable + "\" -portable \"" + s_patchedPath + "\"";
       g_client.m_reset = true;
     }
   }
