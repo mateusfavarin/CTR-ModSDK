@@ -1,6 +1,8 @@
 #include "client.h"
 #include "dataManager.h"
 
+#include <enet/enet.h>
+
 #ifdef _WIN32
 #include <Windows.h>
 
@@ -62,6 +64,7 @@ void Client::Init()
   g_dataManager.BindData(&m_fx, DataType::FLOAT, "FXVolume");
   g_dataManager.BindData(&m_music, DataType::FLOAT, "MusicVolume");
   g_dataManager.BindData(&m_voice, DataType::FLOAT, "VoiceVolume");
+  enet_initialize();
 }
 
 void Client::Run()
@@ -76,10 +79,10 @@ void Client::Run()
 
 }
 
-void Client::CloseDuck()
+void Client::Close()
 {
-  if (m_duckHandle != nullptr) { Kill(m_duckHandle); } /* Windows only */
-  else if (m_duckPid != 0) { Kill(m_duckPid); } /* Linux only */
+  CloseDuck();
+  enet_deinitialize();
 }
 
 template<typename T>
@@ -108,6 +111,13 @@ void Client::SpawnDuck()
   if (m_duckRAM == nullptr) { return; }
   m_active = true;
 }
+
+void Client::CloseDuck()
+{
+  if (m_duckHandle != nullptr) { Kill(m_duckHandle); } /* Windows only */
+  else if (m_duckPid != 0) { Kill(m_duckPid); } /* Linux only */
+}
+
 
 void Client::ResetState()
 {

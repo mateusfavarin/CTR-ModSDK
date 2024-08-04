@@ -35,15 +35,3 @@ bool Patch::PatchGame(const std::string & path, const std::string & gamePath, st
   return true;
 }
 
-bool Patch::NewVersion(const std::string& path, const std::string& gamePath, std::string& status, IconType& statusIcon)
-{
-  status = g_lang["Decompressing"] + " " + g_clientExecutable + "...";
-  statusIcon = IconType::RUNNING;
-  if (!IO::DecompressFiles(path, g_clientString))
-  {
-    status = g_lang["Error decompressing"] + " " + g_clientExecutable;
-    statusIcon = IconType::FAIL;
-    return false;
-  }
-  return PatchGame(path, gamePath, status, statusIcon);
-}

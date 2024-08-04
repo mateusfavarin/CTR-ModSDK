@@ -142,14 +142,8 @@ void UI::Render(int width, int height)
   ImGui::BeginDisabled(launchDisabled);
   if (ImGui::Button(g_lang["Launch Game"].c_str()))
   {
-    const std::string s_clientPath = GetClientPath(m_version);
     const std::string s_patchedPath = GetPatchedGamePath(m_version);
-    if (!std::filesystem::exists(std::u8string(s_clientPath.begin(), s_clientPath.end())))
-    {
-      m_status = g_lang["Error: could not find"] + " " + s_clientPath;
-      m_statusIcon = IconType::FAIL;
-    }
-    else if (!std::filesystem::exists(std::u8string(s_patchedPath.begin(), s_patchedPath.end())))
+    if (!std::filesystem::exists(std::u8string(s_patchedPath.begin(), s_patchedPath.end())))
     {
       m_status = g_lang["Error: could not find"] + " " + s_patchedPath;
       m_statusIcon = IconType::FAIL;

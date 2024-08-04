@@ -108,6 +108,7 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
         const std::string duckArchive = "duckstation.zip";
         const std::string duckPath = "/stenzek/duckstation/releases/download/preview/duckstation-windows-x64-release.zip";
 #else
+        const std::string duckArchive = "DuckStation-x64.AppImage";
         const std::string duckPath = "/stenzek/duckstation/releases/download/preview/DuckStation-x64.AppImage";
 #endif
         if (!Requests::DownloadFile("github.com", duckPath, g_duckFolder + duckArchive))
@@ -152,7 +153,7 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
         {
           m_versionAvailable = m_updateAvailable ? m_versionAvailable : version;
           std::string path = g_dataFolder + m_versionAvailable + "/";
-          if (Requests::DownloadUpdates(path, status, statusIcon) && Patch::NewVersion(path, gamePath, status, statusIcon))
+          if (Requests::DownloadUpdates(path, status, statusIcon) && Patch::PatchGame(path, gamePath, status, statusIcon))
           {
             if (copyIni || !m_updated)
             {

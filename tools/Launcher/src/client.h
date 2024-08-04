@@ -7,12 +7,13 @@ class Client
 public:
 	void Init();
 	void Run();
-	void CloseDuck();
+	void Close();
 
 private:
 	template<typename T> inline T ReadRAMData(size_t addr);
 	template<typename T> inline void WriteRAMData(const T& var, size_t addr);
 	void SpawnDuck();
+	void CloseDuck();
 	void ResetState();
 
 public:

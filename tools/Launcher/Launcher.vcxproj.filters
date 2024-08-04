@@ -24,6 +24,9 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{430ecbb3-d41c-403b-a31f-e32abf6b1deb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="enet">
+      <UniqueIdentifier>{400f0f8e-4abe-4f9c-a0d4-0fd79ab46546}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\externals\imgui\imgui.cpp">
@@ -82,6 +85,33 @@
     </ClCompile>
     <ClCompile Include="src\client.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\externals\enet\callbacks.c">
+      <Filter>enet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\externals\enet\compress.c">
+      <Filter>enet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\externals\enet\host.c">
+      <Filter>enet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\externals\enet\list.c">
+      <Filter>enet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\externals\enet\packet.c">
+      <Filter>enet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\externals\enet\peer.c">
+      <Filter>enet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\externals\enet\protocol.c">
+      <Filter>enet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\externals\enet\unix.c">
+      <Filter>enet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\externals\enet\win32.c">
+      <Filter>enet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

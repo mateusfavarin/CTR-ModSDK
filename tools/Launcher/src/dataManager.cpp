@@ -6,9 +6,11 @@
 const std::string g_dataFolder = "data/";
 const std::string g_openBiosPath = g_dataFolder + "openbios-fastboot.bin";
 const std::string g_duckFolder = g_dataFolder + "duckstation/";
+#ifdef _WIN32
 const std::string g_duckExecutable = g_duckFolder + "duckstation-qt-x64-ReleaseLTCG.exe";
-const std::string g_clientString = "client.zip";
-const std::string g_clientExecutable = "Client.exe";
+#else
+const std::string g_duckExecutable = g_duckFolder + "DuckStation-x64.AppImage";
+#endif
 const std::string g_patchString = "ctr-u_Online30.xdelta";
 const std::string g_configString = "SCUS-94426.ini";
 
@@ -24,11 +26,6 @@ std::string GetPathWithoutExtension(const std::string& path)
 		}
 	}
 	return path.substr(0, pos);
-}
-
-const std::string GetClientPath(const std::string& version)
-{
-	return g_dataFolder + version + "/" + g_clientExecutable;
 }
 
 const std::string GetPatchedGamePath(const std::string& version)

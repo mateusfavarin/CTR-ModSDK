@@ -182,7 +182,7 @@ void App::Main()
 void App::Close()
 {
   g_dataManager.SaveData();
-  g_client.CloseDuck();
+  g_client.Close();
   CloseImGui();
   CloseSDL();
 }
