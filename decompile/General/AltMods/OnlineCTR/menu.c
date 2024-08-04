@@ -337,31 +337,6 @@ void PrintCharacterStats()
 	int i;
 	int color;
 
-
-	#if 0
-	char* title = "Classic Gameplay Mode";
-
-	if(octr->special == 1)
-	{
-		title = "Monday Extra Laps";
-	}
-
-	if(octr->special == 2)
-	{
-		title = "Wednesday Inf Masks";
-	}
-
-	if(octr->special == 3)
-	{
-		title = "Friday Inf Bombs";
-	}
-
-	DecalFont_DrawLine(title,0x100,0x18,FONT_SMALL,JUSTIFY_CENTER|WHITE);
-	#endif
-
-
-
-
 	DecalFont_DrawLine(
 		countryNames[octr->serverCountry],
 		0x10, 0x10, FONT_SMALL, 0);
@@ -372,8 +347,6 @@ void PrintCharacterStats()
 	DecalFont_DrawLine(
 		roomName,
 		0x10, 0x18, FONT_SMALL, 0);
-
-
 
 	int numDead = 0;
 	for(i = 0; i < octr->NumDrivers; i++)

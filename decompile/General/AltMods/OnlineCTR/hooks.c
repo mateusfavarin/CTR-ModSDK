@@ -192,7 +192,7 @@ void OnlineEndOfRace()
 {
 	struct Driver * driver = sdata->gGT->drivers[0];
 	if (((driver->actionsFlagSet & 0x2000000) == 0) ||
-		(octr->CurrState < GAME_START_RACE)) { return; }
+		(octr->CurrState < GAME_RACE)) { return; }
 
 	octr->CurrState = GAME_END_RACE;
 #ifdef PINE_DEBUG

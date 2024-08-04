@@ -3,11 +3,9 @@
 
 extern struct RectMenu menu;
 
-void StatePS1_Launch_EnterPID()
+void StatePS1_Launch_Boot()
 {
-	DECOMP_DecalFont_DrawLine(
-		"Attach Windows Client To Continue",
-		0x100,0xA8,FONT_SMALL,JUSTIFY_CENTER|ORANGE);
+	DECOMP_DecalFont_DrawLine("Error: Failed booting OnlineCTR", 0x100, 0xA8, FONT_SMALL, JUSTIFY_CENTER | ORANGE);
 }
 
 extern char* countryNames[8];
@@ -63,11 +61,6 @@ void ResetPsxGlobals()
 // should rename to EnterRoom
 void StatePS1_Launch_PickRoom()
 {
-	#if 0
-	DecalFont_DrawLine("Special Events in odd rooms: 1,3,5...",0x100,0x14,FONT_SMALL,JUSTIFY_CENTER|PAPU_YELLOW);
-	DecalFont_DrawLine("Classic Games in even rooms: 2,4,6...",0x100,0x1c,FONT_SMALL,JUSTIFY_CENTER|PAPU_YELLOW);
-	#endif
-
 	MenuWrites_ServerRoom();
 
 	// If already picked
@@ -101,20 +94,10 @@ void StatePS1_Launch_PickRoom()
 
 void StatePS1_Launch_Error()
 {
-	char str[32];
-
-	sprintf(str, "XDELTA: %d", octr->ver_psx);
-	DECOMP_DecalFont_DrawLine(str,0x100,0x98-2,FONT_SMALL,JUSTIFY_CENTER);
-
-	sprintf(str, "CLIENT: %d", octr->ver_pc);
-	DECOMP_DecalFont_DrawLine(str,0x100,0xA0-2,FONT_SMALL,JUSTIFY_CENTER);
-
-	sprintf(str, "SERVER: %d", octr->ver_server);
-	DECOMP_DecalFont_DrawLine(str,0x100,0xA8-2,FONT_SMALL,JUSTIFY_CENTER);
-
-	char* str2 = "PLEASE UPDATE ALL 3 TO PLAY";
-	DECOMP_DecalFont_DrawLine(str2,0x100,0xB0-2,FONT_SMALL,JUSTIFY_CENTER);
-
+	int expectedVer = max(max(octr->ver_psx, octr->ver_pc), octr->ver_server);
+	if (octr->ver_psx < expectedVer) { DECOMP_DecalFont_DrawLine("Please update your game.", 0x100, 0x98-2, FONT_SMALL, JUSTIFY_CENTER); }
+	if (octr->ver_pc < expectedVer) { DECOMP_DecalFont_DrawLine("Please update your launcher.", 0x100, 0xA0-2, FONT_SMALL, JUSTIFY_CENTER); }
+	if (octr->ver_server < expectedVer) { DECOMP_DecalFont_DrawLine("Server unavailable.", 0x100, 0xA8-2, FONT_SMALL, JUSTIFY_CENTER); }
 	sdata->ptrActiveMenu = 0;
 }
 
@@ -233,7 +216,7 @@ void StatePS1_Lobby_WaitForLoading()
 static bool initRace = true;
 static bool endRace = true;
 
-void StatePS1_Lobby_StartLoading()
+void StatePS1_Lobby_Loading()
 {
 	initRace = true;
 	endRace = true;
@@ -383,7 +366,7 @@ void StatePS1_Game_WaitForRace()
 
 // not really "Start", it's the trafficLights,
 // and entire duration of race, should rename
-void StatePS1_Game_StartRace()
+void StatePS1_Game_Race()
 {
 	int i;
 	Ghostify();

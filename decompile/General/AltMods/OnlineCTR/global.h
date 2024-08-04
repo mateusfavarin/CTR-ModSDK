@@ -1,18 +1,16 @@
 #ifndef ONLINE_GLOBAL_H
 #define ONLINE_GLOBAL_H
 
-#define VERSION 1019
+#define VERSION_GAME   1
+#define VERSION_CLIENT 1
+#define VERSION_SERVER 1
 //#define ONLINE_BETA_MODE
 
-#ifndef WINDOWS_INCLUDE
+#ifndef CLIENT_SERVER
 	#include <common.h>
 #endif
 
 #ifdef __GNUC__ // GCC and Clang
-
-	#ifdef WINDOWS_INCLUDE
-		#include <unistd.h> // for the 'usleep()' function
-	#endif
 
 	#define STATIC_ASSERT2(test_for_true, message) _Static_assert((test_for_true), message)
 
@@ -41,7 +39,8 @@
 
 enum ClientState
 {
-	LAUNCH_ENTER_PID,
+	DISCONNECTED = -1,
+	LAUNCH_BOOT = 0,
 	LAUNCH_PICK_SERVER,
 	LAUNCH_PICK_ROOM,
 	LAUNCH_ERROR,
@@ -50,11 +49,11 @@ enum ClientState
 	LOBBY_GUEST_TRACK_WAIT,
 	LOBBY_CHARACTER_PICK,
 	LOBBY_WAIT_FOR_LOADING,
-	LOBBY_START_LOADING,
+	LOBBY_LOADING,
 	GAME_WAIT_FOR_RACE,
-	GAME_START_RACE,
+	GAME_RACE,
 	GAME_END_RACE,
-	NUM_STATES
+	NUM_STATES_FUNCS
 };
 
 #define NAME_LEN 9
@@ -176,13 +175,7 @@ extern CheckpointTracker checkpointTracker[MAX_NUM_PLAYERS];
 void EndOfRace_Camera();
 void EndOfRace_Icons();
 
-#ifdef WINDOWS_INCLUDE
-
-#include <time.h>
-
-#ifndef __GNUC__
-	#include <windows.h>
-#endif
+#ifdef CLIENT_SERVER
 
 enum ServerGiveMessageType
 {
@@ -509,52 +502,24 @@ STATIC_ASSERT2(sizeof(struct CG_MessageTrack) == 2, "Size of CG_MessageTrack mus
 STATIC_ASSERT2(sizeof(struct CG_EverythingKart) == 10, "Size of CG_EverythingKart must be 10 bytes");
 STATIC_ASSERT2(sizeof(struct CG_MessageWeapon) == 2, "Size of CG_MessageWeapon must be 2 bytes");
 STATIC_ASSERT2(sizeof(struct CG_MessageEndRace) == 12, "Size of CG_MessageEndRace must be 12 bytes");
-
-// OnlineCTR functions
-void StatePC_Launch_EnterPID();
-void StatePC_Launch_PickServer();
-void StatePC_Launch_PickRoom();
-void StatePC_Launch_Error();
-void StatePC_Lobby_HostTrackPick();
-void StatePC_Lobby_GuestTrackWait();
-void StatePC_Lobby_CharacterPick();
-void StatePC_Lobby_WaitForLoading();
-void StatePC_Lobby_StartLoading();
-void StatePC_Game_WaitForRace();
-void StatePC_Game_StartRace();
-void StatePC_Game_EndRace();
-
-// console functions
-void PrintBanner(char show_name);
-void StartAnimation();
-void StopAnimation();
-
 #endif
 
-#ifndef WINDOWS_INCLUDE
-	// set zero to fix DuckStation,
-	// is it needed on console?
-	#define USE_K1 0
-
-	#if USE_K1 == 1
-		register struct OnlineCTR* octr asm("k1");
-	#else
-		static struct OnlineCTR* octr = (struct OnlineCTR*)0x8000C000;
-	#endif
+#ifndef CLIENT_SERVER
+	static struct OnlineCTR* octr = (struct OnlineCTR*)0x8000C000;
 
 	// my functions
-	void StatePS1_Launch_EnterPID();
+	void StatePS1_Launch_Boot();
 	void StatePS1_Launch_PickServer();
-	void StatePS1_Launch_Error();
 	void StatePS1_Launch_PickRoom();
+	void StatePS1_Launch_Error();
 	void StatePS1_Lobby_AssignRole();
 	void StatePS1_Lobby_HostTrackPick();
 	void StatePS1_Lobby_GuestTrackWait();
 	void StatePS1_Lobby_CharacterPick();
 	void StatePS1_Lobby_WaitForLoading();
-	void StatePS1_Lobby_StartLoading();
+	void StatePS1_Lobby_Loading();
 	void StatePS1_Game_WaitForRace();
-	void StatePS1_Game_StartRace();
+	void StatePS1_Game_Race();
 	void StatePS1_Game_EndRace();
 #endif
 

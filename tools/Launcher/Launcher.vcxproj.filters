@@ -113,6 +113,9 @@
     <ClCompile Include="..\..\externals\enet\win32.c">
       <Filter>enet</Filter>
     </ClCompile>
+    <ClCompile Include="src\process.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\app.h">
@@ -143,6 +146,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\process.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,10 +1,10 @@
 //these make it not compile?
 //#include <common.h>
-//#include "global.h"
+#include "global.h"
 
-void (*funcs[NUM_STATES]) () =
+void (*funcs[NUM_STATES_FUNCS]) () =
 {
-	StatePS1_Launch_EnterPID,
+	StatePS1_Launch_Boot,
 	StatePS1_Launch_PickServer,
 	StatePS1_Launch_PickRoom,
 	StatePS1_Launch_Error,
@@ -13,9 +13,9 @@ void (*funcs[NUM_STATES]) () =
 	StatePS1_Lobby_GuestTrackWait,
 	StatePS1_Lobby_CharacterPick,
 	StatePS1_Lobby_WaitForLoading,
-	StatePS1_Lobby_StartLoading,
+	StatePS1_Lobby_Loading,
 	StatePS1_Game_WaitForRace,
-	StatePS1_Game_StartRace,
+	StatePS1_Game_Race,
 	StatePS1_Game_EndRace
 };
 
@@ -57,7 +57,7 @@ void ThreadFunc(struct Thread* t)
 	}
 
 	// only disable for no$psx testing,
-	// which can force in-game with 8000c000=LOBBY_START_LOADING
+	// which can force in-game with 8000c000=LOBBY_LOADING
 	#if 1
 
 	// if client is intentionally idle
@@ -78,7 +78,7 @@ void ThreadFunc(struct Thread* t)
 	}
 
     // count frames that the client didn't update the game
-    if(isIdle==1 && octr->CurrState > LAUNCH_ENTER_PID){
+    if(isIdle==1 && octr->CurrState > LAUNCH_BOOT){
         octr->frames_unsynced++;
     } else {
         octr->frames_unsynced = 0;
@@ -114,19 +114,16 @@ void ThreadFunc(struct Thread* t)
 	int boolCloseClient = (octr->frames_unsynced > DISCONNECT_AT_UNSYNCED_FRAMES);
 
 	// if client closed, or server disconnected
-	if(boolCloseClient || (octr->CurrState < 0))
+	if(boolCloseClient || (octr->CurrState == DISCONNECTED))
 	{
 		sdata->ptrActiveMenu = 0;
 
 		if(octr->boolPlanetLEV)
 		{
-			// if closed==1, go to 0 ("please open client")
-			// if closed==0, go to 1 (server select)
-			octr->CurrState = !boolCloseClient;
+			octr->CurrState = boolCloseClient ? LAUNCH_BOOT : LAUNCH_PICK_SERVER;
 #ifdef PINE_DEBUG
 			printf("statechange %d yesno open client/server select 5: \n", octr->stateChangeCounter++);
 #endif
-
 			octr->serverLockIn1 = 0;
 			octr->serverLockIn2 = 0;
 			return;
@@ -207,12 +204,4 @@ void ThreadFunc(struct Thread* t)
 				&endRaceRECT, 0, gGT->backBuffer->otMem.startPlusFour);
 		}
 	}
-
-	#if 0
-	if(strcmp("debugcam", octr->nameBuffer[0]) == 0)
-	{
-		void Freecam();
-		Freecam();
-	}
-	#endif
 }
