@@ -7,6 +7,7 @@
 
 extern const std::string g_dataFolder;
 extern const std::string g_openBiosPath;
+extern const std::string g_duckDlFolder;
 extern const std::string g_duckFolder;
 extern const std::string g_duckExecutable;
 extern const std::string g_patchString;

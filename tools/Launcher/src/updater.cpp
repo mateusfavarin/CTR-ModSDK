@@ -103,7 +103,13 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
       if (!m_hasDuckstation)
       {
         updateStatus("Downloading Duckstation...", IconType::RUNNING);
-        std::filesystem::create_directory(std::u8string(g_duckFolder.begin(), g_duckFolder.end()));
+        const std::filesystem::path u8duckFolder = std::u8string(g_duckFolder.begin(), g_duckFolder.end());
+        if (!std::filesystem::is_directory(u8duckFolder)) { std::filesystem::create_directory(u8duckFolder); }
+        if (g_duckFolder != g_duckDlFolder) 
+        { 
+          const std::filesystem::path u8duckDlFolder = std::u8string(g_duckDlFolder.begin(), g_duckDlFolder.end());
+          if (!std::filesystem::is_directory(u8duckDlFolder)) { std::filesystem::create_directory(u8duckDlFolder); }
+        }
 #ifdef _WIN32
         const std::string duckArchive = "duckstation.zip";
         const std::string duckPath = "/stenzek/duckstation/releases/download/preview/duckstation-windows-x64-release.zip";
@@ -111,7 +117,7 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
         const std::string duckArchive = "DuckStation-x64.AppImage";
         const std::string duckPath = "/stenzek/duckstation/releases/download/preview/DuckStation-x64.AppImage";
 #endif
-        if (!Requests::DownloadFile("github.com", duckPath, g_duckFolder + duckArchive))
+        if (!Requests::DownloadFile("github.com", duckPath, g_duckDlFolder + duckArchive))
         {
           updateStatus("Error: could not download Duckstation.", IconType::FAIL);
           return false;
@@ -126,7 +132,8 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
 #endif
         updateStatus("Installing OnlineCTR settings...", IconType::RUNNING);
         const std::string g_biosFolder = g_duckFolder + "bios/";
-        std::filesystem::create_directory(std::u8string(g_biosFolder.begin(), g_biosFolder.end()));
+        const std::filesystem::path u8biosPath = std::u8string(g_biosFolder.begin(), g_biosFolder.end());
+        if (!std::filesystem::is_directory(u8biosPath)) { std::filesystem::create_directory(u8biosPath); }
         std::string biosName;
         for (int i = static_cast<int>(biosPath.size()) - 1; i >= 0; i--)
         {
@@ -137,7 +144,8 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
           }
         }
         const std::string concatBios = g_biosFolder + biosName;
-        std::filesystem::copy_file(std::u8string(biosPath.begin(), biosPath.end()), std::u8string(concatBios.begin(), concatBios.end()));
+        const std::filesystem::path u8concatBios = std::u8string(concatBios.begin(), concatBios.end());
+        if (!std::filesystem::exists(u8concatBios)) { std::filesystem::copy_file(std::u8string(biosPath.begin(), biosPath.end()), u8concatBios); }
         const std::string duckPortable = g_duckFolder + "portable.txt";
         std::ofstream portableFile(duckPortable.c_str());
         portableFile.close();
@@ -159,7 +167,8 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
             {
               const std::string iniVersion = GetIniPath_Version(m_versionAvailable);
               const std::string iniDuck = GetIniPath_Duck();
-              std::filesystem::copy_file(std::u8string(iniVersion.begin(), iniVersion.end()), std::u8string(iniDuck.begin(), iniDuck.end()));
+              const std::filesystem::path u8iniDuck = std::u8string(iniDuck.begin(), iniDuck.end());
+              if (!std::filesystem::exists(u8iniDuck)) { std::filesystem::copy_file(std::u8string(iniVersion.begin(), iniVersion.end()), u8iniDuck); }
             }
             m_updated = true;
             m_updateAvailable = false;

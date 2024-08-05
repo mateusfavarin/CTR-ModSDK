@@ -46,23 +46,24 @@ public:
 private:
 	bool m_active = false;
 	bool m_getDuckRAM = false;
+	bool m_validMmap = false;
 	int m_duckPid = 0;
 	void* m_duckHandle = nullptr;
 	uint8_t* m_duckRAM = nullptr;
 	std::unordered_map<ClientState, std::function<void(OnlineCTR&)>> m_funcs = {
-		{ ClientState::LAUNCH_BOOT, std::bind(&Client::State_Launch_Boot, this) },
-		{ ClientState::LAUNCH_PICK_SERVER, std::bind(&Client::State_Launch_PickServer, this) },
-		{ ClientState::LAUNCH_PICK_ROOM, std::bind(&Client::State_Launch_PickRoom, this) },
-		{ ClientState::LAUNCH_ERROR, std::bind(&Client::State_Launch_Error, this) },
-		{ ClientState::LOBBY_ASSIGN_ROLE, std::bind(&Client::State_Lobby_AssignRole, this) },
-		{ ClientState::LOBBY_HOST_TRACK_PICK, std::bind(&Client::State_Lobby_HostTrackPick, this) },
-		{ ClientState::LOBBY_GUEST_TRACK_WAIT, std::bind(&Client::State_Lobby_GuestTrackWait, this) },
-		{ ClientState::LOBBY_CHARACTER_PICK, std::bind(&Client::State_Lobby_CharacterPick, this) },
-		{ ClientState::LOBBY_WAIT_FOR_LOADING, std::bind(&Client::State_Lobby_WaitForLoading, this) },
-		{ ClientState::LOBBY_LOADING, std::bind(&Client::State_Lobby_Loading, this) },
-		{ ClientState::GAME_WAIT_FOR_RACE, std::bind(&Client::State_Game_WaitForRace, this) },
-		{ ClientState::GAME_RACE, std::bind(&Client::State_Game_Race, this) },
-		{ ClientState::GAME_END_RACE, std::bind(&Client::State_Game_EndRace, this) },
+		{ ClientState::LAUNCH_BOOT, std::bind(&Client::State_Launch_Boot, this, std::placeholders::_1) },
+		{ ClientState::LAUNCH_PICK_SERVER, std::bind(&Client::State_Launch_PickServer, this, std::placeholders::_1) },
+		{ ClientState::LAUNCH_PICK_ROOM, std::bind(&Client::State_Launch_PickRoom, this, std::placeholders::_1) },
+		{ ClientState::LAUNCH_ERROR, std::bind(&Client::State_Launch_Error, this, std::placeholders::_1) },
+		{ ClientState::LOBBY_ASSIGN_ROLE, std::bind(&Client::State_Lobby_AssignRole, this, std::placeholders::_1) },
+		{ ClientState::LOBBY_HOST_TRACK_PICK, std::bind(&Client::State_Lobby_HostTrackPick, this, std::placeholders::_1) },
+		{ ClientState::LOBBY_GUEST_TRACK_WAIT, std::bind(&Client::State_Lobby_GuestTrackWait, this, std::placeholders::_1) },
+		{ ClientState::LOBBY_CHARACTER_PICK, std::bind(&Client::State_Lobby_CharacterPick, this, std::placeholders::_1) },
+		{ ClientState::LOBBY_WAIT_FOR_LOADING, std::bind(&Client::State_Lobby_WaitForLoading, this, std::placeholders::_1) },
+		{ ClientState::LOBBY_LOADING, std::bind(&Client::State_Lobby_Loading, this, std::placeholders::_1) },
+		{ ClientState::GAME_WAIT_FOR_RACE, std::bind(&Client::State_Game_WaitForRace, this, std::placeholders::_1) },
+		{ ClientState::GAME_RACE, std::bind(&Client::State_Game_Race, this, std::placeholders::_1) },
+		{ ClientState::GAME_END_RACE, std::bind(&Client::State_Game_EndRace, this, std::placeholders::_1) },
 	};
 
 	/* Game variables */

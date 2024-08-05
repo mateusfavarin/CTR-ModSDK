@@ -10,15 +10,7 @@
 	#include <common.h>
 #endif
 
-#ifdef __GNUC__ // GCC and Clang
-
-	#define STATIC_ASSERT2(test_for_true, message) _Static_assert((test_for_true), message)
-
-#else // MSVC (Visual Studio)
-
-	#define STATIC_ASSERT2 static_assert
-
-#endif
+#define STATIC_ASSERT2 static_assert
 
 //#define true				1
 //#define false				0
@@ -59,12 +51,12 @@ enum ClientState
 #define NAME_LEN 9
 #define MAX_NUM_PLAYERS 8
 
-typedef struct raceStats
+typedef struct RaceStats
 {
 	int slot;
 	int finalTime;
 	int bestLap;
-} raceStats;
+} RaceStats;
 
 // This can be 0x400 (1024) bytes max:
 // 0x8000C000 at 0x8000C400
@@ -117,7 +109,7 @@ struct OnlineCTR
 	// 0x38
 	char nameBuffer[MAX_NUM_PLAYERS][NAME_LEN + 1]; //+1 for nullterm
 
-	raceStats raceStats[MAX_NUM_PLAYERS];
+	RaceStats raceStats[MAX_NUM_PLAYERS];
 
 	int ver_psx;
 	int ver_pc;

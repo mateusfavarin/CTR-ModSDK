@@ -31,7 +31,14 @@ void Client::Run()
   }
   if (!m_active) { return; }
 
-  int32_t gameTimer = GetRAMData<int32_t>(ADDR_gGT + 0x1cf8);
+  int32_t gameTimer;
+  if (!m_validMmap)
+  {
+    try { gameTimer = GetRAMData<int32_t>(ADDR_gGT + 0x1cf8); }
+    catch (...) { m_getDuckRAM = true; return; }
+    m_validMmap = true;
+  }
+  else { gameTimer = GetRAMData<int32_t>(ADDR_gGT + 0x1cf8); }
   OnlineCTR& octr = GetRAMData<OnlineCTR>(ADDR_OCTR);
   if (!octr.IsBootedPS1 || gameTimer == m_currGameTimer) { return; } /* Waiting for the next frame */
 
@@ -63,6 +70,7 @@ void Client::SpawnDuck()
   m_duckPid = pid;
   m_duckHandle = handle;
   m_getDuckRAM = true;
+  m_validMmap = false;
 }
 
 void Client::CloseDuck()

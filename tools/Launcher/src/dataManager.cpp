@@ -5,11 +5,13 @@
 
 const std::string g_dataFolder = "data/";
 const std::string g_openBiosPath = g_dataFolder + "openbios-fastboot.bin";
-const std::string g_duckFolder = g_dataFolder + "duckstation/";
+const std::string g_duckDlFolder = g_dataFolder + "duckstation/";
 #ifdef _WIN32
-const std::string g_duckExecutable = g_duckFolder + "duckstation-qt-x64-ReleaseLTCG.exe";
+const std::string g_duckFolder = g_dataFolder + "duckstation/";
+const std::string g_duckExecutable = g_duckDlFolder + "duckstation-qt-x64-ReleaseLTCG.exe";
 #else
-const std::string g_duckExecutable = g_duckFolder + "DuckStation-x64.AppImage";
+const std::string g_duckFolder = getenv("HOME") + std::string("/.local/share/duckstation/");
+const std::string g_duckExecutable = g_duckDlFolder + "DuckStation-x64.AppImage";
 #endif
 const std::string g_patchString = "ctr-u_Online30.xdelta";
 const std::string g_configString = "SCUS-94426.ini";
@@ -48,7 +50,7 @@ DataManager g_dataManager;
 
 DataManager::DataManager()
 {
-	std::filesystem::path u8dataFolder = std::u8string(g_dataFolder.begin(), g_dataFolder.end());
+	const std::filesystem::path u8dataFolder = std::u8string(g_dataFolder.begin(), g_dataFolder.end());
 	if (!std::filesystem::is_directory(u8dataFolder)) { std::filesystem::create_directory(u8dataFolder); }
 	if (std::filesystem::exists(std::u8string(m_path.begin(), m_path.end()))) { m_json = json::parse(std::ifstream(m_path)); }
 }

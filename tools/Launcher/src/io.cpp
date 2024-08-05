@@ -37,7 +37,8 @@ bool IO::DecompressFiles(const std::string& path, const std::string& filename)
       if (archiveName.back() == '/' || archiveName.back() == '\\')
       {
         const std::string concatPath = path + archiveName;
-        std::filesystem::create_directory(std::u8string(concatPath.begin(), concatPath.end()));
+        const std::filesystem::path u8concatPath = std::u8string(concatPath.begin(), concatPath.end());
+        if (!std::filesystem::is_directory(u8concatPath)) { std::filesystem::create_directory(u8concatPath); }
       }
       else
       {
