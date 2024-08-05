@@ -81,7 +81,7 @@ void Client::CloseDuck()
 
 void Client::State_Launch_Boot(OnlineCTR& octr)
 {
-  octr.CurrState = ClientState::LAUNCH_PICK_ROOM;
+  octr.CurrState = ClientState::LAUNCH_PICK_SERVER;
 }
 
 void Client::State_Launch_PickServer(OnlineCTR& octr)
