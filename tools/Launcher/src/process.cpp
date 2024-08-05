@@ -81,46 +81,47 @@ void Process::HandleSigbus()
 
 std::tuple<int, void*> Process::New(const std::string& command)
 {
-    pid_t pid = fork();
-    if (pid == -1) { return {-1, nullptr}; } 
-    else if (pid == 0) 
+  pid_t pid = fork();
+  if (pid == -1) { return {-1, nullptr}; } 
+  else if (pid == 0) 
+  {
+    chmod(g_duckExecutable.c_str(), 0777);
+    execl("/bin/sh", "sh", "-c", ("./" + command).c_str(), (char*) NULL);
+    _exit(EXIT_FAILURE); // exec should not return, exit if it fails
+  }
+  
+  /* 
+    Duckstation PID works in mysteryous ways,
+    with two y's for extra crying effect.
+  */
+  const std::string parentPID = std::to_string(pid);
+  bool foundPID = false;
+  while (!foundPID)
+  {
+    for (const auto& entry : std::filesystem::directory_iterator("/dev/shm/"))
     {
-      chmod(g_duckExecutable.c_str(), 0777);
-      execl("/bin/sh", "sh", "-c", ("./" + command).c_str(), (char*) NULL);
-      _exit(EXIT_FAILURE); // exec should not return, exit if it fails
-    }
-    const std::string parentPID = std::to_string(pid);
-    bool foundPID = false;
-    while (!foundPID)
-    {
-      std::ifstream file(("/proc/" + parentPID + "/task/" + parentPID + "/children").c_str());
-      if (file.seekg(0, std::ios::end).tellg() != 0)
+      const std::string map = entry.path().string();
+      static const std::string duckTag = "duckstation_";
+      const size_t matchPos = map.find(duckTag);
+      if (matchPos != std::string::npos)
       {
-        file.seekg(0, std::ios::beg);
-        std::stringstream ss;
-        ss << file.rdbuf();
-        std::string sPID = ss.str();
-        int newPID;
-        std::istringstream(sPID) >> newPID;
-        if (newPID != pid && newPID != 0)
-        { 
-          pid = newPID;
-          foundPID = true;
-        }
+        pid = stoi(map.substr(matchPos + duckTag.size()));
+        foundPID = true;
+        break;
       }
-      file.close();
     }
-    return {pid, nullptr};
+  }
+  return {pid, nullptr};
 }
 
 uint8_t* Process::GetDuckRAM(const std::string& mapName, size_t size)
 {
-    int fd = shm_open(mapName.c_str(), O_RDWR, 0600);
-    if (fd == -1) { return nullptr; }
-    void* addr = mmap(nullptr, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    close(fd);
-    if (addr == MAP_FAILED) { return nullptr; }
-    return static_cast<uint8_t*>(addr);
+  int fd = shm_open(mapName.c_str(), O_RDWR, 0600);
+  if (fd == -1) { return nullptr; }
+  void* addr = mmap(nullptr, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+  close(fd);
+  if (addr == MAP_FAILED) { return nullptr; }
+  return static_cast<uint8_t*>(addr);
 }
 
 bool Process::Kill(int pid) { return kill(pid, SIGTERM) == 0; }
