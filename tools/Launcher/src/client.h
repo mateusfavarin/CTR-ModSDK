@@ -46,7 +46,6 @@ public:
 private:
 	bool m_active = false;
 	bool m_getDuckRAM = false;
-	bool m_validMmap = false;
 	int m_duckPid = 0;
 	void* m_duckHandle = nullptr;
 	uint8_t* m_duckRAM = nullptr;

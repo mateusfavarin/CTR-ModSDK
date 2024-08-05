@@ -12,6 +12,7 @@ void Client::Init()
   g_dataManager.BindData(&m_music, DataType::FLOAT, "MusicVolume");
   g_dataManager.BindData(&m_voice, DataType::FLOAT, "VoiceVolume");
   enet_initialize();
+  Process::HandleSigbus();
 }
 
 void Client::Run()
@@ -31,14 +32,19 @@ void Client::Run()
   }
   if (!m_active) { return; }
 
-  int32_t gameTimer;
-  if (!m_validMmap)
+  int32_t gameTimer = GetRAMData<int32_t>(ADDR_gGT + 0x1cf8);
+  /*
+    There's a race condition from Duckstation and the launcher
+    when reading from the shared memory map. Duckstation may
+    provide an incomplete mapping, so we gotta hook the SIGBUS
+    and wait until we get no more errors from the first read.
+  */
+  if (g_busError) 
   {
-    try { gameTimer = GetRAMData<int32_t>(ADDR_gGT + 0x1cf8); }
-    catch (...) { m_getDuckRAM = true; return; }
-    m_validMmap = true;
+    g_busError = false; 
+    m_getDuckRAM = true; // Try to get another pointer to shmem
+    return; 
   }
-  else { gameTimer = GetRAMData<int32_t>(ADDR_gGT + 0x1cf8); }
   OnlineCTR& octr = GetRAMData<OnlineCTR>(ADDR_OCTR);
   if (!octr.IsBootedPS1 || gameTimer == m_currGameTimer) { return; } /* Waiting for the next frame */
 
@@ -70,7 +76,6 @@ void Client::SpawnDuck()
   m_duckPid = pid;
   m_duckHandle = handle;
   m_getDuckRAM = true;
-  m_validMmap = false;
 }
 
 void Client::CloseDuck()

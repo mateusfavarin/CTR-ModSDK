@@ -1,7 +1,16 @@
 #include "process.h"
 
+bool g_busError = false;
+
+static void HandleBusError(int signum)
+{
+  g_busError = true;
+}
+
 #ifdef _WIN32
 #include <Windows.h>
+
+void Process::HandleSigbus() {} /* Linux only */
 
 std::tuple<int, void*> Process::New(const std::string& command)
 {
@@ -51,13 +60,24 @@ bool Process::Kill(void* duckProc)
 #else /* Linux */
 #include "dataManager.h"
 
+#include <signal.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/mman.h>
+#include <sys/stat.h>
 #include <fcntl.h>
 #include <tuple>
-#include <thread>
+#include <fstream>
+
+void Process::HandleSigbus() 
+{
+  struct sigaction sa;
+  sa.sa_handler = HandleBusError;
+  sa.sa_flags = 0;
+  sigemptyset(&sa.sa_mask);
+  sigaction(SIGBUS, &sa, NULL);
+}
 
 std::tuple<int, void*> Process::New(const std::string& command)
 {
@@ -65,31 +85,37 @@ std::tuple<int, void*> Process::New(const std::string& command)
     if (pid == -1) { return {-1, nullptr}; } 
     else if (pid == 0) 
     {
-      execl("/bin/sh", "sh", "-c", ("chmod +x " + g_duckExecutable + " && ./" + command).c_str(), (char*) NULL);
+      chmod(g_duckExecutable.c_str(), 0777);
+      execl("/bin/sh", "sh", "-c", ("./" + command).c_str(), (char*) NULL);
       _exit(EXIT_FAILURE); // exec should not return, exit if it fails
+    }
+    const std::string parentPID = std::to_string(pid);
+    bool foundPID = false;
+    while (!foundPID)
+    {
+      std::ifstream file(("/proc/" + parentPID + "/task/" + parentPID + "/children").c_str());
+      if (file.seekg(0, std::ios::end).tellg() != 0)
+      {
+        file.seekg(0, std::ios::beg);
+        std::stringstream ss;
+        ss << file.rdbuf();
+        std::string sPID = ss.str();
+        int newPID;
+        std::istringstream(sPID) >> newPID;
+        if (newPID != pid && newPID != 0)
+        { 
+          pid = newPID;
+          foundPID = true;
+        }
+      }
+      file.close();
     }
     return {pid, nullptr};
 }
 
 uint8_t* Process::GetDuckRAM(const std::string& mapName, size_t size)
 {
-    std::this_thread::sleep_for(std::chrono::seconds(5));
-    std::string map;
-    bool foundMap = false;
-    for (const auto& entry : std::filesystem::directory_iterator("/dev/shm/"))
-    {
-      map = entry.path().string();
-      if (map.find("duckstation") != std::string::npos)
-      {
-        size_t i = map.size() - 1;
-        while (map[i--] != '/') {}
-        map = map.substr(i + 2);
-        foundMap = true;
-        break;
-      }
-    }
-    if (!foundMap) { return nullptr; }
-    int fd = shm_open(map.c_str(), O_RDWR, 0600);
+    int fd = shm_open(mapName.c_str(), O_RDWR, 0600);
     if (fd == -1) { return nullptr; }
     void* addr = mmap(nullptr, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     close(fd);
