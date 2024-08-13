@@ -26,3 +26,6 @@
 [submodule "externals/CRCpp"]
 	path = externals/CRCpp
 	url = https://github.com/d-bahr/CRCpp
+[submodule "externals/xdelta"]
+	path = externals/xdelta
+	url = https://github.com/jmacd/xdelta

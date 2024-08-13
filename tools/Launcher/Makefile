@@ -18,7 +18,7 @@ SRCS += ../../externals/enet/packet.c
 SRCS += ../../externals/enet/peer.c
 SRCS += ../../externals/enet/protocol.c
 SRCS += ../../externals/enet/unix.c
-SRCS += third_party/xdelta3/xdelta3.c
+SRCS += ../../externals/xdelta/xdelta3/xdelta3.c
 
 CXXFLAGS += -std=c++20
 CXXFLAGS += -O3
@@ -62,7 +62,7 @@ CXXFLAGS += -I../../externals/portable-file-dialogs
 CXXFLAGS += -I../../externals/cpp-httplib
 CXXFLAGS += -I../../externals/CRCpp/inc
 CXXFLAGS += -I../../externals/enet/include
-CXXFLAGS += -Ithird_party/xdelta3
+CXXFLAGS += -I../../externals/xdelta/xdelta3/
 
 build:
 	$(CC) $(SRCS) -o $(TARGET) $(CXXFLAGS)

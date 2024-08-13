@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;CLIENT_SERVER;SIZEOF_SIZE_T=8;SIZEOF_UNSIGNED_LONG_LONG=8;XD3_MAIN=0;XD3_DEBUG=0;XD3_USE_LARGEFILE64=1;REGRESSION_TEST=0;SECONDARY_DJW=1;SECONDARY_FGK=1;SECONDARY_LZMA=0;XD3_WIN32=1;EXTERNAL_COMPRESSION=0;SHELL_TESTS=0;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\externals\imgui\;$(ProjectDir)..\..\externals\json\include\;$(ProjectDir)..\..\externals\portable-file-dialogs\;$(ProjectDir)..\..\externals\cpp-httplib\;$(ProjectDir)third_party\OpenSSL\3.3.1\include\;$(ProjectDir)third_party\xdelta3\;$(ProjectDir)..\..\externals\CRCpp\inc\;$(ProjectDir)..\..\externals\enet\include\;$(ProjectDir)..\..\decompile\General\AltMods\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\externals\imgui\;$(ProjectDir)..\..\externals\json\include\;$(ProjectDir)..\..\externals\portable-file-dialogs\;$(ProjectDir)..\..\externals\cpp-httplib\;$(ProjectDir)third_party\OpenSSL\3.3.1\include\;$(ProjectDir)..\..\externals\xdelta\xdelta3\;$(ProjectDir)..\..\externals\CRCpp\inc\;$(ProjectDir)..\..\externals\enet\include\;$(ProjectDir)..\..\decompile\General\AltMods\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
@@ -125,7 +125,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;CLIENT_SERVER;SIZEOF_SIZE_T=8;SIZEOF_UNSIGNED_LONG_LONG=8;XD3_MAIN=0;XD3_DEBUG=0;XD3_USE_LARGEFILE64=1;REGRESSION_TEST=0;SECONDARY_DJW=1;SECONDARY_FGK=1;SECONDARY_LZMA=0;XD3_WIN32=1;EXTERNAL_COMPRESSION=0;SHELL_TESTS=0;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\externals\imgui\;$(ProjectDir)..\..\externals\json\include\;$(ProjectDir)..\..\externals\portable-file-dialogs\;$(ProjectDir)..\..\externals\cpp-httplib\;$(ProjectDir)third_party\OpenSSL\3.3.1\include\;$(ProjectDir)third_party\xdelta3\;$(ProjectDir)..\..\externals\CRCpp\inc\;$(ProjectDir)..\..\externals\enet\include\;$(ProjectDir)..\..\decompile\General\AltMods\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\externals\imgui\;$(ProjectDir)..\..\externals\json\include\;$(ProjectDir)..\..\externals\portable-file-dialogs\;$(ProjectDir)..\..\externals\cpp-httplib\;$(ProjectDir)third_party\OpenSSL\3.3.1\include\;$(ProjectDir)..\..\externals\xdelta\xdelta3\;$(ProjectDir)..\..\externals\CRCpp\inc\;$(ProjectDir)..\..\externals\enet\include\;$(ProjectDir)..\..\decompile\General\AltMods\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
@@ -158,6 +158,7 @@
     <ClCompile Include="..\..\externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\externals\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\..\externals\imgui\misc\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="..\..\externals\xdelta\xdelta3\xdelta3.c" />
     <ClCompile Include="src\app.cpp" />
     <ClCompile Include="src\client.cpp" />
     <ClCompile Include="src\dataManager.cpp" />
@@ -169,7 +170,6 @@
     <ClCompile Include="src\requests.cpp" />
     <ClCompile Include="src\ui.cpp" />
     <ClCompile Include="src\updater.cpp" />
-    <ClCompile Include="third_party\xdelta3\xdelta3.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\app.h" />
