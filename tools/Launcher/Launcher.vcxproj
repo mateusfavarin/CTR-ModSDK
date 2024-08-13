@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\openssl-native.3.0.14\build\native\openssl-native.props" Condition="Exists('packages\openssl-native.3.0.14\build\native\openssl-native.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -104,14 +105,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;CLIENT_SERVER;SIZEOF_SIZE_T=8;SIZEOF_UNSIGNED_LONG_LONG=8;XD3_MAIN=0;XD3_DEBUG=0;XD3_USE_LARGEFILE64=1;REGRESSION_TEST=0;SECONDARY_DJW=1;SECONDARY_FGK=1;SECONDARY_LZMA=0;XD3_WIN32=1;EXTERNAL_COMPRESSION=0;SHELL_TESTS=0;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\externals\imgui\;$(ProjectDir)..\..\externals\json\include\;$(ProjectDir)..\..\externals\portable-file-dialogs\;$(ProjectDir)..\..\externals\cpp-httplib\;$(ProjectDir)third_party\OpenSSL\3.3.1\include\;$(ProjectDir)..\..\externals\xdelta\xdelta3\;$(ProjectDir)..\..\externals\CRCpp\inc\;$(ProjectDir)..\..\externals\enet\include\;$(ProjectDir)..\..\decompile\General\AltMods\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\externals\imgui\;$(ProjectDir)..\..\externals\json\include\;$(ProjectDir)..\..\externals\portable-file-dialogs\;$(ProjectDir)..\..\externals\cpp-httplib\;$(ProjectDir)..\..\externals\xdelta\xdelta3\;$(ProjectDir)..\..\externals\CRCpp\inc\;$(ProjectDir)..\..\externals\enet\include\;$(ProjectDir)..\..\decompile\General\AltMods\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;Ws2_32.lib;Winmm.lib;$(SolutionDir)third_party\OpenSSL\3.3.1\lib\libssl_static.lib;$(SolutionDir)third_party\OpenSSL\3.3.1\lib\libcrypto_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;Ws2_32.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
@@ -125,7 +126,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;CLIENT_SERVER;SIZEOF_SIZE_T=8;SIZEOF_UNSIGNED_LONG_LONG=8;XD3_MAIN=0;XD3_DEBUG=0;XD3_USE_LARGEFILE64=1;REGRESSION_TEST=0;SECONDARY_DJW=1;SECONDARY_FGK=1;SECONDARY_LZMA=0;XD3_WIN32=1;EXTERNAL_COMPRESSION=0;SHELL_TESTS=0;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\externals\imgui\;$(ProjectDir)..\..\externals\json\include\;$(ProjectDir)..\..\externals\portable-file-dialogs\;$(ProjectDir)..\..\externals\cpp-httplib\;$(ProjectDir)third_party\OpenSSL\3.3.1\include\;$(ProjectDir)..\..\externals\xdelta\xdelta3\;$(ProjectDir)..\..\externals\CRCpp\inc\;$(ProjectDir)..\..\externals\enet\include\;$(ProjectDir)..\..\decompile\General\AltMods\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\externals\imgui\;$(ProjectDir)..\..\externals\json\include\;$(ProjectDir)..\..\externals\portable-file-dialogs\;$(ProjectDir)..\..\externals\cpp-httplib\;$(ProjectDir)..\..\externals\xdelta\xdelta3\;$(ProjectDir)..\..\externals\CRCpp\inc\;$(ProjectDir)..\..\externals\enet\include\;$(ProjectDir)..\..\decompile\General\AltMods\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
@@ -134,7 +135,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;Ws2_32.lib;Winmm.lib;$(SolutionDir)third_party\OpenSSL\3.3.1\lib\libssl_static.lib;$(SolutionDir)third_party\OpenSSL\3.3.1\lib\libcrypto_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;Ws2_32.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
@@ -194,6 +195,7 @@
     <Import Project="packages\sdl2_image.nuget.redist.2.8.2\build\native\sdl2_image.nuget.redist.targets" Condition="Exists('packages\sdl2_image.nuget.redist.2.8.2\build\native\sdl2_image.nuget.redist.targets')" />
     <Import Project="packages\sdl2_image.nuget.2.8.2\build\native\sdl2_image.nuget.targets" Condition="Exists('packages\sdl2_image.nuget.2.8.2\build\native\sdl2_image.nuget.targets')" />
     <Import Project="packages\libzip-c.1.9.2.6\build\native\libzip-c.targets" Condition="Exists('packages\libzip-c.1.9.2.6\build\native\libzip-c.targets')" />
+    <Import Project="packages\openssl-native.3.0.14\build\native\openssl-native.targets" Condition="Exists('packages\openssl-native.3.0.14\build\native\openssl-native.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -204,5 +206,7 @@
     <Error Condition="!Exists('packages\sdl2_image.nuget.redist.2.8.2\build\native\sdl2_image.nuget.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\sdl2_image.nuget.redist.2.8.2\build\native\sdl2_image.nuget.redist.targets'))" />
     <Error Condition="!Exists('packages\sdl2_image.nuget.2.8.2\build\native\sdl2_image.nuget.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\sdl2_image.nuget.2.8.2\build\native\sdl2_image.nuget.targets'))" />
     <Error Condition="!Exists('packages\libzip-c.1.9.2.6\build\native\libzip-c.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\libzip-c.1.9.2.6\build\native\libzip-c.targets'))" />
+    <Error Condition="!Exists('packages\openssl-native.3.0.14\build\native\openssl-native.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\openssl-native.3.0.14\build\native\openssl-native.props'))" />
+    <Error Condition="!Exists('packages\openssl-native.3.0.14\build\native\openssl-native.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\openssl-native.3.0.14\build\native\openssl-native.targets'))" />
   </Target>
 </Project>
