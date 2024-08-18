@@ -16,5 +16,5 @@ namespace State
 	void Lobby_Loading(OnlineCTR& octr);
 	void Game_WaitForRace(OnlineCTR& octr);
 	void Game_Race(OnlineCTR& octr);
-	void Game_EndRace(OnlineCTR& octr);
+	void Game_EndRace(OnlineCTR& octr);;
 }

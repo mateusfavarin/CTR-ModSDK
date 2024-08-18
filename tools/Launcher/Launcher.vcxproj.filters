@@ -5,10 +5,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="ImGui">
       <UniqueIdentifier>{08728840-bcc7-40f7-a419-c8fb712068a6}</UniqueIdentifier>
     </Filter>
@@ -52,9 +48,6 @@
     </ClCompile>
     <ClCompile Include="..\..\externals\imgui\misc\cpp\imgui_stdlib.cpp">
       <Filter>ImGui\misc</Filter>
-    </ClCompile>
-    <ClCompile Include="third_party\xdelta3\xdelta3.c">
-      <Filter>xdelta3</Filter>
     </ClCompile>
     <ClCompile Include="src\app.cpp">
       <Filter>Source Files</Filter>
