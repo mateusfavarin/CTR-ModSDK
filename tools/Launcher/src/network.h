@@ -12,7 +12,7 @@ public:
 	void Close();
 	void ConnectServer();
 	void DisconnectServer();
-	bool Send(const void* data, size_t size, bool reliable);
+	bool Send(const CG_Message msg);
 	SG_Message Recv();
 
 private:

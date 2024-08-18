@@ -1,54 +1,81 @@
 #include "state.h"
 
-void State::Launch_Boot(OnlineCTR& octr)
+const CG_Message State::Launch_Boot(OnlineCTR& octr)
 {
+	CG_Message msg;
 	octr.CurrState = ClientState::LAUNCH_PICK_SERVER;
+	msg.type = ClientMessageType::CG_NONE;
+	return msg;
 }
 
-void State::Launch_PickServer(OnlineCTR& octr)
+const CG_Message State::Launch_PickServer(OnlineCTR& octr)
 {
+	CG_Message msg;
+	return msg;
 }
 
-void State::Launch_PickRoom(OnlineCTR& octr)
+const CG_Message State::Launch_PickRoom(OnlineCTR& octr)
 {
+	CG_Message msg;
+	return msg;
 }
 
-void State::Launch_Error(OnlineCTR& octr)
+const CG_Message State::Launch_Error(OnlineCTR& octr)
 {
+	CG_Message msg;
+	return msg;
 }
 
-void State::Lobby_AssignRole(OnlineCTR& octr)
+const CG_Message State::Lobby_AssignRole(OnlineCTR& octr)
 {
+	CG_Message msg;
+	return msg;
 }
 
-void State::Lobby_HostTrackPick(OnlineCTR& octr)
+const CG_Message State::Lobby_HostTrackPick(OnlineCTR& octr)
 {
+	CG_Message msg;
+	return msg;
 }
 
-void State::Lobby_GuestTrackWait(OnlineCTR& octr)
+const CG_Message State::Lobby_GuestTrackWait(OnlineCTR& octr)
 {
+	CG_Message msg;
+	return msg;
 }
 
-void State::Lobby_CharacterPick(OnlineCTR& octr)
+const CG_Message State::Lobby_CharacterPick(OnlineCTR& octr)
 {
+	CG_Message msg;
+	return msg;
 }
 
-void State::Lobby_WaitForLoading(OnlineCTR& octr)
+const CG_Message State::Lobby_WaitForLoading(OnlineCTR& octr)
 {
+	CG_Message msg;
+	return msg;
 }
 
-void State::Lobby_Loading(OnlineCTR& octr)
+const CG_Message State::Lobby_Loading(OnlineCTR& octr)
 {
+	CG_Message msg;
+	return msg;
 }
 
-void State::Game_WaitForRace(OnlineCTR& octr)
+const CG_Message State::Game_WaitForRace(OnlineCTR& octr)
 {
+	CG_Message msg;
+	return msg;
 }
 
-void State::Game_Race(OnlineCTR& octr)
+const CG_Message State::Game_Race(OnlineCTR& octr)
 {
+	CG_Message msg;
+	return msg;
 }
 
-void State::Game_EndRace(OnlineCTR& octr)
+const CG_Message State::Game_EndRace(OnlineCTR& octr)
 {
+	CG_Message msg;
+	return msg;
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "network.h"
+
 #include <OnlineCTR/global.h>
 
 namespace Message

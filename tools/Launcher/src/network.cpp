@@ -20,9 +20,48 @@ void Network::DisconnectServer()
 	m_server = nullptr;
 }
 
-bool Network::Send(const void* data, size_t size, bool reliable)
+bool Network::Send(const CG_Message msg)
 {
-	ENetPacket* packet = enet_packet_create(data, size, reliable ? ENET_PACKET_FLAG_RELIABLE : ENET_PACKET_FLAG_UNSEQUENCED);
+	ClientMessageType type = static_cast<ClientMessageType>(msg.type);
+	if (type == ClientMessageType::CG_NONE) { return true; }
+
+	const void* data = nullptr;
+	size_t size = 0;
+	switch (type)
+	{
+		case CG_JOINROOM:
+			data = static_cast<const void*>(&msg.room);
+			size = sizeof(CG_MessageRoom);
+			break;
+		case CG_NAME:
+			data = static_cast<const void*>(&msg.name);
+			size = sizeof(CG_MessageName);
+			break;
+		case CG_TRACK:
+			data = static_cast<const void*>(&msg.track);
+			size = sizeof(CG_MessageTrack);
+			break;
+		case CG_CHARACTER:
+			data = static_cast<const void*>(&msg.character);
+			size = sizeof(CG_MessageCharacter);
+			break;
+		case CG_KART:
+			data = static_cast<const void*>(&msg.kart);
+			size = sizeof(CG_MessageKart);
+			break;
+		case CG_WEAPON:
+			data = static_cast<const void*>(&msg.weapon);
+			size = sizeof(CG_MessageWeapon);
+			break;
+		case CG_ENDRACE:
+			data = static_cast<const void*>(&msg.endRace);
+			size = sizeof(CG_MessageEndRace);
+			break;
+		default:
+			break;
+	}
+	if (data == nullptr) { return true; }
+	ENetPacket* packet = enet_packet_create(data, size, msg.reliable ? ENET_PACKET_FLAG_RELIABLE : ENET_PACKET_FLAG_UNSEQUENCED);
 	if (!packet || !m_server) { return false; }
 	return enet_peer_send(m_server, SERVER_COMM_CHANNEL, packet) == 0;
 }

@@ -4,17 +4,17 @@
 
 namespace State
 {
-	void Launch_Boot(OnlineCTR& octr);
-	void Launch_PickServer(OnlineCTR& octr);
-	void Launch_PickRoom(OnlineCTR& octr);
-	void Launch_Error(OnlineCTR& octr);
-	void Lobby_AssignRole(OnlineCTR& octr);
-	void Lobby_HostTrackPick(OnlineCTR& octr);
-	void Lobby_GuestTrackWait(OnlineCTR& octr);
-	void Lobby_CharacterPick(OnlineCTR& octr);
-	void Lobby_WaitForLoading(OnlineCTR& octr);
-	void Lobby_Loading(OnlineCTR& octr);
-	void Game_WaitForRace(OnlineCTR& octr);
-	void Game_Race(OnlineCTR& octr);
-	void Game_EndRace(OnlineCTR& octr);;
+	const CG_Message Launch_Boot(OnlineCTR& octr);
+	const CG_Message Launch_PickServer(OnlineCTR& octr);
+	const CG_Message Launch_PickRoom(OnlineCTR& octr);
+	const CG_Message Launch_Error(OnlineCTR& octr);
+	const CG_Message Lobby_AssignRole(OnlineCTR& octr);
+	const CG_Message Lobby_HostTrackPick(OnlineCTR& octr);
+	const CG_Message Lobby_GuestTrackWait(OnlineCTR& octr);
+	const CG_Message Lobby_CharacterPick(OnlineCTR& octr);
+	const CG_Message Lobby_WaitForLoading(OnlineCTR& octr);
+	const CG_Message Lobby_Loading(OnlineCTR& octr);
+	const CG_Message Game_WaitForRace(OnlineCTR& octr);
+	const CG_Message Game_Race(OnlineCTR& octr);
+	const CG_Message Game_EndRace(OnlineCTR& octr);;
 }

@@ -26,7 +26,11 @@ void Client::Run()
     m_net.DisconnectServer();
   }
 
-  if (octr.CurrState != ClientState::DISCONNECTED) { m_funcs[static_cast<ClientState>(octr.CurrState)](octr); }
+  if (octr.CurrState != ClientState::DISCONNECTED)
+  {
+    const CG_Message msg = m_funcs[static_cast<ClientState>(octr.CurrState)](octr);
+    m_net.Send(msg);
+  }
 
   while (true)
   {
