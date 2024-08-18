@@ -6,6 +6,7 @@
 #define VERSION_SERVER 1
 //#define ONLINE_BETA_MODE
 
+#include <stdint.h>
 #ifndef CLIENT_SERVER
 	#include <common.h>
 #endif
@@ -53,9 +54,9 @@ enum ClientState
 
 typedef struct RaceStats
 {
-	int slot;
-	int finalTime;
-	int bestLap;
+	int32_t slot;
+	int32_t finalTime;
+	int32_t bestLap;
 } RaceStats;
 
 // This can be 0x400 (1024) bytes max:
@@ -63,78 +64,65 @@ typedef struct RaceStats
 struct OnlineCTR
 {
 	// 0x0
-	int CurrState;
+	int32_t CurrState;
 
 	// 0x4
-	char PageNumber; // allow negative
-	unsigned char CountPressX;
-	unsigned char NumDrivers;
-	unsigned char DriverID;
+	int8_t PageNumber; // allow negative
+	uint8_t CountPressX;
+	uint8_t NumDrivers;
+	uint8_t DriverID;
 
 	// 0x8
-	unsigned char boolSelectedLap;
-	unsigned char boolSelectedLevel;
-	unsigned char lapID;
-	unsigned char levelID;
+	uint8_t boolSelectedLap;
+	uint8_t boolSelectedLevel;
+	uint8_t lapID;
+	uint8_t levelID;
 
 	// 0xC
-	unsigned char IsBootedPS1;
-	unsigned char boolSelectedCharacter;
-	unsigned char numRooms;
-	unsigned char numDriversEnded;
+	uint8_t IsBootedPS1;
+	uint8_t boolSelectedCharacter;
+	uint8_t numRooms;
+	uint8_t numDriversEnded;
 
 	// 0x10
-	unsigned char serverCountry;
-	unsigned char serverRoom;
-	unsigned char hasConnectedServer;
-	unsigned char hasSelectedServer;
+	uint8_t serverCountry;
+	uint8_t serverRoom;
+	uint8_t hasConnectedServer;
+	uint8_t hasSelectedServer;
 
 	// 0x14
-	unsigned char boolPlanetLEV;
-	unsigned char boolClientBusy;
-	unsigned char special;
-	char padding;
+	uint8_t boolPlanetLEV;
+	uint8_t boolClientBusy;
+	uint8_t special;
+	int8_t windowsClientSync;
 
-	// 0x18
-	char roomClientCount[SERVER_NUM_ROOMS];
-
-	// 0x28
-	// determines if client and
-	// emulator are still connected
-	char windowsClientSync;
-
-	// 0x30
-	char boolClientSelectedCharacters[MAX_NUM_PLAYERS];
-
-	// 0x38
+	uint8_t roomClientCount[SERVER_NUM_ROOMS];
+	uint8_t boolClientSelectedCharacters[MAX_NUM_PLAYERS];
 	char nameBuffer[MAX_NUM_PLAYERS][NAME_LEN + 1]; //+1 for nullterm
-
 	RaceStats raceStats[MAX_NUM_PLAYERS];
-
-	int ver_psx;
-	int ver_pc;
-	int ver_server;
+	int32_t ver_psx;
+	int32_t ver_pc;
+	int32_t ver_server;
 
 	// slot[0] is for game to tell client to send
 	// slot[1+] is for client to tell game to shoot
 	struct
 	{
-		unsigned char boolJuiced;
-		unsigned char Weapon;
-		unsigned char flags;
-		unsigned char boolNow;
+		uint8_t boolJuiced;
+		uint8_t Weapon;
+		uint8_t flags;
+		uint8_t boolNow;
 	} Shoot[MAX_NUM_PLAYERS];
 
     // Frames that the client didn't update
-    int frames_unsynced;
+    int32_t frames_unsynced;
 
     // Last windowsClientSync counter
-	char lastWindowsClientSync;
-
-	char desiredFPS;
+	int8_t lastWindowsClientSync;
+	int8_t desiredFPS;
 
 #ifdef PINE_DEBUG
-	int stateChangeCounter;
+	int32_t stateChangeCounter;
 #endif
 };
 
@@ -145,20 +133,20 @@ STATIC_ASSERT2(sizeof(struct OnlineCTR) <= 0x400, "Size of OnlineCTR must be lte
 
 typedef struct TotalTime
 {
-	int hours;
-	int minutes;
-	int seconds;
-	int miliseconds;
+	int32_t hours;
+	int32_t minutes;
+	int32_t seconds;
+	int32_t miliseconds;
 } TotalTime;
 
 void ElapsedTimeToTotalTime(TotalTime * totalTime, int elapsedTime);
 
 typedef struct CheckpointTracker
 {
-	int timer;
-	unsigned short currCheckpoint;
-	unsigned char raceFinished;
-	unsigned char drawFlags;
+	int32_t timer;
+	uint16_t currCheckpoint;
+	uint8_t raceFinished;
+	uint8_t drawFlags;
 	char displayTime[10];
 } CheckpointTracker;
 
@@ -190,141 +178,93 @@ enum ServerMessageType
 // variety of opcodes (start load / start race)
 struct SG_Header
 {
-	// 15 types, 15 bytes max
-	unsigned char type : 4;
-
-	// Left over from TCP prototype, not needed anymore.
-	// In new UDP system, some packets have recycled this
-	unsigned char padding : 4;
+	uint8_t type;
 };
 
 struct SG_MessageRooms
 {
-	// 15 types, 15 bytes max
-	unsigned char type : 4;
-	unsigned char padding : 4;
-	unsigned char numRooms;
-	unsigned short version;
-	unsigned char roomClientCount[SERVER_NUM_ROOMS];
+	uint8_t type;
+	uint8_t numRooms;
+	uint16_t version;
+	uint8_t roomClientCount[SERVER_NUM_ROOMS];
 };
 
 // sent to each user when someone connects
 struct SG_MessageClientStatus
 {
-	// 15 types, 15 bytes max
-	unsigned char type : 4;
-
-	// 1-15 for client
-	unsigned char clientID : 4;
-
-	// 1-15
-	unsigned char numClientsTotal : 4;
-
-	// special event
-	unsigned char special : 4;
+	uint8_t type;
+	uint8_t clientID;
+	uint8_t numClientsTotal;
 };
 
 // get name from any client
 struct SG_MessageName
 {
-	// 15 types, 15 bytes max
-	unsigned char type : 4;
-	unsigned char padding : 4;
-
-	// index 0 - 7
-	unsigned char clientID : 4;
-	unsigned char numClientsTotal : 4;
-
+	uint8_t type;
+	uint8_t clientID;
+	uint8_t numClientsTotal;
 	char name[NAME_LEN + 1];
 };
 
 // get track, assigned by host
 struct SG_MessageTrack
 {
-	// 15 types, 15 bytes max
-	unsigned char type : 4;
-	unsigned char padding : 4;
-
-	unsigned char trackID : 5;
-	unsigned char lapID : 3;
+	uint8_t type;
+	uint8_t trackID;
+	uint8_t lapID;
 };
 
 // assign character,
 struct SG_MessageCharacter
 {
-	// 15 types, 15 bytes max
-	unsigned char type : 4;
-
-	// index 0 - 7
-	// boolSelected 0/1
-	// character 0 - 15
-	unsigned char clientID : 3;
-	unsigned char boolSelected : 1;
-	unsigned char characterID : 4;
-
-	// can be used for Engine type, or more characters
-	unsigned char padding : 4;
+	uint8_t type;
+	uint8_t clientID;
+	uint8_t boolSelected;
+	uint8_t characterID;
 };
 
 struct SG_MessageKart
 {
-	// byte[0]
-
-	// 15 types, 15 bytes max
-	unsigned char type : 4;
+	uint8_t type;
 
 	// does not include fire level yet
-	unsigned char wumpa : 3;
-	unsigned char boolReserves : 1;
-
-	// byte[1-2]
-
-	unsigned char clientID : 3;
+	uint8_t wumpa		 : 3;
+	uint8_t boolReserves : 1;
+	uint8_t clientID     : 3;
+	uint8_t padding      : 1;
 
 	// bit-compressed driver->0x39A
-	unsigned char kartRot1 : 5;
-	unsigned char kartRot2;
+	uint8_t kartRot1;
+	uint8_t kartRot2;
+	uint8_t buttonHold;
 
-	// byte[3]
-
-	unsigned char buttonHold;
-
-	// byte[4-12]
-
-	short posX;
-	short posY;
-	short posZ;
-
-	// 10 bytes
+	int16_t posX;
+	int16_t posY;
+	int16_t posZ;
 };
 
 struct SG_MessageWeapon
 {
-	// 15 types, 15 bytes max
-	unsigned char type : 4;
+	uint8_t type;
+	uint8_t clientID; // driver who used weapon
 
-	// driver who used weapon
-	unsigned char clientID : 3;
-	unsigned char juiced : 1;
-
-	// 0-15
-	unsigned char weapon : 4;
-	unsigned char flags : 2;
-	unsigned char padding : 2;
+	uint8_t weapon  : 4;
+	uint8_t flags   : 2;
+	uint8_t juiced  : 1;
+	uint8_t padding : 1;
 };
 
 struct SG_MessageEndRace
 {
-	// 15 types, 15 bytes max
-	unsigned char type : 4;
-	unsigned char clientID : 4;
-	int courseTime;
-	int lapTime;
+	uint8_t type;
+	uint8_t clientID;
+	int32_t courseTime;
+	int32_t lapTime;
 };
 
 struct SG_Message
 {
-	unsigned char type;
+	uint8_t type;
 	union
 	{
 		struct SG_MessageRooms rooms;				// SG_ROOMS
@@ -341,126 +281,100 @@ struct SG_Message
 enum ClientMessageType
 {
 	CG_JOINROOM,
-
-	// lobby
 	CG_NAME,
 	CG_TRACK,
 	CG_CHARACTER,
-
 	CG_STARTRACE,
-	CG_RACEDATA,
+	CG_KART,
 	CG_WEAPON,
 	CG_ENDRACE,
-
-	CG_COUNT
+	CG_COUNT,
+	CG_NONE = 0xFF
 };
 
 // sent to each user when someone connects
 struct CG_Header
 {
-	// 15 types, 15 bytes max
-	unsigned char type : 4;
-
-	// Left over from TCP prototype, not needed anymore.
-	// In new UDP system, some packets have recycled this
-	unsigned char padding : 4;
+	uint8_t type;
 };
 
 struct CG_MessageRoom
 {
-	// 15 types, 15 bytes max
-	unsigned char type : 4;
-	unsigned char padding : 4;
-
-	unsigned char room;
+	uint8_t type;
+	uint8_t room;
 };
 
 struct CG_MessageName
 {
-	// 15 types, 15 bytes max
-	unsigned char type : 4;
-	unsigned char padding : 4;
-
+	uint8_t type;
 	char name[NAME_LEN + 1];
 };
 
 // get track, assigned by host
 struct CG_MessageTrack
 {
-	// 15 types, 15 bytes max
-	unsigned char type : 4;
-	unsigned char padding : 4;
-
-	unsigned char trackID : 5;
-	unsigned char lapID : 3;
+	uint8_t type;
+	uint8_t trackID;
+	uint8_t lapID;
 };
 
 // character message
 struct CG_MessageCharacter
 {
-	// 15 types, 15 bytes max
-	unsigned char type : 4;
-
-	// character 0 - 15
-	// Selected 0/1
-	unsigned char characterID : 4;
-	unsigned char boolSelected : 1;
-
-	// can be used for Engine type, or more characters
-	unsigned char padding : 7;
+	uint8_t type;
+	uint8_t characterID;
+	uint8_t boolSelected;
 };
 
-struct CG_EverythingKart
+struct CG_MessageKart
 {
-	// byte[0]
-
-	// 15 types, 15 bytes max
-	unsigned char type : 4;
+	uint8_t type;
 
 	// does not include fire level yet
-	unsigned char wumpa : 3;
-	unsigned char boolReserves : 1;
-
+	uint8_t wumpa		 : 3;
+	uint8_t boolReserves : 1;
+	uint8_t padding		 : 4;
 	// bit-compressed driver->0x39A
-	unsigned char kartRot1;
-	unsigned char kartRot2;
-
-	// byte[3]
-
-	unsigned char buttonHold;
-
-	// byte[4-12]
-
-	short posX;
-	short posY;
-	short posZ;
-
-	// 10 bytes
+	uint8_t kartRot1;
+	uint8_t kartRot2;
+	uint8_t buttonHold;
+	int16_t posX;
+	int16_t posY;
+	int16_t posZ;
 };
 
 struct CG_MessageWeapon
 {
-	// 15 types, 15 bytes max
-	unsigned char type : 4;
+	uint8_t type;
 
 	// can be used for desired target
-	unsigned char juiced : 1;
-	unsigned char padding : 1;
-	unsigned char flags : 2;
-
-	// 0-15
-	unsigned char weapon : 4;
-
-	unsigned char padding2 : 4;
+	uint8_t juiced  : 1;
+	uint8_t flags   : 2;
+	uint8_t weapon  : 4;
+	uint8_t padding : 1;
 };
 
 struct CG_MessageEndRace
 {
-	// 15 types, 15 bytes max
-	unsigned char type : 4;
-	unsigned char padding : 4;
-	int courseTime;
-	int lapTime;
+	uint8_t type;
+	int32_t courseTime;
+	int32_t lapTime;
+};
+
+struct CG_Message
+{
+	uint8_t type;
+	uint8_t reliable;
+	union
+	{
+		CG_MessageRoom room;		   // CG_JOINROOM
+		CG_MessageName name;		   // CG_NAME
+		CG_MessageTrack track;		   // CG_TRACK
+		CG_MessageCharacter character; // CG_CHARACTER
+		CG_MessageKart kart;		   // CG_KART
+		CG_MessageWeapon weapon;	   // CG_WEAPON
+		CG_MessageEndRace endRace;	   // CG_ENDRACE
+	};
 };
 
 #define DRIVER_COURSE_OFFSET 0x514
