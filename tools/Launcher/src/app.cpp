@@ -1,5 +1,5 @@
 #include "app.h"
-#include "dataManager.h"
+#include "data.h"
 #include "client.h"
 #include "IconsFontAwesome6.h"
 
@@ -49,11 +49,11 @@ bool App::InitSDL()
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
   SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-  const std::string title = "Online CTR Launcher " + m_version;
+  const std::string title = "Saphi Launcher " + m_version;
   m_window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 530, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
   if (!m_window) { return false; }
 
-  SDL_Surface* icon = IMG_Load((g_dataFolder + "octr.ico").c_str());
+  SDL_Surface* icon = IMG_Load((g_dataFolder + "wheel_icon.png").c_str());
   SDL_SetWindowIcon(m_window, icon);
   SDL_FreeSurface(icon);
   m_glContext = SDL_GL_CreateContext(m_window);

@@ -1,13 +1,16 @@
 #pragma once
 
-#include <enet/enet.h>
+#include "network.h"
+#include "state.h"
+#include "message.h"
+
 #include <OnlineCTR/global.h>
 #include <string>
 #include <unordered_map>
 #include <functional>
 
-static constexpr size_t ADDR_OCTR = 0x8000C000;
-static constexpr size_t ADDR_gGT = 0x80096b20;
+#define BIND_STATE(state, func) { state, std::bind(&func, std::placeholders::_1) }
+#define BIND_RECV(state, func) { state, std::bind(&func, std::placeholders::_1, std::placeholders::_2) }
 
 class Client
 {
@@ -17,52 +20,36 @@ public:
 	void Close();
 
 private:
-	template<typename T> inline T& GetRAMData(size_t addr);
+	void StartEmulation();
+	bool CheckSigbusError();
+	bool NextFrameReady(OnlineCTR& octr);
 	void SpawnDuck();
 	void CloseDuck();
-	void State_Launch_Boot(OnlineCTR& octr);
-	void State_Launch_PickServer(OnlineCTR& octr);
-	void State_Launch_PickRoom(OnlineCTR& octr);
-	void State_Launch_Error(OnlineCTR& octr);
-	void State_Lobby_AssignRole(OnlineCTR& octr);
-	void State_Lobby_HostTrackPick(OnlineCTR& octr);
-	void State_Lobby_GuestTrackWait(OnlineCTR& octr);
-	void State_Lobby_CharacterPick(OnlineCTR& octr);
-	void State_Lobby_WaitForLoading(OnlineCTR& octr);
-	void State_Lobby_Loading(OnlineCTR& octr);
-	void State_Game_WaitForRace(OnlineCTR& octr);
-	void State_Game_Race(OnlineCTR& octr);
-	void State_Game_EndRace(OnlineCTR& octr);
-
-public:
-	float m_fx = 1.0f;
-	float m_music = 1.0f;
-	float m_voice = 1.0f;
-	bool m_stereo = true;
-	bool m_vibration = false;
-	bool m_reset = false;
-	std::string m_duckCommand;
 
 private:
+	Network m_net;
 	bool m_active = false;
 	bool m_getDuckRAM = false;
 	int m_duckPid = 0;
 	void* m_duckHandle = nullptr;
-	uint8_t* m_duckRAM = nullptr;
 	std::unordered_map<ClientState, std::function<void(OnlineCTR&)>> m_funcs = {
-		{ ClientState::LAUNCH_BOOT, std::bind(&Client::State_Launch_Boot, this, std::placeholders::_1) },
-		{ ClientState::LAUNCH_PICK_SERVER, std::bind(&Client::State_Launch_PickServer, this, std::placeholders::_1) },
-		{ ClientState::LAUNCH_PICK_ROOM, std::bind(&Client::State_Launch_PickRoom, this, std::placeholders::_1) },
-		{ ClientState::LAUNCH_ERROR, std::bind(&Client::State_Launch_Error, this, std::placeholders::_1) },
-		{ ClientState::LOBBY_ASSIGN_ROLE, std::bind(&Client::State_Lobby_AssignRole, this, std::placeholders::_1) },
-		{ ClientState::LOBBY_HOST_TRACK_PICK, std::bind(&Client::State_Lobby_HostTrackPick, this, std::placeholders::_1) },
-		{ ClientState::LOBBY_GUEST_TRACK_WAIT, std::bind(&Client::State_Lobby_GuestTrackWait, this, std::placeholders::_1) },
-		{ ClientState::LOBBY_CHARACTER_PICK, std::bind(&Client::State_Lobby_CharacterPick, this, std::placeholders::_1) },
-		{ ClientState::LOBBY_WAIT_FOR_LOADING, std::bind(&Client::State_Lobby_WaitForLoading, this, std::placeholders::_1) },
-		{ ClientState::LOBBY_LOADING, std::bind(&Client::State_Lobby_Loading, this, std::placeholders::_1) },
-		{ ClientState::GAME_WAIT_FOR_RACE, std::bind(&Client::State_Game_WaitForRace, this, std::placeholders::_1) },
-		{ ClientState::GAME_RACE, std::bind(&Client::State_Game_Race, this, std::placeholders::_1) },
-		{ ClientState::GAME_END_RACE, std::bind(&Client::State_Game_EndRace, this, std::placeholders::_1) },
+		BIND_STATE(ClientState::LAUNCH_BOOT,			State::Launch_Boot),
+		BIND_STATE(ClientState::LAUNCH_PICK_SERVER,		State::Launch_PickServer),
+		BIND_STATE(ClientState::LAUNCH_PICK_ROOM,		State::Launch_PickRoom),
+		BIND_STATE(ClientState::LAUNCH_ERROR,			State::Launch_Error),
+		BIND_STATE(ClientState::LOBBY_ASSIGN_ROLE,		State::Lobby_AssignRole),
+		BIND_STATE(ClientState::LOBBY_HOST_TRACK_PICK,	State::Lobby_HostTrackPick),
+		BIND_STATE(ClientState::LOBBY_GUEST_TRACK_WAIT, State::Lobby_GuestTrackWait),
+		BIND_STATE(ClientState::LOBBY_CHARACTER_PICK,	State::Lobby_CharacterPick),
+		BIND_STATE(ClientState::LOBBY_WAIT_FOR_LOADING, State::Lobby_WaitForLoading),
+		BIND_STATE(ClientState::LOBBY_LOADING,			State::Lobby_Loading),
+		BIND_STATE(ClientState::GAME_WAIT_FOR_RACE,		State::Game_WaitForRace),
+		BIND_STATE(ClientState::GAME_RACE,				State::Game_Race),
+		BIND_STATE(ClientState::GAME_END_RACE,			State::Game_EndRace),
+	};
+	std::unordered_map<ServerMessageType, std::function<void(const SG_Message&, OnlineCTR&)>> m_recvFuncs = {
+		BIND_RECV(ServerMessageType::SG_ROOMS, Message::Rooms),
+		BIND_RECV(ServerMessageType::SG_NEWCLIENT, Message::NewClient),
 	};
 
 	/* Game variables */

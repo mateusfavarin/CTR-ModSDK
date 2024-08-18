@@ -34,7 +34,7 @@ std::tuple<int, void*> Process::New(const std::string& command)
     &si,                                // Pointer to STARTUPINFO structure
     &pi))                               // Pointer to PROCESS_INFORMATION structure
   {
-    return {-1, nullptr};
+    return {INVALID_PID, nullptr};
   }
   CloseHandle(pi.hThread);
   return {pi.dwProcessId, pi.hProcess};
@@ -58,7 +58,7 @@ bool Process::Kill(void* duckProc)
   return ret;
 }
 #else /* Linux */
-#include "dataManager.h"
+#include "data.h"
 
 #include <signal.h>
 #include <unistd.h>
@@ -70,7 +70,7 @@ bool Process::Kill(void* duckProc)
 #include <tuple>
 #include <fstream>
 
-void Process::HandleSigbus() 
+void Process::HandleSigbus()
 {
   struct sigaction sa;
   sa.sa_handler = HandleBusError;
@@ -82,15 +82,15 @@ void Process::HandleSigbus()
 std::tuple<int, void*> Process::New(const std::string& command)
 {
   pid_t pid = fork();
-  if (pid == -1) { return {-1, nullptr}; } 
-  else if (pid == 0) 
+  if (pid == INVALID_PID) { return {INVALID_PID, nullptr}; }
+  else if (pid == 0)
   {
     chmod(g_duckExecutable.c_str(), 0777);
     execl("/bin/sh", "sh", "-c", ("./" + command).c_str(), (char*) NULL);
     _exit(EXIT_FAILURE); // exec should not return, exit if it fails
   }
-  
-  /* 
+
+  /*
     Duckstation PID works in mysteryous ways,
     with two y's for extra crying effect.
   */

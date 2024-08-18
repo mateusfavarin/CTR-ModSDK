@@ -160,13 +160,17 @@
     <ClCompile Include="..\..\externals\imgui\misc\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="src\app.cpp" />
     <ClCompile Include="src\client.cpp" />
-    <ClCompile Include="src\dataManager.cpp" />
+    <ClCompile Include="src\data.cpp" />
     <ClCompile Include="src\io.cpp" />
     <ClCompile Include="src\languages.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\message.cpp" />
+    <ClCompile Include="src\network.cpp" />
     <ClCompile Include="src\patch.cpp" />
     <ClCompile Include="src\process.cpp" />
+    <ClCompile Include="src\psx.cpp" />
     <ClCompile Include="src\requests.cpp" />
+    <ClCompile Include="src\state.cpp" />
     <ClCompile Include="src\ui.cpp" />
     <ClCompile Include="src\updater.cpp" />
     <ClCompile Include="third_party\xdelta3\xdelta3.c" />
@@ -174,13 +178,17 @@
   <ItemGroup>
     <ClInclude Include="src\app.h" />
     <ClInclude Include="src\client.h" />
-    <ClInclude Include="src\dataManager.h" />
+    <ClInclude Include="src\data.h" />
     <ClInclude Include="src\IconsFontAwesome6.h" />
     <ClInclude Include="src\io.h" />
     <ClInclude Include="src\languages.h" />
+    <ClInclude Include="src\message.h" />
+    <ClInclude Include="src\network.h" />
     <ClInclude Include="src\patch.h" />
     <ClInclude Include="src\process.h" />
+    <ClInclude Include="src\psx.h" />
     <ClInclude Include="src\requests.h" />
+    <ClInclude Include="src\state.h" />
     <ClInclude Include="src\ui.h" />
     <ClInclude Include="src\updater.h" />
   </ItemGroup>

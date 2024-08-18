@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dataManager.h"
+#include "data.h"
 
 #include <string>
 #include <unordered_map>
@@ -29,7 +29,7 @@ private:
 	void StartRoutine(const std::function<bool(void)>& func, RoutineStatus* const ret = nullptr);
 	void KillRoutines();
 
-public:
+public: /* Public variables are used to be accessed/modified in the UI */
 	bool m_deleteOldVersions = true;
 
 private:

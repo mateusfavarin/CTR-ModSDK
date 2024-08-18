@@ -48,3 +48,19 @@ private:
 };
 
 extern DataManager g_dataManager;
+
+struct GameData
+{
+	GameData();
+
+	float m_fx = 1.0f;
+	float m_music = 1.0f;
+	float m_voice = 1.0f;
+	bool m_stereo = true;
+	bool m_vibration = false;
+	bool m_reset = false;
+	std::string m_username;
+	std::string m_duckCommand;
+};
+
+extern GameData g_gameData;

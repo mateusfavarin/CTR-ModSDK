@@ -1,4 +1,4 @@
-#include "dataManager.h"
+#include "data.h"
 
 #include <fstream>
 #include <filesystem>
@@ -101,4 +101,15 @@ void DataManager::SaveData()
 	}
 	std::ofstream file(m_path);
 	file << std::setw(4) << m_json << std::endl;
+}
+
+GameData g_gameData;
+
+GameData::GameData()
+{
+	g_dataManager.BindData(&m_stereo, DataType::BOOL, "Stereo");
+	g_dataManager.BindData(&m_vibration, DataType::BOOL, "Vibration");
+	g_dataManager.BindData(&m_fx, DataType::FLOAT, "FXVolume");
+	g_dataManager.BindData(&m_music, DataType::FLOAT, "MusicVolume");
+	g_dataManager.BindData(&m_voice, DataType::FLOAT, "VoiceVolume");
 }

@@ -24,7 +24,7 @@ UI::UI()
   }
   g_dataManager.BindData(&m_gamePath, DataType::STRING, "GamePath");
   g_dataManager.BindData(&m_version, DataType::STRING, "GameVersion");
-  g_dataManager.BindData(&m_username, DataType::STRING, "Username");
+  g_dataManager.BindData(&g_gameData.m_username, DataType::STRING, "Username");
   m_updater.CheckForUpdates(m_version);
 }
 
@@ -60,12 +60,12 @@ void UI::Render(int width, int height)
     ImGui::EndCombo();
   }
 
-  ImGui::InputText("##Username", &m_username, ImGuiInputTextFlags_CallbackCharFilter, FilterUsernameChar);
+  ImGui::InputText("##Username", &g_gameData.m_username, ImGuiInputTextFlags_CallbackCharFilter, FilterUsernameChar);
   ImGui::SameLine();
   ImGui::ItemSize(ImVec2(20.0f, 0));
   ImGui::SameLine();
-  IconText(g_lang["Username"], m_username.empty() ? IconType::FAIL : IconType::SUCCESS);
-  if (m_username.size() > 9) { m_username = m_username.substr(0, 9); }
+  IconText(g_lang["Username"], g_gameData.m_username.empty() ? IconType::FAIL : IconType::SUCCESS);
+  if (g_gameData.m_username.size() > 9) { g_gameData.m_username = g_gameData.m_username.substr(0, 9); }
 
   auto CheckFile = [](RoutineStatus& routineStatus, bool runCheck, bool& result, std::string& currStr, std::string& lastStr, const std::function<void(RoutineStatus&, const std::string&)>& func)
     {
@@ -98,15 +98,15 @@ void UI::Render(int width, int height)
 
   if (ImGui::TreeNode(g_lang["Game Settings"].c_str()))
   {
-    ImGui::SliderFloat("FX", &g_client.m_fx, 0.0f, 1.0f, "%.2f");
-    ImGui::SliderFloat(g_lang["Music"].c_str(), &g_client.m_music, 0.0f, 1.0f, "%.2f");
-    ImGui::SliderFloat(g_lang["Voice"].c_str(), &g_client.m_voice, 0.0f, 1.0f, "%.2f");
+    ImGui::SliderFloat("FX", &g_gameData.m_fx, 0.0f, 1.0f, "%.2f");
+    ImGui::SliderFloat(g_lang["Music"].c_str(), &g_gameData.m_music, 0.0f, 1.0f, "%.2f");
+    ImGui::SliderFloat(g_lang["Voice"].c_str(), &g_gameData.m_voice, 0.0f, 1.0f, "%.2f");
     ImGui::Text(g_lang["Audio:"].c_str());
     ImGui::SameLine();
-    if (ImGui::RadioButton("Stereo", g_client.m_stereo)) { g_client.m_stereo = true; }
+    if (ImGui::RadioButton("Stereo", g_gameData.m_stereo)) { g_gameData.m_stereo = true; }
     ImGui::SameLine();
-    if (ImGui::RadioButton("Mono", !g_client.m_stereo)) { g_client.m_stereo = false; }
-    ImGui::Checkbox(g_lang["Vibration"].c_str(), &g_client.m_vibration);
+    if (ImGui::RadioButton("Mono", !g_gameData.m_stereo)) { g_gameData.m_stereo = false; }
+    ImGui::Checkbox(g_lang["Vibration"].c_str(), &g_gameData.m_vibration);
     ImGui::TreePop();
   }
 
@@ -150,8 +150,8 @@ void UI::Render(int width, int height)
     }
     else
     {
-      g_client.m_duckCommand = "\"" + g_duckExecutable + "\" \"" + s_patchedPath + "\"";
-      g_client.m_reset = true;
+      g_gameData.m_duckCommand = "\"" + g_duckExecutable + "\" \"" + s_patchedPath + "\"";
+      g_gameData.m_reset = true;
     }
   }
   if (launchDisabled) { ImGui::SetItemTooltip(g_lang["Update the game and make sure\nall settings are correct."].c_str()); }

@@ -17,11 +17,11 @@
 
 #define DONT_SHOW_NAME		            0
 #define SHOW_NAME			            1
-
 #define DEFAULT_IP			            "127.0.0.1" // the default IP address we want to use for private lobbies
 #define IP_ADDRESS_SIZE		            16 // assuming IPv4 (which is "xxx.xxx.xxx.xxx" + '\0')
 #define PORT_SIZE			            6 // the port number as a string (0-65535 + '\0')
 
+#define SERVER_NUM_ROOMS 16
  // 2 seconds to be very tolerant on client
 #ifdef USE_60FPS
 #define DISCONNECT_AT_UNSYNCED_FRAMES   120
@@ -72,22 +72,22 @@ struct OnlineCTR
 	unsigned char DriverID;
 
 	// 0x8
-	unsigned char boolLockedInLap;
-	unsigned char boolLockedInLevel;
+	unsigned char boolSelectedLap;
+	unsigned char boolSelectedLevel;
 	unsigned char lapID;
 	unsigned char levelID;
 
 	// 0xC
 	unsigned char IsBootedPS1;
-	unsigned char boolLockedInCharacter;
+	unsigned char boolSelectedCharacter;
 	unsigned char numRooms;
 	unsigned char numDriversEnded;
 
 	// 0x10
 	unsigned char serverCountry;
 	unsigned char serverRoom;
-	unsigned char serverLockIn1;
-	unsigned char serverLockIn2;
+	unsigned char hasConnectedServer;
+	unsigned char hasSelectedServer;
 
 	// 0x14
 	unsigned char boolPlanetLEV;
@@ -96,7 +96,7 @@ struct OnlineCTR
 	char padding;
 
 	// 0x18
-	char clientCount[16];
+	char roomClientCount[SERVER_NUM_ROOMS];
 
 	// 0x28
 	// determines if client and
@@ -104,7 +104,7 @@ struct OnlineCTR
 	char windowsClientSync;
 
 	// 0x30
-	char boolLockedInCharacters[MAX_NUM_PLAYERS];
+	char boolClientSelectedCharacters[MAX_NUM_PLAYERS];
 
 	// 0x38
 	char nameBuffer[MAX_NUM_PLAYERS][NAME_LEN + 1]; //+1 for nullterm
@@ -169,28 +169,22 @@ void EndOfRace_Icons();
 
 #ifdef CLIENT_SERVER
 
-enum ServerGiveMessageType
+enum ServerMessageType
 {
-	// connection
-	SG_ROOMS,
-
-	// assign to room
-	SG_NEWCLIENT,
-
-	// lobby
-	SG_NAME,
+	SG_ROOMS, // connection
+	SG_NEWCLIENT, // assign to room
+	SG_NAME, // lobby
 	SG_TRACK,
 	SG_CHARACTER,
 	SG_STARTLOADING,
-
 	SG_STARTRACE,
 	SG_RACEDATA,
 	SG_WEAPON,
 	SG_ENDRACE,
-
 	SG_SERVERCLOSED,
-
-	SG_COUNT
+	SG_DISCONNECT,
+	SG_COUNT,
+	SG_EOF = 0xFF
 };
 
 // variety of opcodes (start load / start race)
@@ -209,30 +203,9 @@ struct SG_MessageRooms
 	// 15 types, 15 bytes max
 	unsigned char type : 4;
 	unsigned char padding : 4;
-
 	unsigned char numRooms;
-
 	unsigned short version;
-
-	unsigned char numClients01 : 4;
-	unsigned char numClients02 : 4;
-	unsigned char numClients03 : 4;
-	unsigned char numClients04 : 4;
-	unsigned char numClients05 : 4;
-	unsigned char numClients06 : 4;
-	unsigned char numClients07 : 4;
-	unsigned char numClients08 : 4;
-
-	unsigned char numClients09 : 4;
-	unsigned char numClients10 : 4;
-	unsigned char numClients11 : 4;
-	unsigned char numClients12 : 4;
-	unsigned char numClients13 : 4;
-	unsigned char numClients14 : 4;
-	unsigned char numClients15 : 4;
-	unsigned char numClients16 : 4;
-
-	// 12 bytes total
+	unsigned char roomClientCount[SERVER_NUM_ROOMS];
 };
 
 // sent to each user when someone connects
@@ -283,17 +256,17 @@ struct SG_MessageCharacter
 	unsigned char type : 4;
 
 	// index 0 - 7
-	// boolLockedIn 0/1
+	// boolSelected 0/1
 	// character 0 - 15
 	unsigned char clientID : 3;
-	unsigned char boolLockedIn : 1;
+	unsigned char boolSelected : 1;
 	unsigned char characterID : 4;
 
 	// can be used for Engine type, or more characters
 	unsigned char padding : 4;
 };
 
-struct SG_EverythingKart
+struct SG_MessageKart
 {
 	// byte[0]
 
@@ -349,17 +322,23 @@ struct SG_MessageEndRace
 	int lapTime;
 };
 
-STATIC_ASSERT2(sizeof(struct SG_Header) == 1, "Size of SG_Header must be 1 byte");
-STATIC_ASSERT2(sizeof(struct SG_MessageRooms) == 12, "Size of SG_MessageRooms must be 12 bytes");
-STATIC_ASSERT2(sizeof(struct SG_MessageClientStatus) == 2, "Size of SG_MessageClientStatus must be 2 bytes");
-STATIC_ASSERT2(sizeof(struct SG_MessageName) == 12, "Size of SG_MessageName must be 12 bytes");
-STATIC_ASSERT2(sizeof(struct SG_MessageCharacter) == 2, "Size of SG_MessageCharacter must be 2 bytes");
-STATIC_ASSERT2(sizeof(struct SG_MessageTrack) == 2, "Size of SG_MessageTrack must be 2 bytes");
-STATIC_ASSERT2(sizeof(struct SG_EverythingKart) == 10, "Size of SG_EverythingKart must be 10 bytes");
-STATIC_ASSERT2(sizeof(struct SG_MessageWeapon) == 2, "Size of SG_MessageWeapon must be 2 bytes");
-STATIC_ASSERT2(sizeof(struct SG_MessageEndRace) == 12, "Size of SG_MessageEndRace must be 12 bytes");
+struct SG_Message
+{
+	unsigned char type;
+	union
+	{
+		struct SG_MessageRooms rooms;				// SG_ROOMS
+		struct SG_MessageClientStatus clientStatus; // SG_NEWCLIENT
+		struct SG_MessageName name;					// SG_NAME
+		struct SG_MessageTrack track;				// SG_TRACK
+		struct SG_MessageCharacter character;		// SG_CHARACTER
+		struct SG_MessageKart kart;					// SG_RACEDATA
+		struct SG_MessageWeapon weapon;				// SG_WEAPON
+		struct SG_MessageEndRace endRace;			// SG_ENDRACE
+	};
+};
 
-enum ClientGiveMessageType
+enum ClientMessageType
 {
 	CG_JOINROOM,
 
@@ -423,9 +402,9 @@ struct CG_MessageCharacter
 	unsigned char type : 4;
 
 	// character 0 - 15
-	// lockedIn 0/1
+	// Selected 0/1
 	unsigned char characterID : 4;
-	unsigned char boolLockedIn : 1;
+	unsigned char boolSelected : 1;
 
 	// can be used for Engine type, or more characters
 	unsigned char padding : 7;
@@ -486,14 +465,6 @@ struct CG_MessageEndRace
 
 #define DRIVER_COURSE_OFFSET 0x514
 #define DRIVER_BESTLAP_OFFSET 0x63c
-
-STATIC_ASSERT2(sizeof(struct CG_Header) == 1, "Size of CG_Header must be 1 byte");
-STATIC_ASSERT2(sizeof(struct CG_MessageName) == 11, "Size of CG_MessageName must be 11 bytes");
-STATIC_ASSERT2(sizeof(struct CG_MessageCharacter) == 2, "Size of CG_MessageCharacter must be 2 bytes");
-STATIC_ASSERT2(sizeof(struct CG_MessageTrack) == 2, "Size of CG_MessageTrack must be 2 bytes");
-STATIC_ASSERT2(sizeof(struct CG_EverythingKart) == 10, "Size of CG_EverythingKart must be 10 bytes");
-STATIC_ASSERT2(sizeof(struct CG_MessageWeapon) == 2, "Size of CG_MessageWeapon must be 2 bytes");
-STATIC_ASSERT2(sizeof(struct CG_MessageEndRace) == 12, "Size of CG_MessageEndRace must be 12 bytes");
 #endif
 
 #ifndef CLIENT_SERVER

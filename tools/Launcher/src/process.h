@@ -2,6 +2,8 @@
 
 #include <string>
 
+#define INVALID_PID -1
+
 namespace Process
 {
 	void HandleSigbus();

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "updater.h"
-#include "dataManager.h"
+#include "data.h"
 
 #include <imgui.h>
 #include <string>
@@ -22,7 +22,6 @@ private:
 	Updater m_updater;
 	std::string m_biosPath;
 	std::string m_gamePath;
-	std::string m_username;
 	std::string m_status;
 	bool m_validBiosChecksum = false;
 	bool m_validGameChecksum = false;

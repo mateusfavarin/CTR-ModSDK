@@ -59,7 +59,7 @@
     <ClCompile Include="src\app.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\dataManager.cpp">
+    <ClCompile Include="src\data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\io.cpp">
@@ -116,12 +116,24 @@
     <ClCompile Include="src\process.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\network.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\psx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\message.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\state.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\app.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\dataManager.h">
+    <ClInclude Include="src\data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\IconsFontAwesome6.h">
@@ -149,6 +161,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\process.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\network.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\psx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\message.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\state.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

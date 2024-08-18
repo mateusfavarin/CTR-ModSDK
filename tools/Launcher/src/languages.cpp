@@ -1,5 +1,5 @@
 #include "languages.h"
-#include "dataManager.h"
+#include "data.h"
 
 Languages g_lang;
 
