@@ -10,8 +10,23 @@ void Network::Close()
 	enet_deinitialize();
 }
 
-void Network::ConnectServer()
+bool Network::ConnectServer(const char* hostName, enet_uint16 port)
 {
+	ENetAddress addr = {};
+	enet_address_set_host(&addr, hostName);
+	addr.port = port;
+
+	m_client = enet_host_create(nullptr, 1, 2, 0, 0);
+	if (m_client == nullptr) { return false; }
+	if (m_server) { DisconnectServer(); }
+	m_server = enet_host_connect(m_client, &addr, 2, 0);
+	if (m_server == nullptr) { return false; }
+
+	ENetEvent event;
+	if (enet_host_service(m_client, &event, 3000) <= 0 || event.type != ENET_EVENT_TYPE_CONNECT) { return false; }
+
+	enet_peer_timeout(m_server, 1000000, 1000000, 5000);
+	return true;
 }
 
 void Network::DisconnectServer()
@@ -68,7 +83,7 @@ bool Network::Send(const CG_Message msg)
 
 SG_Message Network::Recv()
 {
-	SG_Message msg;
+	SG_Message msg = {};
 	ENetEvent event;
 
 	if (!m_client)

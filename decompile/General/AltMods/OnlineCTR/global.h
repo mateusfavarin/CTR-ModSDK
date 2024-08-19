@@ -1,6 +1,8 @@
 #ifndef ONLINE_GLOBAL_H
 #define ONLINE_GLOBAL_H
 
+#define OCTR_MENU_LEVEL 0x26
+
 #define VERSION_GAME   1
 #define VERSION_CLIENT 1
 #define VERSION_SERVER 1
@@ -85,7 +87,7 @@ struct OnlineCTR
 	uint8_t numDriversEnded;
 
 	// 0x10
-	uint8_t serverCountry;
+	uint8_t serverId;
 	uint8_t serverRoom;
 	uint8_t hasConnectedServer;
 	uint8_t hasSelectedServer;
@@ -289,6 +291,7 @@ enum ClientMessageType
 	CG_WEAPON,
 	CG_ENDRACE,
 	CG_COUNT,
+	CG_CONNECT = 0xFE,
 	CG_NONE = 0xFF
 };
 
@@ -374,6 +377,7 @@ struct CG_Message
 		CG_MessageKart kart;		   // CG_KART
 		CG_MessageWeapon weapon;	   // CG_WEAPON
 		CG_MessageEndRace endRace;	   // CG_ENDRACE
+		const char* hostName;		   // CG_CONNECT
 	};
 };
 

@@ -9,6 +9,7 @@ static constexpr size_t ADDR_OCTR	 = 0x8000C000;
 static constexpr size_t ADDR_gGT	 = 0x80096b20;
 static constexpr size_t ADDR_GAMEPAD = 0x80096804;
 static constexpr size_t ADDR_CHEATS	 = 0x80096b28;
+static constexpr size_t ADDR_LOADING = 0x8008d0f8;
 
 enum Buttons
 {

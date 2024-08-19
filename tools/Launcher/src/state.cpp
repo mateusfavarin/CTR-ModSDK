@@ -1,16 +1,48 @@
 #include "state.h"
+#include "psx.h"
 
-const CG_Message State::Launch_Boot(OnlineCTR& octr)
+#include <string>
+
+static inline CG_Message Message()
 {
-	CG_Message msg;
-	octr.CurrState = ClientState::LAUNCH_PICK_SERVER;
-	msg.type = ClientMessageType::CG_NONE;
+	CG_Message msg = { .type = ClientMessageType::CG_NONE, .reliable = 1 };
 	return msg;
 }
 
+static inline CG_Message Message(ClientMessageType type, bool reliable = true)
+{
+	CG_Message msg = {.type = static_cast<uint8_t>(type), .reliable = reliable};
+	return msg;
+}
+
+const CG_Message State::Launch_Boot(OnlineCTR& octr)
+{
+	CG_Message msg = Message();
+	octr.CurrState = ClientState::LAUNCH_PICK_SERVER;
+	return msg;
+}
+
+static std::string hostName;
 const CG_Message State::Launch_PickServer(OnlineCTR& octr)
 {
-	CG_Message msg;
+	CG_Message msg = Message();
+	int32_t levelID = g_psx.Read<int32_t>(ADDR_gGT + 0x1a10);
+	int32_t loadingStatus = g_psx.Read<int32_t>(ADDR_LOADING);
+	if (levelID != OCTR_MENU_LEVEL || loadingStatus == -1) { return msg; }
+
+	octr.boolClientBusy = true;
+	switch (octr.serverId)
+	{
+	case 0:
+		hostName = "test.projectsaphi.com";
+		break;
+
+	default:
+		return msg;
+	}
+
+	msg.type = ClientMessageType::CG_CONNECT;
+	msg.hostName = hostName.c_str();
 	return msg;
 }
 

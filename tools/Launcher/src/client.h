@@ -32,7 +32,7 @@ private:
 	bool m_getDuckRAM = false;
 	int m_duckPid = 0;
 	void* m_duckHandle = nullptr;
-	std::unordered_map<ClientState, std::function<const CG_Message(OnlineCTR&)>> m_funcs = {
+	std::unordered_map<ClientState, std::function<const CG_Message(OnlineCTR&)>> m_stateFuncs = {
 		BIND_STATE(ClientState::LAUNCH_BOOT,			State::Launch_Boot),
 		BIND_STATE(ClientState::LAUNCH_PICK_SERVER,		State::Launch_PickServer),
 		BIND_STATE(ClientState::LAUNCH_PICK_ROOM,		State::Launch_PickRoom),

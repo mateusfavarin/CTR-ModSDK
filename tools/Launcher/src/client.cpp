@@ -28,8 +28,21 @@ void Client::Run()
 
   if (octr.CurrState != ClientState::DISCONNECTED)
   {
-    const CG_Message msg = m_funcs[static_cast<ClientState>(octr.CurrState)](octr);
-    m_net.Send(msg);
+    ClientState state = static_cast<ClientState>(octr.CurrState);
+    const CG_Message msg = m_stateFuncs[state](octr);
+    if (msg.type == ClientMessageType::CG_CONNECT)
+    {
+      if (m_net.ConnectServer(msg.hostName))
+      {
+        octr.DriverID = -1;
+        octr.CurrState = ClientState::LAUNCH_PICK_ROOM;
+      }
+      octr.boolClientBusy = false;
+    }
+    else
+    {
+      m_net.Send(msg);
+    }
   }
 
   while (true)
