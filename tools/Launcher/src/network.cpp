@@ -31,6 +31,7 @@ bool Network::ConnectServer(const char* hostName, enet_uint16 port)
 
 void Network::DisconnectServer()
 {
+	for (const auto&[key, value] : m_sendLock) { m_sendLock[key] = false; }
 	enet_peer_disconnect_now(m_server, 0);
 	m_server = nullptr;
 }
@@ -39,6 +40,12 @@ bool Network::Send(const CG_Message msg)
 {
 	ClientMessageType type = static_cast<ClientMessageType>(msg.type);
 	if (type == ClientMessageType::CG_NONE) { return true; }
+
+	if (m_sendLock.contains(type))
+	{
+		if (m_sendLock[type]) { return false; }
+		m_sendLock[type] = true;
+	}
 
 	const void* data = nullptr;
 	size_t size = 0;
@@ -96,6 +103,8 @@ SG_Message Network::Recv()
 	{
 		SG_Header* header = reinterpret_cast<SG_Header*>(event.packet->data);
 		msg.type = header->type;
+		ServerMessageType type = static_cast<ServerMessageType>(msg.type);
+		if (m_unlockKey.contains(type)) { m_sendLock[m_unlockKey[type]] = false; }
 		switch (event.type)
 		{
 			case ENET_EVENT_TYPE_RECEIVE:
@@ -126,6 +135,7 @@ SG_Message Network::Recv()
 						msg.endRace = *reinterpret_cast<SG_MessageEndRace*>(event.packet->data);
 						break;
 					default:
+						msg.type = ServerMessageType::SG_EOF;
 						break;
 				}
 				enet_packet_destroy(event.packet);

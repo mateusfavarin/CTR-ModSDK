@@ -25,12 +25,15 @@
 #define PORT_SIZE			            6 // the port number as a string (0-65535 + '\0')
 
 #define SERVER_NUM_ROOMS 16
+#define SERVER_NULL_ROOM 255
  // 2 seconds to be very tolerant on client
 #ifdef USE_60FPS
 #define DISCONNECT_AT_UNSYNCED_FRAMES   120
 #else
 #define DISCONNECT_AT_UNSYNCED_FRAMES   60
 #endif
+
+typedef uint32_t psxptr_t;
 
 enum ClientState
 {
@@ -48,6 +51,7 @@ enum ClientState
 	GAME_WAIT_FOR_RACE,
 	GAME_RACE,
 	GAME_END_RACE,
+	GAME_SPECTATE,
 	NUM_STATES_FUNCS
 };
 
@@ -334,13 +338,11 @@ struct CG_MessageKart
 	uint8_t type;
 
 	// does not include fire level yet
-	uint8_t wumpa		 : 3;
+	uint8_t wumpa		 : 4;
 	uint8_t boolReserves : 1;
-	uint8_t padding		 : 4;
-	// bit-compressed driver->0x39A
-	uint8_t kartRot1;
-	uint8_t kartRot2;
-	uint8_t buttonHold;
+	uint8_t padding		 : 3;
+	uint16_t angle;
+	uint8_t buttonsHeld;
 	int16_t posX;
 	int16_t posY;
 	int16_t posZ;

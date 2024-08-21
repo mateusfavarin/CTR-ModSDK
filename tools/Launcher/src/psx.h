@@ -5,11 +5,13 @@
 
 #define RESET_ARR(arr) memset(&arr[0], 0, sizeof(arr))
 
-static constexpr size_t ADDR_OCTR	 = 0x8000C000;
-static constexpr size_t ADDR_gGT	 = 0x80096b20;
-static constexpr size_t ADDR_GAMEPAD = 0x80096804;
-static constexpr size_t ADDR_CHEATS	 = 0x80096b28;
-static constexpr size_t ADDR_LOADING = 0x8008d0f8;
+static constexpr size_t ADDR_OCTR	   = 0x8000C000;
+static constexpr size_t ADDR_gGT	   = 0x80096b20;
+static constexpr size_t ADDR_GAMEPAD   = 0x80096804;
+static constexpr size_t ADDR_CHEATS	   = 0x80096b28;
+static constexpr size_t ADDR_LOADING   = 0x8008d0f8;
+static constexpr size_t ADDR_CHARACTER = 0x80086e84;
+static constexpr size_t ADDR_DRIVERS   = 0x8009900c;
 
 enum Buttons
 {
@@ -54,21 +56,69 @@ enum Cheats
 	CHEAT_ALL		 = CHEAT_WUMPA | CHEAT_MASK | CHEAT_TURBO | CHEAT_INVISIBLE | CHEAT_ENGINE | CHEAT_ADV | CHEAT_ICY | CHEAT_TURBOPAD | CHEAT_SUPERHARD | CHEAT_BOMBS | CHEAT_ONELAP | CHEAT_TURBOCOUNT
 };
 
+enum GameMode
+{
+	CAMERA_FLY_IN = 0x40,
+};
+
 struct Gamepad
 {
-	uint16_t unk_0;
-	uint16_t unk_1;
-	uint16_t stickLX;
-	uint16_t stickLY;
-	uint16_t stickLX_dontUse1;
-	uint16_t stickLY_dontUse1;
-	uint16_t stickRX;
-	uint16_t stickRY;
-	uint32_t buttonsHeldCurrFrame;
-	uint32_t buttonsTapped;
-	uint32_t buttonsReleased;
-	uint32_t buttonsHeldPrevFrame;
-	uint8_t filler[0x30];
+	uint16_t unk_0;					// 0x0
+	uint16_t unk_1;					// 0x2
+	uint16_t stickLX;				// 0x4
+	uint16_t stickLY;				// 0x6
+	uint16_t stickLX_dontUse1;		// 0x8
+	uint16_t stickLY_dontUse1;		// 0xA
+	uint16_t stickRX;				// 0xC
+	uint16_t stickRY;				// 0xE
+	uint32_t buttonsHeldCurrFrame;	// 0x10
+	uint32_t buttonsTapped;			// 0x14
+	uint32_t buttonsReleased;		// 0x18
+	uint32_t buttonsHeldPrevFrame;	// 0x1c
+	uint8_t filler[0x30];			// 0X20
+};
+
+struct Vec3
+{
+	int32_t x;
+	int32_t y;
+	int32_t z;
+
+	inline Vec3 operator+(int32_t n) const
+	{
+		Vec3 res = {};
+		res.x = this->x + n;
+		res.y = this->y + n;
+		res.z = this->z + n;
+		return res;
+	}
+
+	inline Vec3 operator-(int32_t n) const
+	{
+		Vec3 res = {};
+		res.x = this->x - n;
+		res.y = this->y - n;
+		res.z = this->z - n;
+		return res;
+	}
+
+	inline Vec3 operator*(int32_t n) const
+	{
+		Vec3 res = {};
+		res.x = this->x * n;
+		res.y = this->y * n;
+		res.z = this->z * n;
+		return res;
+	}
+
+	inline Vec3 operator/(int32_t n) const
+	{
+		Vec3 res = {};
+		res.x = this->x / n;
+		res.y = this->y / n;
+		res.z = this->z / n;
+		return res;
+	}
 };
 
 class PSX

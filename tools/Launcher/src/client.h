@@ -46,6 +46,7 @@ private:
 		BIND_STATE(ClientState::GAME_WAIT_FOR_RACE,		State::Game_WaitForRace),
 		BIND_STATE(ClientState::GAME_RACE,				State::Game_Race),
 		BIND_STATE(ClientState::GAME_END_RACE,			State::Game_EndRace),
+		BIND_STATE(ClientState::GAME_SPECTATE,          State::Game_Spectate),
 	};
 	std::unordered_map<ServerMessageType, std::function<void(const SG_Message&, OnlineCTR&)>> m_recvFuncs = {
 		BIND_RECV(ServerMessageType::SG_ROOMS, Message::Rooms),

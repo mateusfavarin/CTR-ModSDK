@@ -16,5 +16,6 @@ namespace State
 	const CG_Message Lobby_Loading(OnlineCTR& octr);
 	const CG_Message Game_WaitForRace(OnlineCTR& octr);
 	const CG_Message Game_Race(OnlineCTR& octr);
-	const CG_Message Game_EndRace(OnlineCTR& octr);;
+	const CG_Message Game_EndRace(OnlineCTR& octr);
+	const CG_Message Game_Spectate(OnlineCTR& octr);
 }

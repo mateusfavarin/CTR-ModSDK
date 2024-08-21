@@ -38,12 +38,6 @@ void Message::NewClient(const SG_Message& message, OnlineCTR& octr)
   RESET_ARR(octr.raceStats);
   memcpy(&octr.nameBuffer[0], g_gameData.m_username.data(), g_gameData.m_username.size());
 
-  /* TODO
-  CG_MessageName msgSend;
-  msgSend.type = ClientMessageType::CG_NAME;
-  memcpy(&msgSend.name[0], g_gameData.m_username.data(), g_gameData.m_username.size());
-  */
-
   uint32_t& cheats = g_psx.Read<uint32_t>(ADDR_CHEATS);
   cheats &= ~(Cheats::CHEAT_ALL);
   octr.CurrState = ClientState::LOBBY_ASSIGN_ROLE;
