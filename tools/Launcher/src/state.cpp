@@ -108,11 +108,12 @@ const CG_Message State::Lobby_GuestTrackWait(OnlineCTR& octr)
 
 const CG_Message State::Lobby_CharacterPick(OnlineCTR& octr)
 {
+	if (!octr.boolClientSelectedCharacters[octr.DriverID]) { return Message(); }
+
 	CG_Message msg = Message(ClientMessageType::CG_CHARACTER);
 	const uint8_t charID = g_psx.Read<uint8_t>(ADDR_CHARACTER);
 	msg.character.characterID = charID;
-	msg.character.boolSelected = octr.boolClientSelectedCharacters[octr.DriverID];
-	if (msg.character.boolSelected) { octr.CurrState = ClientState::LOBBY_WAIT_FOR_LOADING; }
+	octr.CurrState = ClientState::LOBBY_WAIT_FOR_LOADING;
 	return msg;
 }
 

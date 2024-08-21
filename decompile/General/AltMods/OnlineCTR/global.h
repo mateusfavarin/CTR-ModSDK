@@ -225,7 +225,6 @@ struct SG_MessageCharacter
 {
 	uint8_t type;
 	uint8_t clientID;
-	uint8_t boolSelected;
 	uint8_t characterID;
 };
 
@@ -330,7 +329,6 @@ struct CG_MessageCharacter
 {
 	uint8_t type;
 	uint8_t characterID;
-	uint8_t boolSelected;
 };
 
 struct CG_MessageKart
