@@ -23,6 +23,7 @@ private:
 	void StartEmulation();
 	bool CheckSigbusError();
 	bool NextFrameReady(OnlineCTR& octr);
+	void ChangeGameOptions();
 	void SpawnDuck();
 	void CloseDuck();
 

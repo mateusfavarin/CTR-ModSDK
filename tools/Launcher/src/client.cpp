@@ -19,6 +19,7 @@ void Client::Run()
   OnlineCTR& octr = g_psx.Read<OnlineCTR>(ADDR_OCTR);
   if (CheckSigbusError() || !NextFrameReady(octr)) { return; }
 
+  ChangeGameOptions();
   const uint32_t& btnHeld = g_psx.Read<uint32_t>(ADDR_GAMEPAD + offsetof(Gamepad, buttonsHeldCurrFrame));
   if (btnHeld & Buttons::BTN_SELECT)
   {
@@ -102,6 +103,16 @@ bool Client::NextFrameReady(OnlineCTR& octr)
   if (!octr.IsBootedPS1 || gameTimer == m_currGameTimer) { return false; }
   m_currGameTimer = gameTimer;
   return true;
+}
+
+void Client::ChangeGameOptions()
+{
+  const uint32_t gameMode = g_psx.Read<uint32_t>(ADDR_gGT + 0x0);
+  g_psx.Read<uint32_t>(ADDR_FX) = static_cast<uint32_t>(g_gameData.m_fx * 255.0f);
+  g_psx.Read<uint32_t>(ADDR_MUSIC) = static_cast<uint32_t>(g_gameData.m_music * 255.0f);
+  g_psx.Read<uint32_t>(ADDR_VOICE) = static_cast<uint32_t>(g_gameData.m_voice * 255.0f);
+  g_psx.Read<uint32_t>(ADDR_STEREO) = g_gameData.m_stereo;
+  g_psx.Read<uint32_t>(ADDR_gGT + 0x0) = g_gameData.m_vibration ? gameMode & ~(GameMode::VIBRATION_P1) : gameMode | GameMode::VIBRATION_P1;
 }
 
 void Client::SpawnDuck()

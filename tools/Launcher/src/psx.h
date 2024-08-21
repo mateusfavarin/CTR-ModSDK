@@ -12,6 +12,10 @@ static constexpr size_t ADDR_CHEATS	   = 0x80096b28;
 static constexpr size_t ADDR_LOADING   = 0x8008d0f8;
 static constexpr size_t ADDR_CHARACTER = 0x80086e84;
 static constexpr size_t ADDR_DRIVERS   = 0x8009900c;
+static constexpr size_t ADDR_STEREO    = 0x8008d7cc;
+static constexpr size_t ADDR_FX		   = 0x8008d7ac;
+static constexpr size_t ADDR_MUSIC	   = 0x8008d7b8;
+static constexpr size_t ADDR_VOICE	   = 0x8008d7bc;
 
 enum Buttons
 {
@@ -59,6 +63,10 @@ enum Cheats
 enum GameMode
 {
 	CAMERA_FLY_IN = 0x40,
+	VIBRATION_P1 = 0x100,
+	VIBRATION_P2 = 0x200,
+	VIBRATION_P3 = 0x400,
+	VIBRATION_P4 = 0x800,
 };
 
 struct Gamepad

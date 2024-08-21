@@ -167,7 +167,7 @@ static const CG_Message Game_RaceData(OnlineCTR& octr)
 const CG_Message State::Game_WaitForRace(OnlineCTR& octr)
 {
 	const uint32_t gameMode = g_psx.Read<uint32_t>(ADDR_gGT + 0x0);
-	if (!(gameMode & GameMode::CAMERA_FLY_IN) && !sentStartRace)
+	if (!sentStartRace && !(gameMode & GameMode::CAMERA_FLY_IN))
 	{
 		CG_Message msg = Message(ClientMessageType::CG_STARTRACE);
 		sentStartRace = true;
@@ -192,6 +192,7 @@ const CG_Message State::Game_EndRace(OnlineCTR& octr)
 	octr.raceStats[octr.numDriversEnded].finalTime = courseTime;
 	octr.raceStats[octr.numDriversEnded].bestLap = lapTime;
 	octr.numDriversEnded++;
+	octr.CurrState = ClientState::GAME_SPECTATE;
 
 	CG_Message msg = Message(ClientMessageType::CG_ENDRACE);
 	msg.endRace.courseTime = courseTime;
