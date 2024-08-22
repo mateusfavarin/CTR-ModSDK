@@ -172,10 +172,9 @@ enum ServerMessageType
 	SG_CHARACTER,
 	SG_STARTLOADING,
 	SG_STARTRACE,
-	SG_RACEDATA,
+	SG_KART,
 	SG_WEAPON,
 	SG_ENDRACE,
-	SG_SERVERCLOSED,
 	SG_DISCONNECT,
 	SG_COUNT,
 	SG_EOF = 0xFF
@@ -217,7 +216,7 @@ struct SG_MessageTrack
 {
 	uint8_t type;
 	uint8_t trackID;
-	uint8_t lapID;
+	uint16_t lapCount;
 };
 
 // assign character,
@@ -239,8 +238,7 @@ struct SG_MessageKart
 	uint8_t padding      : 1;
 
 	// bit-compressed driver->0x39A
-	uint8_t kartRot1;
-	uint8_t kartRot2;
+	uint16_t angle;
 	uint8_t buttonHold;
 
 	int16_t posX;
@@ -321,7 +319,7 @@ struct CG_MessageTrack
 {
 	uint8_t type;
 	uint8_t trackID;
-	uint8_t lapID;
+	uint16_t lapCount;
 };
 
 // character message

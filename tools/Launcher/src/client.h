@@ -50,8 +50,16 @@ private:
 		BIND_STATE(ClientState::GAME_SPECTATE,          State::Game_Spectate),
 	};
 	std::unordered_map<ServerMessageType, std::function<void(const SG_Message&, OnlineCTR&)>> m_recvFuncs = {
-		BIND_RECV(ServerMessageType::SG_ROOMS, Message::Rooms),
-		BIND_RECV(ServerMessageType::SG_NEWCLIENT, Message::NewClient),
+		BIND_RECV(ServerMessageType::SG_ROOMS,		  Message::Rooms),
+		BIND_RECV(ServerMessageType::SG_NEWCLIENT,	  Message::NewClient),
+		BIND_RECV(ServerMessageType::SG_NAME,		  Message::Name),
+		BIND_RECV(ServerMessageType::SG_TRACK,		  Message::Track),
+		BIND_RECV(ServerMessageType::SG_CHARACTER,	  Message::Character),
+		BIND_RECV(ServerMessageType::SG_STARTLOADING, Message::StartLoading),
+		BIND_RECV(ServerMessageType::SG_STARTRACE,    Message::StartRace),
+		BIND_RECV(ServerMessageType::SG_KART,		  Message::Kart),
+		BIND_RECV(ServerMessageType::SG_WEAPON,		  Message::Weapon),
+		BIND_RECV(ServerMessageType::SG_ENDRACE,	  Message::EndRace),
 	};
 
 	/* Game variables */

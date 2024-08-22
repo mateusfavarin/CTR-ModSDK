@@ -125,7 +125,7 @@ SG_Message Network::Recv()
 					case ServerMessageType::SG_CHARACTER:
 						msg.character = *reinterpret_cast<SG_MessageCharacter*>(event.packet->data);
 						break;
-					case ServerMessageType::SG_RACEDATA:
+					case ServerMessageType::SG_KART:
 						msg.kart = *reinterpret_cast<SG_MessageKart*>(event.packet->data);
 						break;
 					case ServerMessageType::SG_WEAPON:
