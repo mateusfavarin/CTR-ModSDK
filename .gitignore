@@ -50,6 +50,7 @@ games/settings.json
 *.pdb
 *.lib
 *.dll
+*.ini
 
 # MyMods folder
 mods/MyMods/*
