@@ -5,10 +5,10 @@
 static void PlayerHoldSquare(int slot)
 {
   Gamepad& gamepad = g_psx.Read<Gamepad>(ADDR_GAMEPAD + sizeof(Gamepad) * slot);
-  gamepad.buttonsHeldCurrFrame = 0x20;
+  gamepad.buttonsHeldCurrFrame = Buttons::BTN_SQUARE_one;
   gamepad.buttonsTapped = 0;
   gamepad.buttonsReleased = 0;
-  gamepad.buttonsHeldPrevFrame = 0x20;
+  gamepad.buttonsHeldPrevFrame = Buttons::BTN_SQUARE_one;
 }
 
 void Message::Rooms(const SG_Message& message, OnlineCTR& octr)
@@ -17,7 +17,7 @@ void Message::Rooms(const SG_Message& message, OnlineCTR& octr)
   octr.ver_pc = VERSION_CLIENT;
   octr.ver_server = msg.version;
 
-  if (octr.ver_server != VERSION_CLIENT || octr.ver_psx != VERSION_CLIENT)
+  if (msg.version != VERSION_CLIENT || octr.ver_psx != VERSION_CLIENT)
   {
     octr.CurrState = ClientState::LAUNCH_ERROR;
     return;
@@ -25,7 +25,7 @@ void Message::Rooms(const SG_Message& message, OnlineCTR& octr)
 
   octr.hasSelectedServer = false;
   octr.numRooms = msg.numRooms;
-  for (unsigned char i = 0; i < octr.numRooms; i++)
+  for (unsigned char i = 0; i < msg.numRooms; i++)
   {
     octr.roomClientCount[i] = msg.roomClientCount[i];
   }
@@ -52,16 +52,29 @@ void Message::NewClient(const SG_Message& message, OnlineCTR& octr)
   octr.CurrState = ClientState::LOBBY_ASSIGN_ROLE;
 }
 
+void Message::UpdateID(const SG_Message& message, OnlineCTR & octr)
+{
+  const SG_MessageClientID msg = message.id;
+  octr.DriverID = msg.newID;
+  ClientState state = static_cast<ClientState>(octr.CurrState);
+  if (msg.newID == ID_HOST && state == ClientState::LOBBY_GUEST_TRACK_WAIT)
+  {
+    octr.CurrState = ClientState::LOBBY_HOST_TRACK_PICK;
+    octr.boolSelectedCharacter = 0;
+  }
+}
+
 void Message::Name(const SG_Message& message, OnlineCTR& octr)
 {
   const SG_MessageName msg = message.name;
-  if (msg.clientID == octr.DriverID) { return; }
+  const uint8_t driverID = octr.DriverID;
+  if (msg.clientID == driverID) { return; }
 
   octr.NumDrivers = msg.numClientsTotal;
-  int slot = msg.clientID < octr.DriverID ? msg.clientID + 1 : msg.clientID;
+  int slot = msg.clientID < driverID ? msg.clientID + 1 : msg.clientID;
   strncpy(octr.nameBuffer[slot], msg.name, sizeof(msg.name));
 
-  if (msg.name[0] == 0) { PlayerHoldSquare(slot); } /* TODO: Implement a disconnect message */
+  if (msg.name[0] == 0) { PlayerHoldSquare(slot); }
 }
 
 void Message::Track(const SG_Message& message, OnlineCTR& octr)
@@ -75,9 +88,10 @@ void Message::Track(const SG_Message& message, OnlineCTR& octr)
 void Message::Character(const SG_Message& message, OnlineCTR& octr)
 {
   const SG_MessageCharacter msg = message.character;
-  if (msg.clientID == octr.DriverID) { return; }
+  const uint8_t driverID = octr.DriverID;
+  if (msg.clientID == driverID) { return; }
 
-  int slot = msg.clientID < octr.DriverID ? msg.clientID + 1 : msg.clientID;
+  int slot = msg.clientID < driverID ? msg.clientID + 1 : msg.clientID;
   g_psx.Read<int16_t>(ADDR_CHARACTER + sizeof(int16_t) * slot) = msg.characterID;
   octr.boolClientSelectedCharacters[msg.clientID] = true;
 }
@@ -95,13 +109,14 @@ void Message::StartRace(const SG_Message& message, OnlineCTR& octr)
 void Message::Kart(const SG_Message& message, OnlineCTR& octr)
 {
   const SG_MessageKart msg = message.kart;
-  if (msg.clientID == octr.DriverID) { return; }
+  const uint8_t driverID = octr.DriverID;
+  if (msg.clientID == driverID) { return; }
 
-  int slot = msg.clientID < octr.DriverID ? msg.clientID + 1 : msg.clientID;
+  int slot = msg.clientID < driverID ? msg.clientID + 1 : msg.clientID;
   Gamepad& gamepad = g_psx.Read<Gamepad>(ADDR_GAMEPAD + sizeof(Gamepad) * slot);
   const psxptr_t driver = g_psx.Read<psxptr_t>(ADDR_DRIVERS + sizeof(psxptr_t) * slot);
 
-  static std::vector<uint32_t> buttonsPrev(MAX_NUM_PLAYERS);
+  static std::vector<uint32_t> buttonsPrev(ROOM_MAX_NUM_PLAYERS);
   uint32_t btnHeld = msg.buttonHold & ~(Buttons::BTN_CIRCLE | Buttons::BTN_L2_one);
   if (msg.buttonHold & Buttons::BTN_CIRCLE) { btnHeld |= Buttons::BTN_R1; }
   if (msg.buttonHold & Buttons::BTN_L2_one) { btnHeld |= Buttons::BTN_L1; }
@@ -128,9 +143,10 @@ void Message::Kart(const SG_Message& message, OnlineCTR& octr)
 void Message::Weapon(const SG_Message& message, OnlineCTR& octr)
 {
   const SG_MessageWeapon msg = message.weapon;
-  if (msg.clientID == octr.DriverID) { return; }
+  const uint8_t driverID = octr.DriverID;
+  if (msg.clientID == driverID) { return; }
 
-  int slot = msg.clientID < octr.DriverID ? msg.clientID + 1 : msg.clientID;
+  int slot = msg.clientID < driverID ? msg.clientID + 1 : msg.clientID;
   octr.Shoot[slot].boolNow = true;
   octr.Shoot[slot].Weapon = msg.weapon;
   octr.Shoot[slot].boolJuiced = msg.juiced;
@@ -140,12 +156,14 @@ void Message::Weapon(const SG_Message& message, OnlineCTR& octr)
 void Message::EndRace(const SG_Message& message, OnlineCTR& octr)
 {
   const SG_MessageEndRace msg = message.endRace;
-  if (msg.clientID == octr.DriverID) { return; }
+  const uint8_t driverID = octr.DriverID;
+  if (msg.clientID == driverID) { return; }
 
-  int slot = msg.clientID < octr.DriverID ? msg.clientID + 1 : msg.clientID;
+  int slot = msg.clientID < driverID ? msg.clientID + 1 : msg.clientID;
   PlayerHoldSquare(slot);
-  octr.raceStats[octr.numDriversEnded].slot = slot;
-  octr.raceStats[octr.numDriversEnded].finalTime = msg.courseTime;
-  octr.raceStats[octr.numDriversEnded].bestLap = msg.lapTime;
+  const uint8_t numDriversEnded = octr.numDriversEnded;
+  octr.raceStats[numDriversEnded].slot = slot;
+  octr.raceStats[numDriversEnded].finalTime = msg.courseTime;
+  octr.raceStats[numDriversEnded].bestLap = msg.lapTime;
   octr.numDriversEnded++;
 }

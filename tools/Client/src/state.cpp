@@ -4,7 +4,7 @@
 
 #include <string>
 
-static CG_Message Message(ClientMessageType type = ClientMessageType::CG_NONE, bool reliable = true)
+static inline constexpr CG_Message Message(ClientMessageType type = ClientMessageType::CG_NONE, bool reliable = true)
 {
 	CG_Message msg = {.type = static_cast<uint8_t>(type), .reliable = reliable};
 	switch (type)
@@ -189,9 +189,10 @@ const CG_Message State::Game_EndRace(OnlineCTR& octr)
 	const int32_t courseTime = g_psx.Read<int32_t>(driver + 0x514);
 	const int32_t lapTime = g_psx.Read<int32_t>(driver + 0x63c);
 
-	octr.raceStats[octr.numDriversEnded].slot = 0;
-	octr.raceStats[octr.numDriversEnded].finalTime = courseTime;
-	octr.raceStats[octr.numDriversEnded].bestLap = lapTime;
+	const uint8_t numDriversEnded = octr.numDriversEnded;
+	octr.raceStats[numDriversEnded].slot = 0;
+	octr.raceStats[numDriversEnded].finalTime = courseTime;
+	octr.raceStats[numDriversEnded].bestLap = lapTime;
 	octr.numDriversEnded++;
 	octr.CurrState = ClientState::GAME_SPECTATE;
 

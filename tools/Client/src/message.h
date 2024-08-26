@@ -8,6 +8,7 @@ namespace Message
 {
 	void Rooms(const SG_Message& message, OnlineCTR& octr);
 	void NewClient(const SG_Message& message, OnlineCTR& octr);
+	void UpdateID(const SG_Message& message, OnlineCTR& octr);
 	void Name(const SG_Message& message, OnlineCTR& octr);
 	void Track(const SG_Message& message, OnlineCTR& octr);
 	void Character(const SG_Message& message, OnlineCTR& octr);

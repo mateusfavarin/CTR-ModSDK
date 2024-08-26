@@ -52,6 +52,7 @@ private:
 	std::unordered_map<ServerMessageType, std::function<void(const SG_Message&, OnlineCTR&)>> m_recvFuncs = {
 		BIND_RECV(ServerMessageType::SG_ROOMS,		  Message::Rooms),
 		BIND_RECV(ServerMessageType::SG_NEWCLIENT,	  Message::NewClient),
+		BIND_RECV(ServerMessageType::SG_UPDATEID,	  Message::UpdateID),
 		BIND_RECV(ServerMessageType::SG_NAME,		  Message::Name),
 		BIND_RECV(ServerMessageType::SG_TRACK,		  Message::Track),
 		BIND_RECV(ServerMessageType::SG_CHARACTER,	  Message::Character),
