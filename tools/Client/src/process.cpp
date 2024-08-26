@@ -1,14 +1,9 @@
 #include "process.h"
 
-bool g_busError = false;
-
-static void HandleBusError(int signum)
-{
-  g_busError = true;
-}
-
 #ifdef _WIN32
 #include <Windows.h>
+
+bool g_busError = false;
 
 void Process::HandleSigbus() {} /* Linux only */
 
@@ -69,6 +64,11 @@ bool Process::Kill(void* duckProc)
 #include <fcntl.h>
 #include <tuple>
 #include <fstream>
+
+static void HandleBusError(int signum)
+{
+  g_busError = true;
+}
 
 void Process::HandleSigbus()
 {
