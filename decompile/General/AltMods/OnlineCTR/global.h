@@ -202,7 +202,7 @@ struct SG_MessageRooms
 	uint8_t type;
 	uint8_t numRooms;
 	uint16_t version;
-	uint8_t roomClientCount[SERVER_NUM_ROOMS];
+	uint8_t roomroomClientCount[SERVER_NUM_ROOMS];
 	uint8_t roomLocked[SERVER_NUM_ROOMS];
 };
 

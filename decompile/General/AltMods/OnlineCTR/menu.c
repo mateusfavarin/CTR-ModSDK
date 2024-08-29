@@ -78,7 +78,7 @@ char* countryNames[8] =
 	"Private Room",
 };
 
-void NewPage_ServerCountry()
+void NewPage_serverId()
 {
 	int i;
 
@@ -102,11 +102,11 @@ void NewPage_ServerCountry()
 		menuRows[i].stringIndex |= 0x8000;
 }
 
-void MenuWrites_ServerCountry()
+void MenuWrites_serverId()
 {
 	pageMax = 0;
-	OnPressX_SetPtr = &octr->serverCountry;
-	OnPressX_SetLock = &octr->serverLockIn1;
+	OnPressX_SetPtr = &octr->serverId;
+	OnPressX_SetLock = &octr->hasConnectedServer;
 }
 
 int GetNumRoom()
@@ -114,7 +114,7 @@ int GetNumRoom()
 	int numRooms = 0;
 
 #if 0
-	switch(octr->serverCountry)
+	switch(octr->serverId)
 	{
 
 	}
@@ -157,11 +157,11 @@ void NewPage_ServerRoom()
 	{
 		menuRows[i].stringIndex = 0x809a+i;
 		sdata->lngStrings[0x9a+i][5] = GetRoomChar(8*pn + i+1);
-		sdata->lngStrings[0x9a+i][9] = '0' + (octr->clientCount[8*pn+i]);
+		sdata->lngStrings[0x9a+i][9] = '0' + (octr->roomClientCount[8*pn+i]);
 
 		// handle locked rows
-		if(octr->clientCount[8*pn+i] > 8)
-			sdata->lngStrings[0x9a+i][9] = '0' + (octr->clientCount[8*pn+i]) - 8;
+		if(octr->roomClientCount[8*pn+i] > 8)
+			sdata->lngStrings[0x9a+i][9] = '0' + (octr->roomClientCount[8*pn+i]) - 8;
 	}
 
 	int numRooms = GetNumRoom();
@@ -170,7 +170,7 @@ void NewPage_ServerRoom()
 	{
 		// unlock row if...
 		if(8*pn+i < numRooms)
-			if(octr->clientCount[8*pn+i] <= 7)
+			if(octr->roomClientCount[8*pn+i] <= 7)
 				menuRows[i].stringIndex &= 0x7FFF;
 	}
 }
@@ -186,7 +186,7 @@ void MenuWrites_ServerRoom()
 	pageMax = ((numRooms-1)&0xfffc)/8;
 
 	OnPressX_SetPtr = &octr->serverRoom;
-	OnPressX_SetLock = &octr->serverLockIn2;
+	OnPressX_SetLock = &octr->hasSelectedServer;
 }
 
 void NewPage_Tracks()
@@ -204,7 +204,7 @@ void MenuWrites_Tracks()
 {
 	pageMax = 3;
 	OnPressX_SetPtr = &octr->levelID;
-	OnPressX_SetLock = &octr->boolLockedInLevel;
+	OnPressX_SetLock = &octr->boolSelectedLevel;
 }
 
 void NewPage_Laps()
@@ -254,7 +254,7 @@ void NewPage_Laps()
 void MenuWrites_Laps()
 {
 	OnPressX_SetPtr = &octr->lapID;
-	OnPressX_SetLock = &octr->boolLockedInLap;
+	OnPressX_SetLock = &octr->boolSelectedLap;
 }
 
 void NewPage_Characters()
@@ -272,7 +272,7 @@ void MenuWrites_Characters()
 {
 	pageMax = 1;
 	OnPressX_SetPtr = &data.characterIDs[0];
-	OnPressX_SetLock = &octr->boolLockedInCharacters[octr->DriverID];
+	OnPressX_SetLock = &octr->boolClientSelectedCharacters[octr->DriverID];
 }
 
 int pressedX = 0;
@@ -338,7 +338,7 @@ void PrintCharacterStats()
 	int color;
 
 	DecalFont_DrawLine(
-		countryNames[octr->serverCountry],
+		countryNames[octr->serverId],
 		0x10, 0x10, FONT_SMALL, 0);
 
 	char* roomName = "ROOM x";
@@ -382,7 +382,7 @@ void PrintCharacterStats()
 		// 0x19 - red
 		// 0x1A - green
 		int color =
-			octr->boolLockedInCharacters[i] ?
+			octr->boolClientSelectedCharacters[i] ?
 			PLAYER_GREEN : PLAYER_RED;
 
 		int posY = 0x60+h;

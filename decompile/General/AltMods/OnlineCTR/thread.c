@@ -124,8 +124,8 @@ void ThreadFunc(struct Thread* t)
 #ifdef PINE_DEBUG
 			printf("statechange %d yesno open client/server select 5: \n", octr->stateChangeCounter++);
 #endif
-			octr->serverLockIn1 = 0;
-			octr->serverLockIn2 = 0;
+			octr->hasConnectedServer = 0;
+			octr->hasSelectedServer = 0;
 			return;
 		}
 

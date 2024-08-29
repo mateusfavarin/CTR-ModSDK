@@ -18,21 +18,21 @@ void StatePS1_Launch_PickServer()
 		strcpy(sdata->lngStrings[0x4e], "OnlineCTR");
 		initString = false;
 	}
-	MenuWrites_ServerCountry();
+	MenuWrites_serverId();
 
 	// If already picked
 	if(MenuFinished() == 1)
 	{
 		if (!initString)
 		{
-			strcpy(sdata->lngStrings[0x4e], countryNames[octr->serverCountry]);
+			strcpy(sdata->lngStrings[0x4e], countryNames[octr->serverId]);
 			initString = true;
 		}
 		return;
 	}
 
 	UpdateMenu();
-	NewPage_ServerCountry();
+	NewPage_serverId();
 }
 
 void ResetPsxGlobals()
@@ -54,7 +54,7 @@ void ResetPsxGlobals()
 	for(int i = 0; i < 8; i++)
 	{
 		data.characterIDs[i] = 0;
-		octr->boolLockedInCharacters[i] = 0;
+		octr->boolClientSelectedCharacters[i] = 0;
 	}
 }
 
@@ -76,7 +76,7 @@ void StatePS1_Launch_PickRoom()
 	int serverTotal = 0;
 	for(int i = 0; i < 16; i++)
 	{
-		int curr = octr->clientCount[i];
+		int curr = octr->roomClientCount[i];
 		if(curr > 8) curr -= 8;
 		serverTotal += curr;
 	}
@@ -117,7 +117,7 @@ void StatePS1_Lobby_HostTrackPick()
 		if(octr->levelID > TURBO_TRACK)
 		{
 			octr->lapID = 0;
-			octr->boolLockedInLap = 1;
+			octr->boolSelectedLap = 1;
 		}
 
 		// do this without adding to enum,
@@ -279,7 +279,7 @@ static void Ghostify()
 	struct Icon **ptrIconArray;
 	struct Instance *inst;
 
-	for (int driverID = 1; driverID < MAX_NUM_PLAYERS; driverID++)
+	for (int driverID = 1; driverID < ROOM_MAX_NUM_PLAYERS; driverID++)
 	{
 		gGT->drivers[driverID]->wheelSprites = ICONGROUP_GETICONS(gGT->iconGroup[0xC]);
 		inst = gGT->drivers[driverID]->instSelf;
@@ -293,7 +293,7 @@ extern unsigned int checkpointTimes[(MAX_LAPS * CPS_PER_LAP) + 1];
 
 static void OnRaceInit()
 {
-	for (int i = 0; i < MAX_NUM_PLAYERS; i++)
+	for (int i = 0; i < ROOM_MAX_NUM_PLAYERS; i++)
 	{
 		checkpointTracker[i].currCheckpoint = 0;
 		checkpointTracker[i].timer = 0;
@@ -395,7 +395,7 @@ static void OnRaceEnd()
 {
 	struct Driver ** drivers = sdata->gGT->drivers;
 	bool foundRacer = false;
-	for (int driverID = 1; driverID < MAX_NUM_PLAYERS; driverID++)
+	for (int driverID = 1; driverID < ROOM_MAX_NUM_PLAYERS; driverID++)
 	{
 		/* Undo wheel ghostify */
 		drivers[driverID]->wheelSprites = ICONGROUP_GETICONS(sdata->gGT->iconGroup[0]);

@@ -36,7 +36,7 @@ void octr_entryHook()
 	// default for first LEV, before gameplay
 	memset(octr, 0, sizeof(struct OnlineCTR));
 	octr->IsBootedPS1 = 1;
-	octr->ver_psx = VERSION;
+	octr->ver_psx = VERSION_GAME;
 }
 
 // this runs after the end of MainInit_FinalizeInit,

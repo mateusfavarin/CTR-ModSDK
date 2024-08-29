@@ -2,7 +2,7 @@
 #include "global.h"
 
 extern unsigned int checkpointTimes[(MAX_LAPS * CPS_PER_LAP) + 1];
-CheckpointTracker checkpointTracker[MAX_NUM_PLAYERS];
+CheckpointTracker checkpointTracker[ROOM_MAX_NUM_PLAYERS];
 
 void ElapsedTimeToTotalTime(TotalTime * totalTime, int elapsedTime)
 {
