@@ -2,7 +2,7 @@
 
 int main(int argc, char* argv[])
 {
-	Server server(5555);
+	Server server(64002);
 	if (!server.Init()) { return 0; }
 #ifdef _DEBUG
 	server.Run();

@@ -55,6 +55,7 @@ void Server::SendInfoRooms(const void* peer)
   SG_Message msg = {};
   msg.type = ServerMessageType::SG_ROOMS;
   msg.rooms.type = ServerMessageType::SG_ROOMS;
+  msg.rooms.version = VERSION_SERVER;
   msg.rooms.numRooms = static_cast<uint8_t>(m_rooms.size());
   size_t i = 0;
   for (const Room& room : m_rooms)
