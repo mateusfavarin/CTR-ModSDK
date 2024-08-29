@@ -80,6 +80,8 @@ bool Network::Send(const CG_Message msg)
 			size = sizeof(CG_MessageEndRace);
 			break;
 		default:
+			data = static_cast<const void*>(&msg.type);
+			size = sizeof(uint8_t);
 			break;
 	}
 	if (data == nullptr) { return true; }

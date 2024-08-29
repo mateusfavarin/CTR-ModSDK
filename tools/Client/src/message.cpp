@@ -28,6 +28,7 @@ void Message::Rooms(const SG_Message& message, OnlineCTR& octr)
   for (unsigned char i = 0; i < msg.numRooms; i++)
   {
     octr.roomClientCount[i] = msg.roomClientCount[i];
+    octr.roomLocked[i] = msg.roomLocked[i];
   }
 }
 
