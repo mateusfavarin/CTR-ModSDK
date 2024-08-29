@@ -13,8 +13,8 @@ const std::string g_duckExecutable = g_duckDlFolder + "duckstation-qt-x64-Releas
 const std::string g_duckFolder = getenv("HOME") + std::string("/.local/share/duckstation/");
 const std::string g_duckExecutable = g_duckDlFolder + "DuckStation-x64.AppImage";
 #endif
-const std::string g_patchString = "ctr-u_Online30.xdelta";
-const std::string g_configString = "SCUS-94426.ini";
+const std::string g_patchString = "saphi.xdelta";
+const std::string g_configString = "settings.ini";
 
 std::string GetPathWithoutExtension(const std::string& path)
 {

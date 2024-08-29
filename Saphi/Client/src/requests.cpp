@@ -35,19 +35,19 @@ bool Requests::DownloadFile(const std::string& domain, const std::string& sitePa
 
 bool Requests::CheckUpdates(std::string& version)
 {
-	httplib::SSLClient request("projectsaphi.com");
-	httplib::Result response = request.Get("/wp-content/uploads/onlinectr_patches/build.txt");
+	httplib::SSLClient request("api.github.com");
+	httplib::Result response = request.Get("/repos/mateusfavarin/CTR-ModSDK/tags");
   if (response && response->status == 200) {
-    version = response->body;
+    version = json::parse(response->body)[0]["name"];
     return true;
   }
   return false;
 }
 
-bool Requests::DownloadUpdates(const std::string& path, std::string& status, IconType& statusIcon)
+bool Requests::DownloadUpdates(const std::string& path, const std::string& version, std::string& status, IconType& statusIcon)
 {
-  const std::string octrDomain = "projectsaphi.com";
-  const std::string octrPath = "/wp-content/uploads/onlinectr_patches/";
+  const std::string saphiDomain = "github.com";
+  const std::string saphiPath = "/mateusfavarin/CTR-ModSDK/releases/download/" + version + "/";
   const std::vector<std::string> files = { g_patchString, g_configString };
   const std::filesystem::path u8path = std::u8string(path.begin(), path.end());
   if (!std::filesystem::is_directory(u8path)) { std::filesystem::create_directory(u8path); }
@@ -55,7 +55,7 @@ bool Requests::DownloadUpdates(const std::string& path, std::string& status, Ico
   {
     status = g_lang["Downloading"] + " " + file + "...";
     statusIcon = IconType::RUNNING;
-    if (!DownloadFile(octrDomain, octrPath + file, path + file))
+    if (!DownloadFile(saphiDomain, saphiPath + file, path + file))
     {
       status = g_lang["Error downloading"] + " " + file;
       statusIcon = IconType::FAIL;

@@ -112,10 +112,10 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
         }
 #ifdef _WIN32
         const std::string duckArchive = "duckstation.zip";
-        const std::string duckPath = "/stenzek/duckstation/releases/download/preview/duckstation-windows-x64-release.zip";
+        const std::string duckPath = "/stenzek/duckstation/releases/download/latest/duckstation-windows-x64-release.zip";
 #else
         const std::string duckArchive = "DuckStation-x64.AppImage";
-        const std::string duckPath = "/stenzek/duckstation/releases/download/preview/DuckStation-x64.AppImage";
+        const std::string duckPath = "/stenzek/duckstation/releases/download/latest/DuckStation-x64.AppImage";
 #endif
         if (!Requests::DownloadFile("github.com", duckPath, g_duckDlFolder + duckArchive))
         {
@@ -161,7 +161,7 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
         {
           m_versionAvailable = m_updateAvailable ? m_versionAvailable : version;
           std::string path = g_dataFolder + m_versionAvailable + "/";
-          if (Requests::DownloadUpdates(path, status, statusIcon) && Patch::PatchGame(path, gamePath, status, statusIcon))
+          if (Requests::DownloadUpdates(path, m_versionAvailable, status, statusIcon) && Patch::PatchGame(path, gamePath, status, statusIcon))
           {
             if (copyIni || !m_updated)
             {
@@ -195,7 +195,7 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
 
 const std::string Updater::GetVersionAvailable()
 {
-  return g_lang["Update available"] + "! v" + m_versionAvailable;
+  return g_lang["Update available"] + "! " + m_versionAvailable;
 }
 
 void Updater::StartRoutine(const std::function<bool(void)>& func, RoutineStatus* const ret)
