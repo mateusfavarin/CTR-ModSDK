@@ -24,14 +24,25 @@
 #define IP_ADDRESS_SIZE		            16 // assuming IPv4 (which is "xxx.xxx.xxx.xxx" + '\0')
 #define PORT_SIZE			            6 // the port number as a string (0-65535 + '\0')
 
-#define SERVER_NUM_ROOMS 16
+#define NUM_SERVER_PAGES 2
+#define ROOMS_PER_PAGE 8
+#define SERVER_NUM_ROOMS (NUM_SERVER_PAGES * ROOMS_PER_PAGE)
 #define SERVER_NULL_ROOM 255
+
  // 2 seconds to be very tolerant on client
 #ifdef USE_60FPS
 #define DISCONNECT_AT_UNSYNCED_FRAMES   120
 #else
 #define DISCONNECT_AT_UNSYNCED_FRAMES   60
 #endif
+
+#define NAME_LEN 9
+#define ROOM_MAX_NUM_PLAYERS 8
+#define ID_WAIT_ASSIGNMENT 0xFF
+#define ID_HOST 0
+
+#define MAX_LAPS 7
+#define CPS_PER_LAP 2
 
 typedef uint32_t psxptr_t;
 
@@ -55,8 +66,11 @@ enum ClientState
 	NUM_STATES_FUNCS
 };
 
-#define NAME_LEN 9
-#define MAX_NUM_PLAYERS 8
+enum OnlineGameMode
+{
+	ONLINE_ITEMS = 0,
+	ONLINE_ITEMLESS,
+};
 
 typedef struct RaceStats
 {
@@ -103,9 +117,10 @@ struct OnlineCTR
 	int8_t windowsClientSync;
 
 	uint8_t roomClientCount[SERVER_NUM_ROOMS];
-	uint8_t boolClientSelectedCharacters[MAX_NUM_PLAYERS];
-	char nameBuffer[MAX_NUM_PLAYERS][NAME_LEN + 1]; //+1 for nullterm
-	RaceStats raceStats[MAX_NUM_PLAYERS];
+	uint8_t roomLocked[SERVER_NUM_ROOMS];
+	uint8_t boolClientSelectedCharacters[ROOM_MAX_NUM_PLAYERS];
+	char nameBuffer[ROOM_MAX_NUM_PLAYERS][NAME_LEN + 1]; //+1 for nullterm
+	RaceStats raceStats[ROOM_MAX_NUM_PLAYERS];
 	int32_t ver_psx;
 	int32_t ver_pc;
 	int32_t ver_server;
@@ -118,7 +133,7 @@ struct OnlineCTR
 		uint8_t Weapon;
 		uint8_t flags;
 		uint8_t boolNow;
-	} Shoot[MAX_NUM_PLAYERS];
+	} Shoot[ROOM_MAX_NUM_PLAYERS];
 
     // Frames that the client didn't update
     int32_t frames_unsynced;
@@ -131,11 +146,6 @@ struct OnlineCTR
 	int32_t stateChangeCounter;
 #endif
 };
-
-STATIC_ASSERT2(sizeof(struct OnlineCTR) <= 0x400, "Size of OnlineCTR must be lte 1kb");
-
-#define MAX_LAPS 7
-#define CPS_PER_LAP 2
 
 typedef struct TotalTime
 {
@@ -156,7 +166,7 @@ typedef struct CheckpointTracker
 	char displayTime[10];
 } CheckpointTracker;
 
-extern CheckpointTracker checkpointTracker[MAX_NUM_PLAYERS];
+extern CheckpointTracker checkpointTracker[ROOM_MAX_NUM_PLAYERS];
 
 void EndOfRace_Camera();
 void EndOfRace_Icons();
@@ -167,6 +177,7 @@ enum ServerMessageType
 {
 	SG_ROOMS, // connection
 	SG_NEWCLIENT, // assign to room
+	SG_UPDATEID,
 	SG_NAME, // lobby
 	SG_TRACK,
 	SG_CHARACTER,
@@ -192,6 +203,7 @@ struct SG_MessageRooms
 	uint8_t numRooms;
 	uint16_t version;
 	uint8_t roomClientCount[SERVER_NUM_ROOMS];
+	uint8_t roomLocked[SERVER_NUM_ROOMS];
 };
 
 // sent to each user when someone connects
@@ -200,6 +212,12 @@ struct SG_MessageClientStatus
 	uint8_t type;
 	uint8_t clientID;
 	uint8_t numClientsTotal;
+};
+
+struct SG_MessageClientID
+{
+	uint8_t type;
+	uint8_t newID;
 };
 
 // get name from any client
@@ -272,10 +290,11 @@ struct SG_Message
 	{
 		struct SG_MessageRooms rooms;				// SG_ROOMS
 		struct SG_MessageClientStatus clientStatus; // SG_NEWCLIENT
+		struct SG_MessageClientID id;				// SG_UPDATEID
 		struct SG_MessageName name;					// SG_NAME
 		struct SG_MessageTrack track;				// SG_TRACK
 		struct SG_MessageCharacter character;		// SG_CHARACTER
-		struct SG_MessageKart kart;					// SG_RACEDATA
+		struct SG_MessageKart kart;					// SG_KART
 		struct SG_MessageWeapon weapon;				// SG_WEAPON
 		struct SG_MessageEndRace endRace;			// SG_ENDRACE
 	};
@@ -292,8 +311,9 @@ enum ClientMessageType
 	CG_WEAPON,
 	CG_ENDRACE,
 	CG_COUNT,
-	CG_CONNECT = 0xFE,
-	CG_NONE = 0xFF
+	CG_DISCONNECT = 253,
+	CG_CONNECT = 254,
+	CG_NONE = 255
 };
 
 // sent to each user when someone connects
@@ -366,6 +386,7 @@ struct CG_Message
 {
 	uint8_t type;
 	uint8_t reliable;
+	void* peer;
 	union
 	{
 		CG_MessageRoom room;		   // CG_JOINROOM
@@ -379,8 +400,6 @@ struct CG_Message
 	};
 };
 
-#define DRIVER_COURSE_OFFSET 0x514
-#define DRIVER_BESTLAP_OFFSET 0x63c
 #endif
 
 #ifndef CLIENT_SERVER
