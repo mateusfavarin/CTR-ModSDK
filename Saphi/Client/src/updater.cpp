@@ -11,7 +11,7 @@
 Updater::Updater()
 {
   g_dataManager.BindData(&m_updated, DataType::BOOL, "Updated");
-  g_dataManager.BindData(&m_hasDuckstation, DataType::BOOL, "Duck");
+  g_dataManager.BindData(&m_hasEmulator, DataType::BOOL, "Duck");
   g_dataManager.BindData(&m_deleteOldVersions, DataType::BOOL, "DeleteOldVersions");
 }
 
@@ -100,38 +100,75 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
           status = g_lang[message];
           statusIcon = icon;
         };
-      if (!m_hasDuckstation)
+      if (!m_hasEmulator)
       {
-        updateStatus("Downloading Duckstation...", IconType::RUNNING);
-        const std::filesystem::path u8duckFolder = std::u8string(g_duckFolder.begin(), g_duckFolder.end());
-        if (!std::filesystem::is_directory(u8duckFolder)) { std::filesystem::create_directory(u8duckFolder); }
+        //TODO: make this preprocessor garbage... not garbage.
+#ifdef _DEBUG
+        const std::filesystem::path u8emuFolder = std::u8string(g_reduxFolder.begin(), g_reduxFolder.end());
+        const std::string emuTarget = "Redux";
+#else
+        const std::filesystem::path u8emuFolder = std::u8string(g_duckFolder.begin(), g_duckFolder.end());
+        const std::string emuTarget = "Duckstation";
+#endif
+        updateStatus(std::format("Downloading {}...", emuTarget), IconType::RUNNING);
+        if (!std::filesystem::is_directory(u8emuFolder)) { std::filesystem::create_directory(u8emuFolder); }
+#ifdef _DEBUG
+        if (g_reduxFolder != g_reduxDlFolder)
+#else
         if (g_duckFolder != g_duckDlFolder)
+#endif
         {
-          const std::filesystem::path u8duckDlFolder = std::u8string(g_duckDlFolder.begin(), g_duckDlFolder.end());
-          if (!std::filesystem::is_directory(u8duckDlFolder)) { std::filesystem::create_directory(u8duckDlFolder); }
+#ifdef _DEBUG
+          const std::filesystem::path u8emuDlFolder = std::u8string(g_reduxDlFolder.begin(), g_reduxDlFolder.end());
+#else
+          const std::filesystem::path u8emuDlFolder = std::u8string(g_duckDlFolder.begin(), g_duckDlFolder.end());
+#endif
+          if (!std::filesystem::is_directory(u8emuDlFolder)) { std::filesystem::create_directory(u8emuDlFolder); }
         }
-#ifdef _WIN32
+#ifdef _DEBUG
+    #ifdef _WIN32
+        const std::string reduxArchive = "redux.zip";
+        //"https://distrib.app/storage/assets/7dd/cb6/4a1/f58bfc1074666c68830644e824d684af4e62f6a0fd18805071d275b/pcsx-redux-nightly-19496.20240830.2-x64.zip"
+        const std::string reduxPath = "/storage/assets/7dd/cb6/4a1/f58bfc1074666c68830644e824d684af4e62f6a0fd18805071d275b/pcsx-redux-nightly-19496.20240830.2-x64.zip";
+    #else
+#error Linux does not yet support redux (if it even has a linux version idk) because TheUbMunster was too lazy.
+    #endif
+#else
+    #ifdef _WIN32
         const std::string duckArchive = "duckstation.zip";
         const std::string duckPath = "/stenzek/duckstation/releases/download/latest/duckstation-windows-x64-release.zip";
-#else
+    #else
         const std::string duckArchive = "DuckStation-x64.AppImage";
         const std::string duckPath = "/stenzek/duckstation/releases/download/latest/DuckStation-x64.AppImage";
+    #endif
 #endif
+#ifdef _DEBUG
+        if (!Requests::DownloadFile("distrib.app", reduxPath, g_reduxDlFolder + reduxArchive))
+#else
         if (!Requests::DownloadFile("github.com", duckPath, g_duckDlFolder + duckArchive))
+#endif
         {
-          updateStatus("Error: could not download Duckstation.", IconType::FAIL);
+          updateStatus(std::format("Error: could not download {}.", emuTarget), IconType::FAIL);
           return false;
         }
 #ifdef _WIN32
-        updateStatus("Decompressing Duckstation...", IconType::RUNNING);
+        updateStatus(std::format("Decompressing {}...", emuTarget), IconType::RUNNING);
+#ifdef _DEBUG
+        if (!IO::DecompressFiles(g_reduxFolder, reduxArchive))
+#else
         if (!IO::DecompressFiles(g_duckFolder, duckArchive))
+#endif
         {
-          updateStatus("Error: could not decompress Duckstation.", IconType::FAIL);
+          updateStatus(std::format("Error: could not decompress {}.", emuTarget), IconType::FAIL);
           return false;
         }
 #endif
         updateStatus("Installing Saphi settings...", IconType::RUNNING);
+#ifdef _DEBUG
+        const std::string g_biosFolder = g_reduxFolder + "bios/";
+#else
         const std::string g_biosFolder = g_duckFolder + "bios/";
+#endif
         const std::filesystem::path u8biosPath = std::u8string(g_biosFolder.begin(), g_biosFolder.end());
         if (!std::filesystem::is_directory(u8biosPath)) { std::filesystem::create_directory(u8biosPath); }
         std::string biosName;
@@ -146,10 +183,14 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
         const std::string concatBios = g_biosFolder + biosName;
         const std::filesystem::path u8concatBios = std::u8string(concatBios.begin(), concatBios.end());
         if (!std::filesystem::exists(u8concatBios)) { std::filesystem::copy_file(std::u8string(biosPath.begin(), biosPath.end()), u8concatBios); }
-        const std::string duckPortable = g_duckFolder + "portable.txt";
-        std::ofstream portableFile(duckPortable.c_str());
+#ifdef _DEBUG
+        const std::string emuPortable = g_reduxFolder + "portable.txt";
+#else
+        const std::string emuPortable = g_duckFolder + "portable.txt";
+#endif
+        std::ofstream portableFile(emuPortable.c_str());
         portableFile.close();
-        m_hasDuckstation = true;
+        m_hasEmulator = true;
         copyIni = true;
       }
       updateStatus("Checking for new updates...", IconType::RUNNING);
@@ -166,9 +207,11 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
             if (copyIni || !m_updated)
             {
               const std::string iniVersion = GetIniPath_Version(m_versionAvailable);
+#ifndef _DEBUG
               const std::string iniDuck = GetIniPath_Duck();
               const std::filesystem::path u8iniDuck = std::u8string(iniDuck.begin(), iniDuck.end());
               if (!std::filesystem::exists(u8iniDuck)) { std::filesystem::copy_file(std::u8string(iniVersion.begin(), iniVersion.end()), u8iniDuck); }
+#endif
             }
             m_updated = true;
             m_updateAvailable = false;

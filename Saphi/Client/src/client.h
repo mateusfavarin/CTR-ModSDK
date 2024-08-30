@@ -24,15 +24,15 @@ private:
 	bool CheckSigbusError();
 	bool NextFrameReady(OnlineCTR& octr);
 	void ChangeGameOptions();
-	void SpawnDuck();
-	void CloseDuck();
+	void SpawnEmu();
+	void CloseEmu();
 
 private:
 	Network m_net;
 	bool m_active = false;
-	bool m_getDuckRAM = false;
-	int m_duckPid = 0;
-	void* m_duckHandle = nullptr;
+	bool m_getEmuRAM = false;
+	int m_emuPid = 0;
+	void* m_emuHandle = nullptr;
 	std::unordered_map<ClientState, std::function<const CG_Message(OnlineCTR&)>> m_stateFuncs = {
 		BIND_STATE(ClientState::LAUNCH_BOOT,			State::Launch_Boot),
 		BIND_STATE(ClientState::LAUNCH_PICK_SERVER,		State::Launch_PickServer),
