@@ -1,9 +1,9 @@
 #include "process.h"
 
+bool g_busError = false;
+
 #ifdef _WIN32
 #include <Windows.h>
-
-bool g_busError = false;
 
 void Process::HandleSigbus() {} /* Linux only */
 
