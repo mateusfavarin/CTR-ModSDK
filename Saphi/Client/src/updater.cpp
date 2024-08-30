@@ -11,7 +11,8 @@
 Updater::Updater()
 {
   g_dataManager.BindData(&m_updated, DataType::BOOL, "Updated");
-  g_dataManager.BindData(&m_hasEmulator, DataType::BOOL, "Duck");
+  g_dataManager.BindData(&m_hasDuck, DataType::BOOL, "Duck");
+  g_dataManager.BindData(&m_hasRedux, DataType::BOOL, "Redux");
   g_dataManager.BindData(&m_deleteOldVersions, DataType::BOOL, "DeleteOldVersions");
 }
 
@@ -100,7 +101,12 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
           status = g_lang[message];
           statusIcon = icon;
         };
-      if (!m_hasEmulator)
+#ifdef _DEBUG
+      bool& hasEmulator = m_hasRedux;
+#else
+      bool& hasEmulator = m_hasDuck;
+#endif
+      if (!hasEmulator)
       {
         //TODO: make this preprocessor garbage... not garbage.
 #ifdef _DEBUG
@@ -190,7 +196,7 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
 #endif
         std::ofstream portableFile(emuPortable.c_str());
         portableFile.close();
-        m_hasEmulator = true;
+        hasEmulator = true;
         copyIni = true;
       }
       updateStatus("Checking for new updates...", IconType::RUNNING);
