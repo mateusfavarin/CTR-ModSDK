@@ -5,13 +5,21 @@
 
 const std::string g_dataFolder = "data/";
 const std::string g_openBiosPath = g_dataFolder + "openbios-fastboot.bin";
-const std::string g_duckDlFolder = g_dataFolder + "duckstation/";
-#ifdef _WIN32
-const std::string g_duckFolder = g_dataFolder + "duckstation/";
-const std::string g_duckExecutable = g_duckDlFolder + "duckstation-qt-x64-ReleaseLTCG.exe";
+#ifdef _DEBUG
+	const std::string g_reduxDlFolder = g_dataFolder + "redux/";
+	#ifdef _WIN32
+		const std::string g_reduxFolder = g_dataFolder + "redux/";
+		const std::string g_reduxExecutable = g_reduxDlFolder + "pcsx-redux.exe";
+	#endif //TODO: linux support if redux supports linux idk
 #else
-const std::string g_duckFolder = getenv("HOME") + std::string("/.local/share/duckstation/");
-const std::string g_duckExecutable = g_duckDlFolder + "DuckStation-x64.AppImage";
+	const std::string g_duckDlFolder = g_dataFolder + "duckstation/";
+	#ifdef _WIN32
+		const std::string g_duckFolder = g_dataFolder + "duckstation/";
+		const std::string g_duckExecutable = g_duckDlFolder + "duckstation-qt-x64-ReleaseLTCG.exe";
+	#else
+		const std::string g_duckFolder = getenv("HOME") + std::string("/.local/share/duckstation/");
+		const std::string g_duckExecutable = g_duckDlFolder + "DuckStation-x64.AppImage";
+	#endif
 #endif
 const std::string g_patchString = "saphi.xdelta";
 const std::string g_configString = "settings.ini";
@@ -41,10 +49,12 @@ const std::string GetIniPath_Version(const std::string& version)
 	return g_dataFolder + version + "/" + g_configString;
 }
 
+#ifndef _DEBUG
 const std::string GetIniPath_Duck()
 {
 	return g_duckFolder + "settings.ini";
 }
+#endif
 
 DataManager g_dataManager;
 

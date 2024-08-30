@@ -60,7 +60,7 @@ void Client::Run()
 
 void Client::Close()
 {
-  CloseDuck();
+  CloseEmu();
   m_net.Close();
 }
 
@@ -68,16 +68,20 @@ void Client::StartEmulation()
 {
   if (g_gameData.m_reset)
   {
-    SpawnDuck();
+    SpawnEmu();
     g_gameData.m_reset = false;
   }
-  if (m_getDuckRAM)
+  if (m_getEmuRAM)
   {
     const size_t PSX_RAM_SIZE = 0x800000;
-    uint8_t* ram = Process::GetDuckRAM("duckstation_" + std::to_string(m_duckPid), PSX_RAM_SIZE);
+#ifdef _DEBUG // = redux
+    uint8_t* ram = Process::GetEmuRAM("pcsx-redux-wram-" + std::to_string(m_emuPid), PSX_RAM_SIZE);
+#else //_RELEASE = duckstation
+    uint8_t* ram = Process::GetEmuRAM("duckstation_" + std::to_string(m_emuPid), PSX_RAM_SIZE);
+#endif
     if (ram == nullptr) { return; }
     g_psx.SetRam(ram);
-    m_getDuckRAM = false;
+    m_getEmuRAM = false;
     m_active = true;
   }
 }
@@ -93,7 +97,7 @@ bool Client::CheckSigbusError()
   if (g_busError)
   {
     g_busError = false;
-    m_getDuckRAM = true; // Try to get another pointer to shmem
+    m_getEmuRAM = true; // Try to get another pointer to shmem
     return true;
   }
   return false;
@@ -117,20 +121,24 @@ void Client::ChangeGameOptions()
   g_psx.Read<uint32_t>(ADDR_gGT + 0x0) = g_gameData.m_vibration ? gameMode & ~(GameMode::VIBRATION_P1) : gameMode | GameMode::VIBRATION_P1;
 }
 
-void Client::SpawnDuck()
+void Client::SpawnEmu()
 {
-  CloseDuck();
+  CloseEmu();
+#ifdef _DEBUG
+  auto proc = Process::New(g_gameData.m_reduxCommand);
+#else
   auto proc = Process::New(g_gameData.m_duckCommand);
+#endif
   int pid = std::get<int>(proc);
   void* handle = std::get<void*>(proc);
   if (pid == INVALID_PID) { return; }
-  m_duckPid = pid;
-  m_duckHandle = handle;
-  m_getDuckRAM = true;
+  m_emuPid = pid;
+  m_emuHandle = handle;
+  m_getEmuRAM = true;
 }
 
-void Client::CloseDuck()
+void Client::CloseEmu()
 {
-  if (m_duckHandle != nullptr) { Process::Kill(m_duckHandle); } /* Windows only */
-  else if (m_duckPid != 0) { Process::Kill(m_duckPid); } /* Linux only */
+  if (m_emuHandle != nullptr) { Process::Kill(m_emuHandle); } /* Windows only */
+  else if (m_emuPid != 0) { Process::Kill(m_emuPid); } /* Linux only */
 }

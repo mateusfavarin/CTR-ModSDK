@@ -4,6 +4,7 @@ bool g_busError = false;
 
 #ifdef _WIN32
 #include <Windows.h>
+#include <TlHelp32.h>
 
 void Process::HandleSigbus() {} /* Linux only */
 
@@ -15,6 +16,10 @@ std::tuple<int, void*> Process::New(const std::string& command)
   ZeroMemory(&si, sizeof(si));
   si.cb = sizeof(si);
   ZeroMemory(&pi, sizeof(pi));
+
+  //redirect stdout/err
+  si.hStdError = GetStdHandle(STD_ERROR_HANDLE);
+  si.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
 
   std::wstring cmd = std::wstring(command.begin(), command.end());
   if (!CreateProcess(
@@ -32,10 +37,43 @@ std::tuple<int, void*> Process::New(const std::string& command)
     return {INVALID_PID, nullptr};
   }
   CloseHandle(pi.hThread);
-  return {pi.dwProcessId, pi.hProcess};
+  int pid = pi.dwProcessId;
+#ifdef _DEBUG
+  Sleep(3000);
+  //for redux, pi.dwProcessId is incorrect bc the .exe is a wrapper application, not the emu itself?
+  HANDLE hSnapshot;
+  hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+  if (INVALID_HANDLE_VALUE == hSnapshot)
+  {
+    //unless there's a better way to find PID, then this is unrecoverable.
+    printf("Couldn't take process snapshot to search for redux");
+    exit(-1);
+  }
+  PROCESSENTRY32 pe;
+  pe.dwSize = sizeof(PROCESSENTRY32);
+  BOOL hResult = Process32First(hSnapshot, &pe);
+  bool foundOneAlready = false;
+  while (hResult)
+  {
+    if (wcscmp(pe.szExeFile, L"pcsx-redux.main") == 0)
+    {
+      if (foundOneAlready)
+      {
+        printf("Multiple redux processes seem to be running");
+        exit(-1);
+      }
+      pid = pe.th32ProcessID;
+      foundOneAlready = true;
+      break;
+    }
+    hResult = Process32Next(hSnapshot, &pe);
+  }
+  CloseHandle(hSnapshot);
+#endif
+  return {pid, pi.hProcess};
 }
 
-uint8_t* Process::GetDuckRAM(const std::string& mapName, size_t size)
+uint8_t* Process::GetEmuRAM(const std::string& mapName, size_t size)
 {
   std::wstring wideMapName = std::wstring(mapName.begin(), mapName.end());
   HANDLE hFile = OpenFileMapping(FILE_MAP_READ | FILE_MAP_WRITE, FALSE, const_cast<wchar_t*>(wideMapName.c_str()));
@@ -114,7 +152,7 @@ std::tuple<int, void*> Process::New(const std::string& command)
   return {pid, nullptr};
 }
 
-uint8_t* Process::GetDuckRAM(const std::string& mapName, size_t size)
+uint8_t* Process::GetEmuRAM(const std::string& mapName, size_t size)
 {
   int fd = shm_open(mapName.c_str(), O_RDWR, 0600);
   if (fd == -1) { return nullptr; }

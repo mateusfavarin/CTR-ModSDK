@@ -151,7 +151,12 @@ void UI::Render(int width, int height)
     else
     {
       g_dataManager.SaveData();
+#ifdef _DEBUG
+      //would be nice to have -run, but then you have no access to the ui (e.g., can't open the registers window).
+      g_gameData.m_reduxCommand = "\"" + g_reduxExecutable + "\" -portable -8mb -iso \"" + s_patchedPath + "\"";
+#else
       g_gameData.m_duckCommand = "\"" + g_duckExecutable + "\" \"" + s_patchedPath + "\"";
+#endif
       g_gameData.m_reset = true;
     }
   }

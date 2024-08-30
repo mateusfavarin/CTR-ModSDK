@@ -7,16 +7,24 @@
 
 extern const std::string g_dataFolder;
 extern const std::string g_openBiosPath;
+#ifdef _DEBUG
+extern const std::string g_reduxDlFolder;
+extern const std::string g_reduxFolder;
+extern const std::string g_reduxExecutable;
+#else
 extern const std::string g_duckDlFolder;
 extern const std::string g_duckFolder;
 extern const std::string g_duckExecutable;
+#endif
 extern const std::string g_patchString;
 extern const std::string g_configString;
 
 std::string GetPathWithoutExtension(const std::string& path);
 const std::string GetPatchedGamePath(const std::string& version);
 const std::string GetIniPath_Version(const std::string& version);
+#ifndef _DEBUG
 const std::string GetIniPath_Duck();
+#endif
 
 using json = nlohmann::json;
 
@@ -60,7 +68,11 @@ struct GameData
 	bool m_vibration = false;
 	bool m_reset = false;
 	std::string m_username;
+#if defined(_DEBUG)
+	std::string m_reduxCommand;
+#else
 	std::string m_duckCommand;
+#endif
 };
 
 extern GameData g_gameData;

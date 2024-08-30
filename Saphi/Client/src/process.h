@@ -8,7 +8,7 @@ namespace Process
 {
 	void HandleSigbus();
 	std::tuple<int, void*> New(const std::string& command);
-	uint8_t* GetDuckRAM(const std::string& mapName, size_t size);
+	uint8_t* GetEmuRAM(const std::string& mapName, size_t size);
 	bool Kill(int pid);
 	bool Kill(void* duckProc);
 }

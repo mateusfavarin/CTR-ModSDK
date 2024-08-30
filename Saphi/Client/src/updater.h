@@ -35,7 +35,7 @@ public: /* Public variables are used to be accessed/modified in the UI */
 private:
 	std::string m_versionAvailable;
 	bool m_updateAvailable = false;
-	bool m_hasDuckstation = false;
+	bool m_hasEmulator = false;
 	bool m_updated;
 
 	std::mutex m_routineMutex;
