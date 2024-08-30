@@ -74,6 +74,7 @@ void Room::OnState(const Network& net)
 	if (timeElapsed.count() < 5) { return; }
 
 	m_state = OnlineState::LOBBY;
+	m_trackSelected = false;
 	startClock = true;
 	for (auto& [key, value] : m_clients)
 	{
@@ -113,11 +114,13 @@ bool Room::NewRoom(const CG_Message message, const Network& net, Client& client)
 	SG_Message msg = Message(ServerMessageType::SG_NEWCLIENT);
 	msg.clientStatus.clientID = client.id;
 	msg.clientStatus.numClientsTotal = static_cast<uint8_t>(m_clients.size());
+	msg.clientStatus.trackSelected = m_trackSelected;
+	msg.clientStatus.trackId = m_trackId;
 	net.Send(msg, client.peer);
 	return true;
 }
 
-bool Room::Connect(const CG_Message message, const Network & net, Client & client)
+bool Room::Connect(const CG_Message message, const Network& net, Client& client)
 {
 	return true;
 }
@@ -149,7 +152,7 @@ bool Room::Disconnect(const CG_Message message, const Network& net, Client& clie
 	exception_map exceptionSelf = { { client.peer, true } };
 	Broadcast(net, msgDisconnect, exceptionSelf);
 	m_clients.erase(client.peer);
-	if (m_clients.empty()) { m_state = OnlineState::LOBBY; }
+	if (m_clients.empty()) { m_state = OnlineState::LOBBY; m_trackSelected = false; }
 	else if (m_state == OnlineState::LOBBY)
 	{
 		SG_Message msg = Message(ServerMessageType::SG_STARTLOADING);
@@ -192,6 +195,8 @@ bool Room::Name(const CG_Message message, const Network& net, Client& client)
 bool Room::Track(const CG_Message message, const Network& net, Client& client)
 {
 	SG_Message msg = Message(ServerMessageType::SG_TRACK);
+	m_trackId = message.track.trackID;
+	m_trackSelected = true;
 	msg.track.trackID = message.track.trackID;
 	msg.track.lapCount = message.track.lapCount;
 	exception_map exceptions = { { client.peer, true } };

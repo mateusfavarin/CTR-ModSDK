@@ -212,6 +212,8 @@ struct SG_MessageClientStatus
 	uint8_t type;
 	uint8_t clientID;
 	uint8_t numClientsTotal;
+	uint8_t trackSelected;
+	uint8_t trackId;
 };
 
 struct SG_MessageClientID

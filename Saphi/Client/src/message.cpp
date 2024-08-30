@@ -37,8 +37,9 @@ void Message::NewClient(const SG_Message& message, OnlineCTR& octr)
   const SG_MessageClientStatus& msg = message.clientStatus;
   octr.DriverID = msg.clientID;
   octr.NumDrivers = msg.numClientsTotal;
+  if (msg.trackSelected) { octr.levelID = msg.trackId; }
+  octr.boolSelectedLevel = msg.trackSelected;
   octr.boolSelectedLap = false;
-  octr.boolSelectedLevel = false;
   octr.lapID = 0;
   octr.levelID = 0;
   octr.boolSelectedCharacter = 0;
@@ -53,7 +54,7 @@ void Message::NewClient(const SG_Message& message, OnlineCTR& octr)
   octr.CurrState = ClientState::LOBBY_ASSIGN_ROLE;
 }
 
-void Message::UpdateID(const SG_Message& message, OnlineCTR & octr)
+void Message::UpdateID(const SG_Message& message, OnlineCTR& octr)
 {
   const SG_MessageClientID msg = message.id;
   octr.DriverID = msg.newID;
@@ -61,7 +62,6 @@ void Message::UpdateID(const SG_Message& message, OnlineCTR & octr)
   if (msg.newID == ID_HOST && state == ClientState::LOBBY_GUEST_TRACK_WAIT)
   {
     octr.CurrState = ClientState::LOBBY_HOST_TRACK_PICK;
-    octr.boolSelectedCharacter = 0;
   }
 }
 

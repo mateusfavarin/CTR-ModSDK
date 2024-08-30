@@ -83,7 +83,8 @@ const CG_Message State::Lobby_AssignRole(OnlineCTR& octr)
 {
 	CG_Message msg = Message(ClientMessageType::CG_NAME);
 	memcpy(&msg.name.name[0], g_gameData.m_username.data(), g_gameData.m_username.size());
-	octr.DriverID == 0 ? octr.CurrState = ClientState::LOBBY_HOST_TRACK_PICK : octr.CurrState = ClientState::LOBBY_GUEST_TRACK_WAIT;
+	if (octr.boolSelectedLevel) { octr.CurrState = ClientState::LOBBY_CHARACTER_PICK; }
+	else { octr.DriverID == 0 ? octr.CurrState = ClientState::LOBBY_HOST_TRACK_PICK : octr.CurrState = ClientState::LOBBY_GUEST_TRACK_WAIT; }
 	return msg;
 }
 

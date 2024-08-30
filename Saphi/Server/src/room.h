@@ -53,6 +53,8 @@ private:
 	bool EndRace(const CG_Message message, const Network& net, Client& client);
 
 private:
+	uint8_t m_trackId = 0;
+	bool m_trackSelected = false;
 	OnlineState m_state = OnlineState::LOBBY;
 	std::unordered_map<const void*, Client> m_clients;
 	std::unordered_map<ClientMessageType, std::function<bool(const CG_Message, const Network& net, Client&)>> m_msgFunc = {
