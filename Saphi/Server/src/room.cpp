@@ -1,6 +1,7 @@
 #include "room.h"
 
 #include <chrono>
+#include <cstring>
 
 static inline constexpr SG_Message Message(ServerMessageType type = ServerMessageType::SG_EOF)
 {
@@ -81,16 +82,6 @@ void Room::OnState(const Network& net)
 		msg.clientStatus.numClientsTotal = static_cast<uint8_t>(m_clients.size());
 		net.Send(msg, value.peer);
 	}
-}
-
-inline size_t Room::GetPlayerCount() const
-{
-	return m_clients.size();
-}
-
-inline bool Room::IsRoomLocked() const
-{
-	return m_state != OnlineState::LOBBY || m_clients.size() == ROOM_MAX_NUM_PLAYERS;
 }
 
 void Room::Broadcast(const Network& net, const SG_Message& message, bool reliable)

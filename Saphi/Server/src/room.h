@@ -34,8 +34,8 @@ class Room
 public:
 	bool InterpretMessage(const CG_Message& message, const void* peer, const Network& net);
 	void OnState(const Network& net);
-	inline size_t GetPlayerCount() const;
-	inline bool IsRoomLocked() const;
+	inline size_t GetPlayerCount() const { return m_clients.size(); };
+	inline bool IsRoomLocked() const { return m_state != OnlineState::LOBBY || m_clients.size() == ROOM_MAX_NUM_PLAYERS; };
 
 private:
 	void Broadcast(const Network& net, const SG_Message& message, bool reliable = true);
