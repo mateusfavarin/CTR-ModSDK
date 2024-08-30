@@ -48,8 +48,7 @@ const CG_Message State::Launch_PickServer(OnlineCTR& octr)
 {
 	CG_Message msg = Message();
 	const int32_t levelID = g_psx.Read<int32_t>(ADDR_gGT + 0x1a10);
-	const int32_t loadingStatus = g_psx.Read<int32_t>(ADDR_LOADING);
-	if (levelID != OCTR_MENU_LEVEL || loadingStatus == -1) { return msg; }
+	if (levelID != OCTR_MENU_LEVEL || !octr.hasSelectedServer) { return msg; }
 
 	octr.boolClientBusy = true;
 	switch (octr.serverId)
@@ -70,7 +69,7 @@ const CG_Message State::Launch_PickServer(OnlineCTR& octr)
 const CG_Message State::Launch_PickRoom(OnlineCTR& octr)
 {
 	CG_Message msg = Message(ClientMessageType::CG_JOINROOM);
-	octr.hasSelectedServer ? msg.room.room = octr.serverRoom : msg.room.room = SERVER_NULL_ROOM;
+	octr.hasSelectedRoom ? msg.room.room = octr.serverRoom : msg.room.room = SERVER_NULL_ROOM;
 	return msg;
 }
 

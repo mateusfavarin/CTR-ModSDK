@@ -106,7 +106,7 @@ void MenuWrites_serverId()
 {
 	pageMax = 0;
 	OnPressX_SetPtr = &octr->serverId;
-	OnPressX_SetLock = &octr->hasConnectedServer;
+	OnPressX_SetLock = &octr->hasSelectedServer;
 }
 
 int GetNumRoom()
@@ -186,7 +186,7 @@ void MenuWrites_ServerRoom()
 	pageMax = ((numRooms-1)&0xfffc)/8;
 
 	OnPressX_SetPtr = &octr->serverRoom;
-	OnPressX_SetLock = &octr->hasSelectedServer;
+	OnPressX_SetLock = &octr->hasSelectedRoom;
 }
 
 void NewPage_Tracks()

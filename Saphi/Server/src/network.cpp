@@ -86,6 +86,10 @@ void Network::Send(const SG_Message& message, const void* peer, bool reliable) c
   size_t size = 0;
   switch (type)
   {
+  case ServerMessageType::SG_ROOMS:
+    data = static_cast<const void*>(&message.rooms);
+    size = sizeof(SG_MessageRooms);
+    break;
   case ServerMessageType::SG_NEWCLIENT:
     data = static_cast<const void*>(&message.clientStatus);
     size = sizeof(SG_MessageClientStatus);

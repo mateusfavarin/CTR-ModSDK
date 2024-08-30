@@ -194,7 +194,7 @@ void OnlineEndOfRace()
 	if (((driver->actionsFlagSet & 0x2000000) == 0) ||
 		(octr->CurrState < GAME_RACE)) { return; }
 
-	octr->CurrState = GAME_END_RACE;
+	if (octr->CurrState != GAME_SPECTATE) { octr->CurrState = GAME_END_RACE; }
 #ifdef PINE_DEBUG
 	printf("statechange %d GAME_END_RACE 2: \n", octr->stateChangeCounter++);
 #endif

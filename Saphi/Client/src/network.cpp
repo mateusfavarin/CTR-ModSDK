@@ -32,6 +32,7 @@ bool Network::ConnectServer(const char* hostName, enet_uint16 port)
 void Network::DisconnectServer()
 {
 	for (const auto&[key, value] : m_sendLock) { m_sendLock[key] = false; }
+	if (m_server == nullptr) { return; }
 	enet_peer_disconnect_now(m_server, 0);
 	m_server = nullptr;
 }
@@ -131,6 +132,10 @@ const SG_Message Network::Recv()
 						break;
 					case ServerMessageType::SG_CHARACTER:
 						msg.character = *reinterpret_cast<SG_MessageCharacter*>(event.packet->data);
+						break;
+					case ServerMessageType::SG_STARTLOADING:
+						break;
+					case ServerMessageType::SG_STARTRACE:
 						break;
 					case ServerMessageType::SG_KART:
 						msg.kart = *reinterpret_cast<SG_MessageKart*>(event.packet->data);

@@ -133,7 +133,6 @@ bool Room::Connect(const CG_Message message, const Network & net, Client & clien
 
 bool Room::Disconnect(const CG_Message message, const Network& net, Client& client)
 {
-	m_clients.erase(client.peer);
 	uint8_t numClients = static_cast<uint8_t>(m_clients.size());
 	for (auto&[key, value] : m_clients)
 	{
@@ -152,6 +151,13 @@ bool Room::Disconnect(const CG_Message message, const Network& net, Client& clie
 			Broadcast(net, msg, exceptions);
 		}
 	}
+	SG_Message msgDisconnect = Message(ServerMessageType::SG_NAME);
+	msgDisconnect.name.clientID = numClients - 1;
+	msgDisconnect.name.numClientsTotal = numClients;
+	msgDisconnect.name.name[0] = '\0';
+	exception_map exceptionSelf = { { client.peer, true } };
+	Broadcast(net, msgDisconnect, exceptionSelf);
+	m_clients.erase(client.peer);
 	if (m_clients.empty()) { m_state = OnlineState::LOBBY; }
 	else if (m_state == OnlineState::LOBBY)
 	{

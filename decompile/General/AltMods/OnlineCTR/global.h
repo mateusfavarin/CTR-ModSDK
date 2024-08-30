@@ -107,8 +107,8 @@ struct OnlineCTR
 	// 0x10
 	uint8_t serverId;
 	uint8_t serverRoom;
-	uint8_t hasConnectedServer;
 	uint8_t hasSelectedServer;
+	uint8_t hasSelectedRoom;
 
 	// 0x14
 	uint8_t boolPlanetLEV;
@@ -418,6 +418,7 @@ struct CG_Message
 	void StatePS1_Lobby_Loading();
 	void StatePS1_Game_WaitForRace();
 	void StatePS1_Game_Race();
+	void StatePS1_Game_Spectate();
 	void StatePS1_Game_EndRace();
 #endif
 

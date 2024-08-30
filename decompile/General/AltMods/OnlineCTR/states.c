@@ -410,6 +410,11 @@ static void OnRaceEnd()
 
 void StatePS1_Game_EndRace()
 {
+
+}
+
+void StatePS1_Game_Spectate()
+{
 	if (endRace)
 	{
 		OnRaceEnd();

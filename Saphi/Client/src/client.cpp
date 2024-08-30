@@ -50,6 +50,7 @@ void Client::Run()
   {
     const SG_Message msg = m_net.Recv();
     const ServerMessageType type = static_cast<const ServerMessageType>(msg.type);
+    if (type == ServerMessageType::SG_DISCONNECT) { m_net.DisconnectServer(); continue; }
     if (type == ServerMessageType::SG_EOF) { break; }
     if (!m_recvFuncs.contains(type)) { continue; }
     m_recvFuncs[type](msg, octr);

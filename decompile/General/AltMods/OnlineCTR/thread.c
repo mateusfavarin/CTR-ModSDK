@@ -16,7 +16,8 @@ void (*funcs[NUM_STATES_FUNCS]) () =
 	StatePS1_Lobby_Loading,
 	StatePS1_Game_WaitForRace,
 	StatePS1_Game_Race,
-	StatePS1_Game_EndRace
+	StatePS1_Game_EndRace,
+	StatePS1_Game_Spectate
 };
 
 RECT endRaceRECT =
@@ -124,8 +125,8 @@ void ThreadFunc(struct Thread* t)
 #ifdef PINE_DEBUG
 			printf("statechange %d yesno open client/server select 5: \n", octr->stateChangeCounter++);
 #endif
-			octr->hasConnectedServer = 0;
 			octr->hasSelectedServer = 0;
+			octr->hasSelectedRoom = 0;
 			return;
 		}
 

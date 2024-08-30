@@ -65,5 +65,6 @@ private:
 		BIND_MSG(ClientMessageType::CG_STARTRACE, StartRace),
 		BIND_MSG(ClientMessageType::CG_KART, Kart),
 		BIND_MSG(ClientMessageType::CG_WEAPON, Weapon),
+		BIND_MSG(ClientMessageType::CG_ENDRACE, EndRace),
 	};
 };
