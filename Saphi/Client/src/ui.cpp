@@ -150,6 +150,7 @@ void UI::Render(int width, int height)
     }
     else
     {
+      g_dataManager.SaveData();
       g_gameData.m_duckCommand = "\"" + g_duckExecutable + "\" \"" + s_patchedPath + "\"";
       g_gameData.m_reset = true;
     }
