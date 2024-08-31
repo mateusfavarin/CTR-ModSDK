@@ -227,6 +227,7 @@
     <ClCompile Include="src\data.cpp" />
     <ClCompile Include="src\io.cpp" />
     <ClCompile Include="src\languages.cpp" />
+    <ClCompile Include="src\logger.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\message.cpp" />
     <ClCompile Include="src\network.cpp" />
@@ -245,6 +246,7 @@
     <ClInclude Include="src\IconsFontAwesome6.h" />
     <ClInclude Include="src\io.h" />
     <ClInclude Include="src\languages.h" />
+    <ClInclude Include="src\logger.h" />
     <ClInclude Include="src\message.h" />
     <ClInclude Include="src\network.h" />
     <ClInclude Include="src\patch.h" />

@@ -124,6 +124,9 @@
     <ClCompile Include="..\..\externals\xdelta\xdelta3\xdelta3.c">
       <Filter>xdelta3</Filter>
     </ClCompile>
+    <ClCompile Include="src\logger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\app.h">
@@ -169,6 +172,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\state.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
