@@ -3,7 +3,7 @@
 
 int main(int argc, char* argv[])
 {
-	printBanner();
+	Logger::PrintBanner();
 	Server server(64002);
 	if (!server.Init()) { return 0; }
 #ifdef _DEBUG
