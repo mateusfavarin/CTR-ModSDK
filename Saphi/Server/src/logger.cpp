@@ -8,14 +8,14 @@ namespace Logger
 {
 	void PrintBanner()
 	{
-		printf("   ___                         _       __ \n");
-		printf("  F __\".   ___ _    _ ___     FJ___    LJ \n");
-		printf(" J (___|  F __` L  J '__ J   J  __ `.     \n");
-		printf(" J\\___ \\ | |--| |  | |--| |  | |--| |  FJ \n");
-		printf(".--___) \\F L__J J  F L__J J  F L  J J J  L\n");
-		printf("J\\______J\\____,__LJ  _____/LJ__L  J__LJ__L\n");
-		printf(" J______FJ____,__F|_J_____F |__L  J__||__|\n");
-		printf("                  L_J                     \n");
+		printf("   ___                         _       __           ___   \n");
+		printf("  F __\".   ___ _    _ ___     FJ___    LJ          F __\". \n");
+		printf(" J (___|  F __` L  J '__ J   J  __ `.     ______  J (___| \n");
+		printf(" J\\___ \\ | |--| |  | |--| |  | |--| |  FJ|______| J\\___ \\ \n");
+		printf(".--___) \\F L__J J  F L__J J  F L  J J J  L______J.--___) \\\n");
+		printf("J\\______J\\____,__LJ  _____/LJ__L  J__LJ__L       J\\______J\n");
+		printf(" J______FJ____,__F|_J_____F |__L  J__||__|        J______F\n");
+		printf("                  L_J                                     \n");
 		printf("Saphi Server\nBuild %s (%s)\n\n", __DATE__, __TIME__);
 	}
 
