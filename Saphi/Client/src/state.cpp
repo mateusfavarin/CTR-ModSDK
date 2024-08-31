@@ -69,6 +69,7 @@ const CG_Message State::Launch_PickServer(OnlineCTR& octr)
 
 	msg.type = ClientMessageType::CG_CONNECT;
 	msg.server.hostName = hostName.c_str();
+	msg.server.port = port;
 	return msg;
 }
 
