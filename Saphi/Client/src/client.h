@@ -21,6 +21,7 @@ public:
 
 private:
 	void StartEmulation();
+	void Disconnect(OnlineCTR& octr);
 	bool CheckSigbusError();
 	bool NextFrameReady(OnlineCTR& octr);
 	void ChangeGameOptions();

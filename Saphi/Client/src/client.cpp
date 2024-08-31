@@ -21,11 +21,7 @@ void Client::Run()
 
   ChangeGameOptions();
   const uint32_t& btnHeld = g_psx.Read<uint32_t>(ADDR_GAMEPAD + offsetof(Gamepad, buttonsHeldCurrFrame));
-  if (btnHeld & Buttons::BTN_SELECT)
-  {
-    octr.CurrState = ClientState::DISCONNECTED;
-    m_net.DisconnectServer();
-  }
+  if (btnHeld & Buttons::BTN_SELECT) { Disconnect(octr); }
 
   if (octr.CurrState != ClientState::DISCONNECTED)
   {
@@ -50,7 +46,7 @@ void Client::Run()
   {
     const SG_Message msg = m_net.Recv();
     const ServerMessageType type = static_cast<const ServerMessageType>(msg.type);
-    if (type == ServerMessageType::SG_DISCONNECT) { m_net.DisconnectServer(); continue; }
+    if (type == ServerMessageType::SG_DISCONNECT) { Disconnect(octr); continue; }
     if (type == ServerMessageType::SG_EOF) { break; }
     if (!m_recvFuncs.contains(type)) { continue; }
     m_recvFuncs[type](msg, octr);
@@ -84,6 +80,12 @@ void Client::StartEmulation()
     m_getEmuRAM = false;
     m_active = true;
   }
+}
+
+void Client::Disconnect(OnlineCTR& octr)
+{
+  octr.CurrState = ClientState::DISCONNECTED;
+  m_net.DisconnectServer();
 }
 
 bool Client::CheckSigbusError()

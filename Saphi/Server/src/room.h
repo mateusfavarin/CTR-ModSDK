@@ -23,6 +23,14 @@ enum class OnlineState
 	RACE_END
 };
 
+enum class MessageAction
+{
+	NONE,
+	FAIL,
+	CONNECT,
+	DISCONNECT,
+};
+
 typedef std::unordered_map<const void*, bool> exception_map;
 
 struct Client
@@ -38,7 +46,7 @@ struct Client
 class Room
 {
 public:
-	bool InterpretMessage(const CG_Message& message, const void* peer, const Network& net);
+	MessageAction InterpretMessage(const CG_Message& message, const void* peer, const Network& net);
 	void OnState(const Network& net);
 	inline size_t GetPlayerCount() const { return m_clients.size(); };
 	inline bool IsRoomLocked() const { return m_state != OnlineState::LOBBY || m_clients.size() == ROOM_MAX_NUM_PLAYERS; };
@@ -49,16 +57,16 @@ private:
 	void CheckClientState(OnlineState state, const Network& net, const SG_Message& message, bool broadcast = true);
 	void ResetControlVariables();
 	/* Message Functions */
-	bool NewRoom(const CG_Message message, const Network& net, Client& client);
-	bool Connect(const CG_Message message, const Network& net, Client& client);
-	bool Disconnect(const CG_Message message, const Network& net, Client& client);
-	bool Name(const CG_Message message, const Network& net, Client& client);
-	bool Track(const CG_Message message, const Network& net, Client& client);
-	bool Character(const CG_Message message, const Network& net, Client& client);
-	bool StartRace(const CG_Message message, const Network& net, Client& client);
-	bool Kart(const CG_Message message, const Network& net, Client& client);
-	bool Weapon(const CG_Message message, const Network& net, Client& client);
-	bool EndRace(const CG_Message message, const Network& net, Client& client);
+	MessageAction NewRoom(const CG_Message message, const Network& net, Client& client);
+	MessageAction Connect(const CG_Message message, const Network& net, Client& client);
+	MessageAction Disconnect(const CG_Message message, const Network& net, Client& client);
+	MessageAction Name(const CG_Message message, const Network& net, Client& client);
+	MessageAction Track(const CG_Message message, const Network& net, Client& client);
+	MessageAction Character(const CG_Message message, const Network& net, Client& client);
+	MessageAction StartRace(const CG_Message message, const Network& net, Client& client);
+	MessageAction Kart(const CG_Message message, const Network& net, Client& client);
+	MessageAction Weapon(const CG_Message message, const Network& net, Client& client);
+	MessageAction EndRace(const CG_Message message, const Network& net, Client& client);
 	/* State Functions */
 	void Lobby(const Network& net);
 	void RaceReady(const Network& net);
@@ -70,7 +78,7 @@ private:
 	bool m_trackSelected = false;
 	OnlineState m_state = OnlineState::LOBBY;
 	std::unordered_map<const void*, Client> m_clients;
-	std::unordered_map<ClientMessageType, std::function<bool(const CG_Message, const Network& net, Client&)>> m_msgFunc = {
+	std::unordered_map<ClientMessageType, std::function<MessageAction(const CG_Message, const Network& net, Client&)>> m_msgFunc = {
 		BIND_MSG(ClientMessageType::CG_JOINROOM, NewRoom),
 		BIND_MSG(ClientMessageType::CG_CONNECT, Connect),
 		BIND_MSG(ClientMessageType::CG_DISCONNECT, Disconnect),

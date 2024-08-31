@@ -39,18 +39,18 @@ static inline constexpr SG_Message Message(ServerMessageType type = ServerMessag
 	return msg;
 }
 
-bool Room::InterpretMessage(const CG_Message& message, const void* peer, const Network& net)
+MessageAction Room::InterpretMessage(const CG_Message& message, const void* peer, const Network& net)
 {
 	const ClientMessageType type = static_cast<const ClientMessageType>(message.type);
 	if (type == ClientMessageType::CG_JOINROOM)
 	{
-		if (IsRoomLocked() || m_clients.contains(peer)) { return false; }
+		if (IsRoomLocked() || m_clients.contains(peer)) { return MessageAction::FAIL; }
 		Client client = {};
 		client.nextId = static_cast<uint8_t>(m_clients.size());
 		client.peer = peer;
 		m_clients.insert({ peer, client });
 	}
-	if (!m_clients.contains(peer) || !m_msgFunc.contains(type)) { return false; }
+	if (!m_clients.contains(peer) || !m_msgFunc.contains(type)) { return MessageAction::FAIL; }
 	return m_msgFunc[type](message, net, m_clients[peer]);
 }
 
@@ -89,7 +89,7 @@ void Room::ResetControlVariables()
 	m_trackSelected = false;
 }
 
-bool Room::NewRoom(const CG_Message message, const Network& net, Client& client)
+MessageAction Room::NewRoom(const CG_Message message, const Network& net, Client& client)
 {
 	SG_Message msg = Message(ServerMessageType::SG_NEWCLIENT);
 	client.id = client.nextId;
@@ -99,15 +99,15 @@ bool Room::NewRoom(const CG_Message message, const Network& net, Client& client)
 	msg.clientStatus.trackSelected = m_trackSelected;
 	msg.clientStatus.trackId = m_trackId;
 	net.Send(msg, client.peer);
-	return true;
+	return MessageAction::CONNECT;
 }
 
-bool Room::Connect(const CG_Message message, const Network& net, Client& client)
+MessageAction Room::Connect(const CG_Message message, const Network& net, Client& client)
 {
-	return true;
+	return MessageAction::NONE;
 }
 
-bool Room::Disconnect(const CG_Message message, const Network& net, Client& client)
+MessageAction Room::Disconnect(const CG_Message message, const Network& net, Client& client)
 {
 	net.DisconnectPeer(client.peer);
 	uint8_t numClients = static_cast<uint8_t>(m_clients.size());
@@ -155,10 +155,10 @@ bool Room::Disconnect(const CG_Message message, const Network& net, Client& clie
 		SG_Message msg = Message(ServerMessageType::SG_NEWCLIENT);
 		CheckClientState(OnlineState::RACE_END, net, msg, false);
 	}
-	return true;
+	return MessageAction::DISCONNECT;
 }
 
-bool Room::Name(const CG_Message message, const Network& net, Client& client)
+MessageAction Room::Name(const CG_Message message, const Network& net, Client& client)
 {
 	SG_Message msg = Message(ServerMessageType::SG_NAME);
 	msg.name.numClientsTotal = static_cast<uint8_t>(GetPlayerCount());
@@ -176,10 +176,10 @@ bool Room::Name(const CG_Message message, const Network& net, Client& client)
 		strncpy(peerName.name.name, value.name.c_str(), sizeof(peerName.name.name));
 		net.Send(peerName, client.peer);
 	}
-	return true;
+	return MessageAction::NONE;
 }
 
-bool Room::Track(const CG_Message message, const Network& net, Client& client)
+MessageAction Room::Track(const CG_Message message, const Network& net, Client& client)
 {
 	SG_Message msg = Message(ServerMessageType::SG_TRACK);
 	m_trackId = message.track.trackID;
@@ -188,10 +188,10 @@ bool Room::Track(const CG_Message message, const Network& net, Client& client)
 	msg.track.lapCount = message.track.lapCount;
 	exception_map exceptions = { { client.peer, true } };
 	Broadcast(net, msg, exceptions);
-	return true;
+	return MessageAction::NONE;
 }
 
-bool Room::Character(const CG_Message message, const Network& net, Client& client)
+MessageAction Room::Character(const CG_Message message, const Network& net, Client& client)
 {
 	SG_Message msg = Message(ServerMessageType::SG_CHARACTER);
 	msg.character.characterID = message.character.characterID;
@@ -201,18 +201,18 @@ bool Room::Character(const CG_Message message, const Network& net, Client& clien
 	client.state = OnlineState::RACE_READY;
 	SG_Message msgLoad = Message(ServerMessageType::SG_STARTLOADING);
 	CheckClientState(OnlineState::RACE_READY, net, msgLoad);
-	return true;
+	return MessageAction::NONE;
 }
 
-bool Room::StartRace(const CG_Message message, const Network& net, Client& client)
+MessageAction Room::StartRace(const CG_Message message, const Network& net, Client& client)
 {
 	client.state = OnlineState::RACE;
 	SG_Message msg = Message(ServerMessageType::SG_STARTRACE);
 	CheckClientState(OnlineState::RACE, net, msg);
-	return true;
+	return MessageAction::NONE;
 }
 
-bool Room::Kart(const CG_Message message, const Network& net, Client& client)
+MessageAction Room::Kart(const CG_Message message, const Network& net, Client& client)
 {
 	SG_Message msg = Message(ServerMessageType::SG_KART);
 	msg.kart.angle = message.kart.angle;
@@ -230,10 +230,10 @@ bool Room::Kart(const CG_Message message, const Network& net, Client& client)
 	msg.kart.wumpa = message.kart.wumpa;
 	exception_map exceptions = { { client.peer, true } };
 	Broadcast(net, msg, exceptions, false);
-	return true;
+	return MessageAction::NONE;
 }
 
-bool Room::Weapon(const CG_Message message, const Network& net, Client& client)
+MessageAction Room::Weapon(const CG_Message message, const Network& net, Client& client)
 {
 	SG_Message msg = Message(ServerMessageType::SG_WEAPON);
 	msg.weapon.clientID = client.id;
@@ -242,10 +242,10 @@ bool Room::Weapon(const CG_Message message, const Network& net, Client& client)
 	msg.weapon.weapon = message.weapon.weapon;
 	exception_map exceptions = { { client.peer, true } };
 	Broadcast(net, msg, exceptions);
-	return true;
+	return MessageAction::NONE;
 }
 
-bool Room::EndRace(const CG_Message message, const Network& net, Client& client)
+MessageAction Room::EndRace(const CG_Message message, const Network& net, Client& client)
 {
 	SG_Message msg = Message(ServerMessageType::SG_ENDRACE);
 	client.state = OnlineState::RACE_END;
@@ -256,7 +256,7 @@ bool Room::EndRace(const CG_Message message, const Network& net, Client& client)
 	Broadcast(net, msg, exceptions);
 	SG_Message msgEndRace = Message(ServerMessageType::SG_NEWCLIENT);
 	CheckClientState(OnlineState::RACE_END, net, msgEndRace, false);
-	return true;
+	return MessageAction::NONE;
 }
 
 void Room::Lobby(const Network& net)

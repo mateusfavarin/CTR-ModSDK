@@ -22,23 +22,17 @@ void Server::Run()
         SendInfoRooms(msg.peer);
         continue;
       }
-      bool status = m_rooms[roomID].InterpretMessage(msg, msg.peer, m_net);
-      if (status)
+      MessageAction action = m_rooms[roomID].InterpretMessage(msg, msg.peer, m_net);
+      switch (action)
       {
-        switch (type)
-        {
-        case ClientMessageType::CG_JOINROOM:
-          m_clientRoomMap.insert({msg.peer, roomID});
-          break;
-        case ClientMessageType::CG_DISCONNECT:
-          m_clientRoomMap.erase(msg.peer);
-          break;
-        case ClientMessageType::CG_CONNECT:
-          SendInfoRooms(msg.peer);
-          break;
-        default:
-          break;
-        }
+      case MessageAction::CONNECT:
+        m_clientRoomMap.insert({ msg.peer, roomID });
+        break;
+      case MessageAction::DISCONNECT:
+        m_clientRoomMap.erase(msg.peer);
+        break;
+      default:
+        break;
       }
     }
     for (Room& room : m_rooms) { room.OnState(m_net); }
