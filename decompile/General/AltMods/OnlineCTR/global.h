@@ -192,6 +192,7 @@ enum ServerMessageType
 	SG_WEAPON,
 	SG_ENDRACE,
 	SG_DISCONNECT,
+	SG_FORCEENDRACE,
 	SG_COUNT,
 	SG_EOF = 0xFF
 };

@@ -69,6 +69,11 @@ enum GameMode
 	VIBRATION_P4 = 0x800,
 };
 
+enum ActionFlags
+{
+	RACE_END = 0x2000000,
+};
+
 struct Gamepad
 {
 	uint16_t unk_0;					// 0x0

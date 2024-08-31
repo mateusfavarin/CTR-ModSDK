@@ -17,4 +17,5 @@ namespace Message
 	void Kart(const SG_Message& message, OnlineCTR& octr);
 	void Weapon(const SG_Message& message, OnlineCTR& octr);
 	void EndRace(const SG_Message& message, OnlineCTR& octr);
+	void ForceEndRace(const SG_Message& message, OnlineCTR& octr);
 }

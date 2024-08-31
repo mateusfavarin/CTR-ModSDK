@@ -6,6 +6,7 @@
 #include <string>
 #include <unordered_map>
 #include <functional>
+#include <chrono>
 
 #include <OnlineCTR/global.h>
 
@@ -13,7 +14,8 @@
 #define BIND_STATE(type, func) { type, std::bind(&Room::func, this, std::placeholders::_1) }
 
 static constexpr unsigned FPS = 30;
-static constexpr unsigned IDLE_DNF_THRESHOLD = FPS * 20;
+static constexpr unsigned IDLE_THRESHOLD = FPS * 20;
+static constexpr long long DNF_THRESHOLD_LAP = 10;
 
 enum class OnlineState
 {
@@ -54,7 +56,7 @@ public:
 private:
 	void Broadcast(const Network& net, const SG_Message& message, bool reliable = true);
 	void Broadcast(const Network& net, const SG_Message& message, const exception_map& exceptionMap, bool reliable = true);
-	void CheckClientState(OnlineState state, const Network& net, const SG_Message& message, bool broadcast = true);
+	void CheckClientState(OnlineState state, const Network& net, const SG_Message& message);
 	void ResetControlVariables();
 	/* Message Functions */
 	MessageAction NewRoom(const CG_Message message, const Network& net, Client& client);
@@ -74,6 +76,9 @@ private:
 	void RaceEnd(const Network& net);
 
 private:
+	std::chrono::high_resolution_clock::time_point m_dnfTimerStart;
+	bool m_dnfTimerActive = false;
+	uint16_t m_lapCount = 0;
 	uint8_t m_trackId = 0;
 	bool m_trackSelected = false;
 	OnlineState m_state = OnlineState::LOBBY;
