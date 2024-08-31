@@ -168,3 +168,10 @@ void Message::EndRace(const SG_Message& message, OnlineCTR& octr)
   octr.raceStats[numDriversEnded].bestLap = msg.lapTime;
   octr.numDriversEnded++;
 }
+
+void Message::ForceEndRace(const SG_Message& message, OnlineCTR& octr)
+{
+  octr.CurrState = ClientState::GAME_SPECTATE;
+  const psxptr_t driver = g_psx.Read<psxptr_t>(ADDR_DRIVERS);
+  g_psx.Read<uint32_t>(driver + 0x2C8) |= ActionFlags::RACE_END;
+}

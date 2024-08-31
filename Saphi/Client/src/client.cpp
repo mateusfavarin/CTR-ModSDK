@@ -29,7 +29,7 @@ void Client::Run()
     const CG_Message msg = m_stateFuncs[state](octr);
     if (msg.type == ClientMessageType::CG_CONNECT)
     {
-      if (m_net.ConnectServer(msg.hostName))
+      if (m_net.ConnectServer(msg.server.hostName, msg.server.port))
       {
         octr.DriverID = ID_WAIT_ASSIGNMENT;
         octr.CurrState = ClientState::LAUNCH_PICK_ROOM;

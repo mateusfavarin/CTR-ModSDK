@@ -54,3 +54,15 @@ games/settings.json
 
 # MyMods folder
 mods/MyMods/*
+
+# pcsx-redux
+.sentry-native/
+memcard1.mcd
+memcard2.mcd
+offscreen.frag
+offscreen.lua
+offscreen.vert
+output.frag
+output.lua
+output.vert
+pcsx.json

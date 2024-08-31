@@ -1,12 +1,22 @@
 #include "server.h"
 #include "logger.h"
 
+#include <sstream>
+
 int main(int argc, char* argv[])
 {
+	if (argc != 2) 
+	{
+		Logger::Log("Server arguments missing: [port]\n");
+		return -1; 
+	}
+
+	std::istringstream ss(argv[1]);
+	int x;
+	if (!(ss >> x) || !ss.eof()) { return 0; }
+	Server server(static_cast<uint16_t>(x));
 	Logger::PrintBanner();
-	enet_uint16 port = 64002;
-	Server server{ port };
-	Logger::Log("Attempting to start server on port %u\n", port);
+	Logger::Log("Attempting to start server on port %d\n", x);
 	if (!server.Init())
 	{
 		Logger::Log("Server::Init() failed!\n");

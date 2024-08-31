@@ -146,6 +146,8 @@ const SG_Message Network::Recv()
 					case ServerMessageType::SG_ENDRACE:
 						msg.endRace = *reinterpret_cast<SG_MessageEndRace*>(event.packet->data);
 						break;
+					case ServerMessageType::SG_FORCEENDRACE:
+						break;
 					default:
 						msg.type = ServerMessageType::SG_EOF;
 						break;
