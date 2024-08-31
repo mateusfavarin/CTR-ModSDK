@@ -46,7 +46,7 @@ bool Room::InterpretMessage(const CG_Message& message, const void* peer, const N
 	{
 		if (IsRoomLocked() || m_clients.contains(peer)) { return false; }
 		Client client = {};
-		client.id = static_cast<uint8_t>(m_clients.size());
+		client.nextId = static_cast<uint8_t>(m_clients.size());
 		client.peer = peer;
 		m_clients.insert({ peer, client });
 	}
@@ -56,33 +56,7 @@ bool Room::InterpretMessage(const CG_Message& message, const void* peer, const N
 
 void Room::OnState(const Network& net)
 {
-	static bool startClock = true;
-	static std::chrono::high_resolution_clock::time_point start;
-	static std::chrono::high_resolution_clock::time_point end;
-
-	if (m_state != OnlineState::RACE_END) { return; }
-
-	if (startClock)
-	{
-		startClock = false;
-		start = std::chrono::high_resolution_clock::now();
-		return;
-	}
-
-	end = std::chrono::high_resolution_clock::now();
-	std::chrono::seconds timeElapsed = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-	if (timeElapsed.count() < 5) { return; }
-
-	m_state = OnlineState::LOBBY;
-	m_trackSelected = false;
-	startClock = true;
-	for (auto& [key, value] : m_clients)
-	{
-		SG_Message msg = Message(ServerMessageType::SG_NEWCLIENT);
-		msg.clientStatus.clientID = value.id;
-		msg.clientStatus.numClientsTotal = static_cast<uint8_t>(m_clients.size());
-		net.Send(msg, value.peer);
-	}
+	m_stateFunc[m_state](net);
 }
 
 void Room::Broadcast(const Network& net, const SG_Message& message, bool reliable)
@@ -90,7 +64,7 @@ void Room::Broadcast(const Network& net, const SG_Message& message, bool reliabl
 	for (auto& [key, value] : m_clients) { net.Send(message, value.peer, reliable); }
 }
 
-void Room::Broadcast(const Network & net, const SG_Message& message, const exception_map& exceptionMap, bool reliable)
+void Room::Broadcast(const Network& net, const SG_Message& message, const exception_map& exceptionMap, bool reliable)
 {
 	for (auto& [key, value] : m_clients)
 	{
@@ -109,9 +83,17 @@ void Room::CheckClientState(OnlineState state, const Network& net, const SG_Mess
 	if (broadcast) { Broadcast(net, message); }
 }
 
+void Room::ResetControlVariables()
+{
+	m_state = OnlineState::LOBBY;
+	m_trackSelected = false;
+}
+
 bool Room::NewRoom(const CG_Message message, const Network& net, Client& client)
 {
 	SG_Message msg = Message(ServerMessageType::SG_NEWCLIENT);
+	client.id = client.nextId;
+	client.idleFrameCount = 0;
 	msg.clientStatus.clientID = client.id;
 	msg.clientStatus.numClientsTotal = static_cast<uint8_t>(m_clients.size());
 	msg.clientStatus.trackSelected = m_trackSelected;
@@ -127,22 +109,27 @@ bool Room::Connect(const CG_Message message, const Network& net, Client& client)
 
 bool Room::Disconnect(const CG_Message message, const Network& net, Client& client)
 {
+	net.DisconnectPeer(client.peer);
 	uint8_t numClients = static_cast<uint8_t>(m_clients.size());
 	for (auto&[key, value] : m_clients)
 	{
 		if (value.id > client.id)
 		{
-			value.id--;
-			SG_Message msgSelf = Message(ServerMessageType::SG_UPDATEID);
-			msgSelf.id.newID = value.id;
-			net.Send(msgSelf, value.peer);
+			value.nextId--;
+			if (m_state == OnlineState::LOBBY || m_state == OnlineState::RACE_READY)
+			{
+				value.id = value.nextId;
+				SG_Message msgSelf = Message(ServerMessageType::SG_UPDATEID);
+				msgSelf.id.newID = value.id;
+				net.Send(msgSelf, value.peer);
 
-			SG_Message msg = Message(ServerMessageType::SG_NAME);
-			msg.name.clientID = value.id;
-			msg.name.numClientsTotal = numClients;
-			strncpy(msg.name.name, value.name.c_str(), sizeof(msg.name.name));
-			exception_map exceptions = { { value.peer, true } };
-			Broadcast(net, msg, exceptions);
+				SG_Message msg = Message(ServerMessageType::SG_NAME);
+				msg.name.clientID = value.id;
+				msg.name.numClientsTotal = numClients;
+				strncpy(msg.name.name, value.name.c_str(), sizeof(msg.name.name));
+				exception_map exceptions = { { value.peer, true } };
+				Broadcast(net, msg, exceptions);
+			}
 		}
 	}
 	SG_Message msgDisconnect = Message(ServerMessageType::SG_NAME);
@@ -152,7 +139,7 @@ bool Room::Disconnect(const CG_Message message, const Network& net, Client& clie
 	exception_map exceptionSelf = { { client.peer, true } };
 	Broadcast(net, msgDisconnect, exceptionSelf);
 	m_clients.erase(client.peer);
-	if (m_clients.empty()) { m_state = OnlineState::LOBBY; m_trackSelected = false; }
+	if (m_clients.empty()) { ResetControlVariables(); }
 	else if (m_state == OnlineState::LOBBY)
 	{
 		SG_Message msg = Message(ServerMessageType::SG_STARTLOADING);
@@ -231,6 +218,11 @@ bool Room::Kart(const CG_Message message, const Network& net, Client& client)
 	msg.kart.angle = message.kart.angle;
 	msg.kart.boolReserves = message.kart.boolReserves;
 	msg.kart.buttonHold = message.kart.buttonsHeld;
+	if (message.kart.buttonsHeld == 0)
+	{
+		if (client.idleFrameCount++ > IDLE_DNF_THRESHOLD) { return Disconnect(message, net, client); }
+	}
+	else { client.idleFrameCount = 0; }
 	msg.kart.clientID = client.id;
 	msg.kart.posX = message.kart.posX;
 	msg.kart.posY = message.kart.posY;
@@ -249,7 +241,7 @@ bool Room::Weapon(const CG_Message message, const Network& net, Client& client)
 	msg.weapon.juiced = message.weapon.juiced;
 	msg.weapon.weapon = message.weapon.weapon;
 	exception_map exceptions = { { client.peer, true } };
-	Broadcast(net, msg, exceptions, false);
+	Broadcast(net, msg, exceptions);
 	return true;
 }
 
@@ -261,8 +253,48 @@ bool Room::EndRace(const CG_Message message, const Network& net, Client& client)
 	msg.endRace.courseTime = message.endRace.courseTime;
 	msg.endRace.lapTime = message.endRace.lapTime;
 	exception_map exceptions = { { client.peer, true } };
-	Broadcast(net, msg, exceptions, false);
+	Broadcast(net, msg, exceptions);
 	SG_Message msgEndRace = Message(ServerMessageType::SG_NEWCLIENT);
 	CheckClientState(OnlineState::RACE_END, net, msgEndRace, false);
 	return true;
+}
+
+void Room::Lobby(const Network& net)
+{
+}
+
+void Room::RaceReady(const Network& net)
+{
+}
+
+void Room::Race(const Network& net)
+{
+}
+
+void Room::RaceEnd(const Network& net)
+{
+	static bool startClock = true;
+	static std::chrono::high_resolution_clock::time_point start;
+	static std::chrono::high_resolution_clock::time_point end;
+
+	if (startClock)
+	{
+		startClock = false;
+		start = std::chrono::high_resolution_clock::now();
+		return;
+	}
+
+	end = std::chrono::high_resolution_clock::now();
+	std::chrono::seconds timeElapsed = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+	if (timeElapsed.count() < 5) { return; }
+
+	ResetControlVariables();
+	startClock = true;
+	for (auto& [key, value] : m_clients)
+	{
+		SG_Message msg = Message(ServerMessageType::SG_NEWCLIENT);
+		msg.clientStatus.clientID = value.id;
+		msg.clientStatus.numClientsTotal = static_cast<uint8_t>(m_clients.size());
+		net.Send(msg, value.peer);
+	}
 }

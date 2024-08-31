@@ -13,6 +13,7 @@ public:
 	void Close();
 	const CG_Message Recv();
 	void Send(const SG_Message& message, const void* peer, bool reliable = true) const;
+	void DisconnectPeer(const void* peer) const;
 
 private:
 	enet_uint16 m_port;

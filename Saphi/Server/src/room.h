@@ -10,6 +10,10 @@
 #include <OnlineCTR/global.h>
 
 #define BIND_MSG(type, func) { type, std::bind(&Room::func, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3) }
+#define BIND_STATE(type, func) { type, std::bind(&Room::func, this, std::placeholders::_1) }
+
+static constexpr unsigned FPS = 30;
+static constexpr unsigned IDLE_DNF_THRESHOLD = FPS * 20;
 
 enum class OnlineState
 {
@@ -26,7 +30,9 @@ struct Client
 	std::string name;
 	const void* peer;
 	uint8_t id;
+	uint8_t nextId;
 	OnlineState state;
+	unsigned idleFrameCount;
 };
 
 class Room
@@ -41,6 +47,8 @@ private:
 	void Broadcast(const Network& net, const SG_Message& message, bool reliable = true);
 	void Broadcast(const Network& net, const SG_Message& message, const exception_map& exceptionMap, bool reliable = true);
 	void CheckClientState(OnlineState state, const Network& net, const SG_Message& message, bool broadcast = true);
+	void ResetControlVariables();
+	/* Message Functions */
 	bool NewRoom(const CG_Message message, const Network& net, Client& client);
 	bool Connect(const CG_Message message, const Network& net, Client& client);
 	bool Disconnect(const CG_Message message, const Network& net, Client& client);
@@ -51,6 +59,11 @@ private:
 	bool Kart(const CG_Message message, const Network& net, Client& client);
 	bool Weapon(const CG_Message message, const Network& net, Client& client);
 	bool EndRace(const CG_Message message, const Network& net, Client& client);
+	/* State Functions */
+	void Lobby(const Network& net);
+	void RaceReady(const Network& net);
+	void Race(const Network& net);
+	void RaceEnd(const Network& net);
 
 private:
 	uint8_t m_trackId = 0;
@@ -68,5 +81,11 @@ private:
 		BIND_MSG(ClientMessageType::CG_KART, Kart),
 		BIND_MSG(ClientMessageType::CG_WEAPON, Weapon),
 		BIND_MSG(ClientMessageType::CG_ENDRACE, EndRace),
+	};
+	std::unordered_map<OnlineState, std::function<void(const Network& net)>> m_stateFunc = {
+		BIND_STATE(OnlineState::LOBBY, Lobby),
+		BIND_STATE(OnlineState::RACE_READY, RaceReady),
+		BIND_STATE(OnlineState::RACE, Race),
+		BIND_STATE(OnlineState::RACE_END, RaceEnd),
 	};
 };

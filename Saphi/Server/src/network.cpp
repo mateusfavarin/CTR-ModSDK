@@ -66,7 +66,6 @@ const CG_Message Network::Recv()
     case ENET_EVENT_TYPE_DISCONNECT:
       msg.type = ClientMessageType::CG_DISCONNECT;
       msg.peer = static_cast<void*>(event.peer);
-      enet_peer_disconnect_now(event.peer, 0);
       break;
     default:
       msg.type = ClientMessageType::CG_NONE;
@@ -132,4 +131,10 @@ void Network::Send(const SG_Message& message, const void* peer, bool reliable) c
   ENetPeer* netPeer = const_cast<ENetPeer*>(static_cast<const ENetPeer*>(peer));
   if (!packet || !netPeer || netPeer->state != ENET_PEER_STATE_CONNECTED) { return; }
   enet_peer_send(netPeer, SERVER_COMM_CHANNEL, packet);
+}
+
+void Network::DisconnectPeer(const void* peer) const
+{
+  ENetPeer* netPeer = const_cast<ENetPeer*>(static_cast<const ENetPeer*>(peer));
+  enet_peer_disconnect_now(netPeer, 0);
 }
