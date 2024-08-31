@@ -8,7 +8,7 @@ void StatePS1_Launch_Boot()
 	DECOMP_DecalFont_DrawLine("Error: Failed booting Saphi", 0x100, 0xA8, FONT_SMALL, JUSTIFY_CENTER | ORANGE);
 }
 
-extern char* countryNames[NUM_SERVERS];
+extern char* countryNames[ELEMENTS_PER_PAGE];
 bool initString = true;
 
 void StatePS1_Launch_PickServer()

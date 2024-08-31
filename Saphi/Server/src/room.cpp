@@ -289,6 +289,7 @@ void Room::Race(const Network& net)
 	for (auto& [key, value] : m_clients)
 	{
 		if (value.state != OnlineState::RACE) { exceptions.insert({ value.peer, true }); }
+		else { value.state = OnlineState::RACE_END; }
 	}
 	Broadcast(net, forceEndRace, exceptions);
 

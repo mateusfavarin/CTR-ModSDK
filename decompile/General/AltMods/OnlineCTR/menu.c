@@ -66,10 +66,16 @@ int MenuFinished()
 	return *OnPressX_SetLock;
 }
 
-char* countryNames[NUM_SERVERS] =
+char* countryNames[ELEMENTS_PER_PAGE] =
 {
 	"Europe",
 	"Asia",
+	"-",
+	"-",
+	"-",
+	"-",
+	"-",
+	"Beta"
 };
 
 void NewPage_serverId()
@@ -81,10 +87,11 @@ void NewPage_serverId()
 
 	// override "LAPS" "3/5/7",
 	// and other unimportant strings
-	for(i = 0; i < NUM_SERVERS; i++)
+	for (i = 0; i < ELEMENTS_PER_PAGE; i++)
 	{
 		menuRows[i].stringIndex = 0x9a+i;
 		sdata->lngStrings[0x9a+i] = countryNames[i];
+		if (i > 1 && i < ELEMENTS_PER_PAGE - 1) { menuRows[i].stringIndex |= 0x8000; }
 	}
 }
 
