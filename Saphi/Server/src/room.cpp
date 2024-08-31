@@ -92,6 +92,7 @@ void Room::ResetControlVariables()
 
 MessageAction Room::NewRoom(const CG_Message message, const Network& net, Client& client)
 {
+	Logger::LogVerbose("Room::NewRoom() [%s]\n", client.name.c_str());
 	SG_Message msg = Message(ServerMessageType::SG_NEWCLIENT);
 	client.id = client.nextId;
 	client.idleFrameCount = 0;
@@ -168,6 +169,7 @@ MessageAction Room::Name(const CG_Message message, const Network& net, Client& c
 	msg.name.numClientsTotal = static_cast<uint8_t>(GetPlayerCount());
 	msg.name.clientID = client.id;
 	client.name = std::string(message.name.name);
+	Logger::LogVerbose("Room::Name() client joined, name being broadcast... [%s]\n", client.name.c_str());
 	strncpy(msg.name.name, message.name.name, sizeof(msg.name.name));
 	exception_map exceptions = { { client.peer, true } };
 	Broadcast(net, msg, exceptions);
@@ -188,6 +190,7 @@ MessageAction Room::Track(const CG_Message message, const Network& net, Client& 
 	SG_Message msg = Message(ServerMessageType::SG_TRACK);
 	m_trackId = message.track.trackID;
 	m_lapCount = message.track.lapCount;
+	Logger::LogVerbose("Room::Track() track selected... [%u]\n", m_trackId);
 	m_trackSelected = true;
 	msg.track.trackID = m_trackId;
 	msg.track.lapCount = m_lapCount;
@@ -200,6 +203,7 @@ MessageAction Room::Character(const CG_Message message, const Network& net, Clie
 {
 	SG_Message msg = Message(ServerMessageType::SG_CHARACTER);
 	msg.character.characterID = message.character.characterID;
+	Logger::LogVerbose("Room::Character() player [%s] selected character [%u]\n", client.name.c_str(), message.character.characterID);
 	msg.character.clientID = client.id;
 	exception_map exceptions = { { client.peer, true } };
 	Broadcast(net, msg, exceptions);
@@ -212,6 +216,7 @@ MessageAction Room::Character(const CG_Message message, const Network& net, Clie
 MessageAction Room::StartRace(const CG_Message message, const Network& net, Client& client)
 {
 	client.state = OnlineState::RACE;
+	Logger::LogVerbose("Room::StartRace() race starting for client [%s]\n", client.name.c_str());
 	SG_Message msg = Message(ServerMessageType::SG_STARTRACE);
 	CheckClientState(OnlineState::RACE, net, msg);
 	return MessageAction::NONE;
@@ -265,6 +270,7 @@ MessageAction Room::EndRace(const CG_Message message, const Network& net, Client
 
 	SG_Message msg = Message(ServerMessageType::SG_ENDRACE);
 	client.state = OnlineState::RACE_END;
+	Logger::LogVerbose("Room::EndRace() race ended for player... [%s]\n", client.name.c_str());
 	msg.endRace.clientID = client.id;
 	msg.endRace.courseTime = message.endRace.courseTime;
 	msg.endRace.lapTime = message.endRace.lapTime;

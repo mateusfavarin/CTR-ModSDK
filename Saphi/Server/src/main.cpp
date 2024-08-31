@@ -29,6 +29,7 @@ int main(int argc, char* argv[])
 	try { server.Run(); }
 	catch (...) {}
 #endif
+	//server.Run() is a while (true) {}, so this should never be reached currently
 	Logger::Log("End of main() reached, server closing...\n");
 	server.Close();
 	return 0;
