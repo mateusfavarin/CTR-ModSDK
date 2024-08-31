@@ -110,7 +110,7 @@ MessageAction Room::Connect(const CG_Message message, const Network& net, Client
 
 MessageAction Room::Disconnect(const CG_Message message, const Network& net, Client& client)
 {
-	log("Room::Disconnect() client disconnecting... [%s]", client.name.c_str());
+	log("Room::Disconnect() client disconnecting... [%s]\n", client.name.c_str());
 	net.DisconnectPeer(client.peer);
 	uint8_t numClients = static_cast<uint8_t>(m_clients.size());
 	bool updatedNames = false;
@@ -224,7 +224,11 @@ MessageAction Room::Kart(const CG_Message message, const Network& net, Client& c
 	msg.kart.buttonHold = message.kart.buttonsHeld;
 	if (message.kart.buttonsHeld == 0)
 	{
-		if (client.idleFrameCount++ > IDLE_DNF_THRESHOLD) { return Disconnect(message, net, client); }
+		if (client.idleFrameCount++ > IDLE_DNF_THRESHOLD)
+		{
+			logVerbose("Room::Kart() %s idled out (DNF)\n", client.name.c_str());
+			return Disconnect(message, net, client);
+		}
 	}
 	else { client.idleFrameCount = 0; }
 	msg.kart.clientID = client.id;

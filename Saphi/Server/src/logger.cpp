@@ -17,11 +17,23 @@ void printBanner()
 	printf("Saphi Server\nBuild %s (%s)\n\n", __DATE__, __TIME__);
 }
 
+void logVerbose(const char* const _Format, ...)
+{
+#if defined(_DEBUG) && defined(LOGGING_VERBOSE)
+	va_list _ArgList;
+	va_start(_ArgList, _Format);
+	log(_Format, _ArgList);
+	va_end(_ArgList);
+#endif
+}
+
 void log(const char* const _Format, ...)
 {
+#ifdef _DEBUG
 	va_list _ArgList;
 	va_start(_ArgList, _Format);
 	vprintf(_Format, _ArgList);
 	va_end(_ArgList);
+#endif
 }
 #endif //LOGGER_GUARD
