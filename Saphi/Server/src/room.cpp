@@ -248,6 +248,7 @@ MessageAction Room::Weapon(const CG_Message message, const Network& net, Client&
 	msg.weapon.flags = message.weapon.flags;
 	msg.weapon.juiced = message.weapon.juiced;
 	msg.weapon.weapon = message.weapon.weapon;
+	Logger::LogVerbose("Room::Weapon() %s used weapon %u\n", client.name.c_str(), message.weapon.weapon);
 	exception_map exceptions = { { client.peer, true } };
 	Broadcast(net, msg, exceptions);
 	return MessageAction::NONE;
