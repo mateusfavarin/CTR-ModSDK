@@ -22,14 +22,15 @@
 [submodule "externals/cpp-httplib"]
 	path = externals/cpp-httplib
 	url = https://github.com/yhirose/cpp-httplib
-
 [submodule "externals/CRCpp"]
 	path = externals/CRCpp
 	url = https://github.com/d-bahr/CRCpp
 [submodule "externals/xdelta"]
 	path = externals/xdelta
 	url = https://github.com/jmacd/xdelta
-
 [submodule "externals/fmtlog"]
+	path = externals/fmtlog
+	url = https://github.com/MengRao/fmtlog
+[submodule "fmtlog"]
 	path = externals/fmtlog
 	url = https://github.com/MengRao/fmtlog

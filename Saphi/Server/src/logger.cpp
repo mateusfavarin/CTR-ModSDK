@@ -1,8 +1,11 @@
+#ifndef LOGGER_GUARD
+#define LOGGER_GUARD
+
 #include "logger.h"
 #include "stdarg.h"
 #include "stdio.h"
-#ifndef LOGGER_GUARD
-#define LOGGER_GUARD
+#include "fmtlog.h"
+#include "fmtlog-inl.h"
 
 namespace Logger
 {
