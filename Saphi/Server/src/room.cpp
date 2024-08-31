@@ -1,4 +1,5 @@
 #include "room.h"
+#include "logger.h"
 
 #include <chrono>
 #include <cstring>
@@ -109,6 +110,7 @@ MessageAction Room::Connect(const CG_Message message, const Network& net, Client
 
 MessageAction Room::Disconnect(const CG_Message message, const Network& net, Client& client)
 {
+	log("Room::Disconnect() client disconnecting... [%s]", client.name.c_str());
 	net.DisconnectPeer(client.peer);
 	uint8_t numClients = static_cast<uint8_t>(m_clients.size());
 	bool updatedNames = false;
