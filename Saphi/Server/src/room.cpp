@@ -111,6 +111,7 @@ MessageAction Room::Disconnect(const CG_Message message, const Network& net, Cli
 {
 	net.DisconnectPeer(client.peer);
 	uint8_t numClients = static_cast<uint8_t>(m_clients.size());
+	bool updatedNames = false;
 	for (auto&[key, value] : m_clients)
 	{
 		if (value.id > client.id)
@@ -118,6 +119,7 @@ MessageAction Room::Disconnect(const CG_Message message, const Network& net, Cli
 			value.nextId--;
 			if (m_state == OnlineState::LOBBY || m_state == OnlineState::RACE_READY)
 			{
+				updatedNames = true;
 				value.id = value.nextId;
 				SG_Message msgSelf = Message(ServerMessageType::SG_UPDATEID);
 				msgSelf.id.newID = value.id;
@@ -133,7 +135,7 @@ MessageAction Room::Disconnect(const CG_Message message, const Network& net, Cli
 		}
 	}
 	SG_Message msgDisconnect = Message(ServerMessageType::SG_NAME);
-	msgDisconnect.name.clientID = numClients - 1;
+	msgDisconnect.name.clientID = updatedNames ? numClients - 1 : client.id;
 	msgDisconnect.name.numClientsTotal = numClients;
 	msgDisconnect.name.name[0] = '\0';
 	exception_map exceptionSelf = { { client.peer, true } };
@@ -293,6 +295,7 @@ void Room::RaceEnd(const Network& net)
 	for (auto& [key, value] : m_clients)
 	{
 		SG_Message msg = Message(ServerMessageType::SG_NEWCLIENT);
+		value.id = value.nextId;
 		msg.clientStatus.clientID = value.id;
 		msg.clientStatus.numClientsTotal = static_cast<uint8_t>(m_clients.size());
 		net.Send(msg, value.peer);
