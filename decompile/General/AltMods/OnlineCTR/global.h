@@ -28,7 +28,7 @@
 #define NUM_TRACK_PAGES 4
 #define NUM_CHARACTER_PAGES 2
 
-#define NUM_SERVERS 8
+#define NUM_SERVERS 2
 #define NUM_SERVER_PAGES 3
 #define ROOMS_PER_PAGE ELEMENTS_PER_PAGE
 #define SERVER_NUM_ROOMS (NUM_SERVER_PAGES * ROOMS_PER_PAGE)
@@ -192,6 +192,7 @@ enum ServerMessageType
 	SG_WEAPON,
 	SG_ENDRACE,
 	SG_DISCONNECT,
+	SG_FORCEENDRACE,
 	SG_COUNT,
 	SG_EOF = 0xFF
 };
@@ -389,6 +390,12 @@ struct CG_MessageEndRace
 	int32_t lapTime;
 };
 
+struct ServerInfo
+{
+	const char* hostName;
+	uint16_t port;
+};
+
 struct CG_Message
 {
 	uint8_t type;
@@ -403,7 +410,7 @@ struct CG_Message
 		CG_MessageKart kart;		   // CG_KART
 		CG_MessageWeapon weapon;	   // CG_WEAPON
 		CG_MessageEndRace endRace;	   // CG_ENDRACE
-		const char* hostName;		   // CG_CONNECT
+		ServerInfo server;			   // CG_CONNECT
 	};
 };
 

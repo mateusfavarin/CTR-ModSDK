@@ -1,7 +1,6 @@
 #include "room.h"
 #include "logger.h"
 
-#include <chrono>
 #include <cstring>
 
 static inline constexpr SG_Message Message(ServerMessageType type = ServerMessageType::SG_EOF)
@@ -74,20 +73,21 @@ void Room::Broadcast(const Network& net, const SG_Message& message, const except
 	}
 }
 
-void Room::CheckClientState(OnlineState state, const Network& net, const SG_Message& message, bool broadcast)
+void Room::CheckClientState(OnlineState state, const Network& net, const SG_Message& message)
 {
 	for (auto& [key, value] : m_clients)
 	{
 		if (value.state != state) { return; }
 	}
 	m_state = state;
-	if (broadcast) { Broadcast(net, message); }
+	if (message.type != ServerMessageType::SG_EOF) { Broadcast(net, message); }
 }
 
 void Room::ResetControlVariables()
 {
 	m_state = OnlineState::LOBBY;
 	m_trackSelected = false;
+	m_dnfTimerActive = false;
 }
 
 MessageAction Room::NewRoom(const CG_Message message, const Network& net, Client& client)
@@ -156,8 +156,8 @@ MessageAction Room::Disconnect(const CG_Message message, const Network& net, Cli
 	}
 	else if (m_state == OnlineState::RACE)
 	{
-		SG_Message msg = Message(ServerMessageType::SG_NEWCLIENT);
-		CheckClientState(OnlineState::RACE_END, net, msg, false);
+		SG_Message msg = Message(ServerMessageType::SG_EOF);
+		CheckClientState(OnlineState::RACE_END, net, msg);
 	}
 	return MessageAction::DISCONNECT;
 }
@@ -187,9 +187,10 @@ MessageAction Room::Track(const CG_Message message, const Network& net, Client& 
 {
 	SG_Message msg = Message(ServerMessageType::SG_TRACK);
 	m_trackId = message.track.trackID;
+	m_lapCount = message.track.lapCount;
 	m_trackSelected = true;
-	msg.track.trackID = message.track.trackID;
-	msg.track.lapCount = message.track.lapCount;
+	msg.track.trackID = m_trackId;
+	msg.track.lapCount = m_lapCount;
 	exception_map exceptions = { { client.peer, true } };
 	Broadcast(net, msg, exceptions);
 	return MessageAction::NONE;
@@ -224,7 +225,7 @@ MessageAction Room::Kart(const CG_Message message, const Network& net, Client& c
 	msg.kart.buttonHold = message.kart.buttonsHeld;
 	if (message.kart.buttonsHeld == 0)
 	{
-		if (client.idleFrameCount++ > IDLE_DNF_THRESHOLD)
+		if (client.idleFrameCount++ > IDLE_THRESHOLD)
 		{
 			Logger::LogVerbose("Room::Kart() %s idled out (DNF)\n", client.name.c_str());
 			return Disconnect(message, net, client);
@@ -256,6 +257,12 @@ MessageAction Room::Weapon(const CG_Message message, const Network& net, Client&
 
 MessageAction Room::EndRace(const CG_Message message, const Network& net, Client& client)
 {
+	if (!m_dnfTimerActive)
+	{
+		m_dnfTimerActive = true;
+		m_dnfTimerStart = std::chrono::high_resolution_clock::now();
+	}
+
 	SG_Message msg = Message(ServerMessageType::SG_ENDRACE);
 	client.state = OnlineState::RACE_END;
 	msg.endRace.clientID = client.id;
@@ -263,8 +270,8 @@ MessageAction Room::EndRace(const CG_Message message, const Network& net, Client
 	msg.endRace.lapTime = message.endRace.lapTime;
 	exception_map exceptions = { { client.peer, true } };
 	Broadcast(net, msg, exceptions);
-	SG_Message msgEndRace = Message(ServerMessageType::SG_NEWCLIENT);
-	CheckClientState(OnlineState::RACE_END, net, msgEndRace, false);
+	SG_Message msgEndRace = Message(ServerMessageType::SG_EOF);
+	CheckClientState(OnlineState::RACE_END, net, msgEndRace);
 	return MessageAction::NONE;
 }
 
@@ -278,13 +285,28 @@ void Room::RaceReady(const Network& net)
 
 void Room::Race(const Network& net)
 {
+	if (!m_dnfTimerActive) { return; }
+
+	std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
+	std::chrono::seconds timeElapsed = std::chrono::duration_cast<std::chrono::seconds>(end - m_dnfTimerStart);
+	if (timeElapsed.count() < DNF_THRESHOLD_LAP * static_cast<long long>(m_lapCount)) { return; }
+
+	SG_Message forceEndRace = Message(ServerMessageType::SG_FORCEENDRACE);
+	exception_map exceptions = {};
+	for (auto& [key, value] : m_clients)
+	{
+		if (value.state != OnlineState::RACE) { exceptions.insert({ value.peer, true }); }
+	}
+	Broadcast(net, forceEndRace, exceptions);
+
+	SG_Message msgEndRace = Message(ServerMessageType::SG_EOF);
+	CheckClientState(OnlineState::RACE_END, net, msgEndRace);
 }
 
 void Room::RaceEnd(const Network& net)
 {
 	static bool startClock = true;
 	static std::chrono::high_resolution_clock::time_point start;
-	static std::chrono::high_resolution_clock::time_point end;
 
 	if (startClock)
 	{
@@ -293,7 +315,7 @@ void Room::RaceEnd(const Network& net)
 		return;
 	}
 
-	end = std::chrono::high_resolution_clock::now();
+	std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
 	std::chrono::seconds timeElapsed = std::chrono::duration_cast<std::chrono::seconds>(end - start);
 	if (timeElapsed.count() < 5) { return; }
 

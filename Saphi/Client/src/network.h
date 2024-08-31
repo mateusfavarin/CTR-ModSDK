@@ -13,7 +13,7 @@ class Network
 public:
 	void Init();
 	void Close();
-	bool ConnectServer(const char* hostName, enet_uint16 port = 64002);
+	bool ConnectServer(const char* hostName, enet_uint16 port);
 	void DisconnectServer();
 	bool Send(const CG_Message msg);
 	const SG_Message Recv();

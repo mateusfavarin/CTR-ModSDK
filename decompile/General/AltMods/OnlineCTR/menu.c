@@ -69,13 +69,7 @@ int MenuFinished()
 char* countryNames[NUM_SERVERS] =
 {
 	"Europe",
-	"USA NYC",
-	"Mexico",
-	"Brazil",
-	"Australia",
-	"Singapore",
-	"Beta",
-	"Private Room",
+	"Asia",
 };
 
 void NewPage_serverId()
@@ -92,7 +86,6 @@ void NewPage_serverId()
 		menuRows[i].stringIndex = 0x9a+i;
 		sdata->lngStrings[0x9a+i] = countryNames[i];
 	}
-	menuRows[6].stringIndex |= 0x8000; // Beta
 }
 
 void MenuWrites_serverId()

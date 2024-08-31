@@ -51,10 +51,16 @@ const CG_Message State::Launch_PickServer(OnlineCTR& octr)
 	if (levelID != OCTR_MENU_LEVEL || !octr.hasSelectedServer) { return msg; }
 
 	octr.boolClientBusy = true;
+	uint16_t port = 0;
 	switch (octr.serverId)
 	{
 	case 0:
-		hostName = "test.projectsaphi.com";
+		hostName = "eu1.projectsaphi.com";
+		port = 25565;
+		break;
+	case 1:
+		hostName = "as1.projectsaphi.com";
+		port = 25565;
 		break;
 
 	default:
@@ -62,7 +68,7 @@ const CG_Message State::Launch_PickServer(OnlineCTR& octr)
 	}
 
 	msg.type = ClientMessageType::CG_CONNECT;
-	msg.hostName = hostName.c_str();
+	msg.server.hostName = hostName.c_str();
 	return msg;
 }
 
