@@ -143,7 +143,7 @@ void NewPage_ServerRoom()
 
 void MenuWrites_ServerRoom()
 {
-	pageMax = NUM_SERVER_PAGES;
+	pageMax = NUM_SERVER_PAGES - 1;
 	OnPressX_SetPtr = &octr->serverRoom;
 	OnPressX_SetLock = &octr->hasSelectedRoom;
 }
@@ -160,7 +160,7 @@ void NewPage_Tracks()
 
 void MenuWrites_Tracks()
 {
-	pageMax = 3;
+	pageMax = NUM_TRACK_PAGES - 1;
 	OnPressX_SetPtr = &octr->levelID;
 	OnPressX_SetLock = &octr->boolSelectedLevel;
 }
@@ -207,7 +207,7 @@ void NewPage_Characters()
 
 void MenuWrites_Characters()
 {
-	pageMax = 1;
+	pageMax = NUM_CHARACTER_PAGES - 1;
 	OnPressX_SetPtr = &data.characterIDs[0];
 	OnPressX_SetLock = &octr->boolClientSelectedCharacters[octr->DriverID];
 }

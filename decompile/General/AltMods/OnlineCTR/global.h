@@ -25,6 +25,8 @@
 #define PORT_SIZE			            6 // the port number as a string (0-65535 + '\0')
 
 #define ELEMENTS_PER_PAGE 8 // any menu item
+#define NUM_TRACK_PAGES 4
+#define NUM_CHARACTER_PAGES 2
 
 #define NUM_SERVERS 8
 #define NUM_SERVER_PAGES 3
