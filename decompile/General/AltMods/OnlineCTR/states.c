@@ -5,7 +5,7 @@ extern struct RectMenu menu;
 
 void StatePS1_Launch_Boot()
 {
-	DECOMP_DecalFont_DrawLine("Error: Failed booting OnlineCTR", 0x100, 0xA8, FONT_SMALL, JUSTIFY_CENTER | ORANGE);
+	DECOMP_DecalFont_DrawLine("Error: Failed booting Saphi", 0x100, 0xA8, FONT_SMALL, JUSTIFY_CENTER | ORANGE);
 }
 
 extern char* countryNames[8];
@@ -15,7 +15,7 @@ void StatePS1_Launch_PickServer()
 {
 	if (initString)
 	{
-		strcpy(sdata->lngStrings[0x4e], "OnlineCTR");
+		strcpy(sdata->lngStrings[0x4e], "Saphi");
 		initString = false;
 	}
 	MenuWrites_serverId();
@@ -51,7 +51,7 @@ void ResetPsxGlobals()
 	// keep running till the client gets a result,
 	// DriverID is set to -1 on windows-side before this.
 
-	for(int i = 0; i < 8; i++)
+	for(int i = 0; i < ROOM_MAX_NUM_PLAYERS; i++)
 	{
 		data.characterIDs[i] = 0;
 		octr->boolClientSelectedCharacters[i] = 0;
@@ -74,12 +74,7 @@ void StatePS1_Launch_PickRoom()
 	NewPage_ServerRoom();
 
 	int serverTotal = 0;
-	for(int i = 0; i < 16; i++)
-	{
-		int curr = octr->roomClientCount[i];
-		if(curr > 8) curr -= 8;
-		serverTotal += curr;
-	}
+	for(int i = 0; i < SERVER_NUM_ROOMS; i++) { serverTotal += octr->roomClientCount[i]; }
 
 	char* text = "Server Total: 000";
 	text[14] = '0' + ((serverTotal / 100) % 10);
@@ -181,7 +176,7 @@ void StatePS1_Lobby_CharacterPick()
 	if(b != 0)
 	{
 		// update real-time
-		data.characterIDs[0] = (8 * octr->PageNumber) + b->rowSelected;
+		data.characterIDs[0] = (ELEMENTS_PER_PAGE * octr->PageNumber) + b->rowSelected;
 	}
 }
 
@@ -355,7 +350,7 @@ void StatePS1_Game_Race()
 	int i;
 	Ghostify();
 
-	for(i = 1; i < 8; i++)
+	for(i = 1; i < ROOM_MAX_NUM_PLAYERS; i++)
 	{
 		if(octr->Shoot[i].boolNow != 0)
 		{

@@ -66,7 +66,7 @@ int MenuFinished()
 	return *OnPressX_SetLock;
 }
 
-char* countryNames[8] =
+char* countryNames[NUM_SERVERS] =
 {
 	"Europe",
 	"USA NYC",
@@ -87,19 +87,12 @@ void NewPage_serverId()
 
 	// override "LAPS" "3/5/7",
 	// and other unimportant strings
-	for(i = 0; i < 8; i++)
+	for(i = 0; i < NUM_SERVERS; i++)
 	{
 		menuRows[i].stringIndex = 0x9a+i;
 		sdata->lngStrings[0x9a+i] = countryNames[i];
 	}
-
-	#ifdef ONLINE_BETA_MODE
-	for(i = 0; i < 6; i++)
-	#else
-	i = 6;
-	#endif
-
-		menuRows[i].stringIndex |= 0x8000;
+	menuRows[6].stringIndex |= 0x8000; // Beta
 }
 
 void MenuWrites_serverId()
@@ -107,20 +100,6 @@ void MenuWrites_serverId()
 	pageMax = 0;
 	OnPressX_SetPtr = &octr->serverId;
 	OnPressX_SetLock = &octr->hasSelectedServer;
-}
-
-int GetNumRoom()
-{
-	int numRooms = 0;
-
-#if 0
-	switch(octr->serverId)
-	{
-
-	}
-#endif
-
-	return 16;
 }
 
 int GetRoomChar(int pn)
@@ -153,38 +132,18 @@ void NewPage_ServerRoom()
 
 	int pn = octr->PageNumber;
 
-	for(i = 0; i < 8; i++)
+	for(i = 0; i < ELEMENTS_PER_PAGE; i++)
 	{
 		menuRows[i].stringIndex = 0x809a+i;
-		sdata->lngStrings[0x9a+i][5] = GetRoomChar(8*pn + i+1);
-		sdata->lngStrings[0x9a+i][9] = '0' + (octr->roomClientCount[8*pn+i]);
-
-		// handle locked rows
-		if(octr->roomClientCount[8*pn+i] > 8)
-			sdata->lngStrings[0x9a+i][9] = '0' + (octr->roomClientCount[8*pn+i]) - 8;
-	}
-
-	int numRooms = GetNumRoom();
-
-	for(i = 0; i < 8; i++)
-	{
-		// unlock row if...
-		if(8*pn+i < numRooms)
-			if(octr->roomClientCount[8*pn+i] <= 7)
-				menuRows[i].stringIndex &= 0x7FFF;
+		sdata->lngStrings[0x9a+i][5] = GetRoomChar(ELEMENTS_PER_PAGE*pn + i+1);
+		sdata->lngStrings[0x9a+i][9] = '0' + (octr->roomClientCount[ELEMENTS_PER_PAGE*pn+i]);
+		if(ELEMENTS_PER_PAGE*pn+i < SERVER_NUM_ROOMS && !octr->roomLocked[ELEMENTS_PER_PAGE*pn+i]) { menuRows[i].stringIndex &= 0x7FFF; }
 	}
 }
 
 void MenuWrites_ServerRoom()
 {
-	// pageMax
-	// 0: 1-4 rooms
-	// 1: 5-8 rooms
-	// 2: 9-12 rooms
-
-	int numRooms = GetNumRoom();
-	pageMax = ((numRooms-1)&0xfffc)/8;
-
+	pageMax = NUM_SERVER_PAGES;
 	OnPressX_SetPtr = &octr->serverRoom;
 	OnPressX_SetLock = &octr->hasSelectedRoom;
 }
@@ -193,10 +152,9 @@ void NewPage_Tracks()
 {
 	int i;
 
-	for(i = 0; i < 8; i++)
+	for(i = 0; i < ELEMENTS_PER_PAGE; i++)
 	{
-		menuRows[i].stringIndex =
-			data.metaDataLEV[8*octr->PageNumber+i].name_LNG;
+		menuRows[i].stringIndex = data.metaDataLEV[ELEMENTS_PER_PAGE*octr->PageNumber+i].name_LNG;
 	}
 }
 
@@ -222,32 +180,11 @@ void NewPage_Laps()
 	sdata->lngStrings[0xa0] = "-";
 	sdata->lngStrings[0xa1] = "-";
 
-	#if 0
-	// Monday event
-	sdata->lngStrings[0x9e] = "30";
-	sdata->lngStrings[0x9f] = "60";
-	sdata->lngStrings[0xa0] = "90";
-	sdata->lngStrings[0xa1] = "120";
-	#endif
-
-
 	for(i = 0; i < 4; i++)
 	{
 		// default, set all to unlocked
 		menuRows[i].stringIndex = 0x9a+i;
 		menuRows[4+i].stringIndex = 0x809a+4+i;
-		#if 0
-		menuRows[4+i].stringIndex = 0x9a+4+i;
-		#endif
-
-		#if 0
-		// if not monday
-		if(octr->special != 1)
-		{
-			sdata->lngStrings[0x9a+4+i] = "-";
-			menuRows[4+i].stringIndex = 0x809a+4+i;
-		}
-		#endif
 	}
 }
 
@@ -261,10 +198,10 @@ void NewPage_Characters()
 {
 	int i;
 
-	for(i = 0; i < 8; i++)
+	for(i = 0; i < ELEMENTS_PER_PAGE; i++)
 	{
 		menuRows[i].stringIndex =
-			data.MetaDataCharacters[8*octr->PageNumber+i].name_LNG_long;
+			data.MetaDataCharacters[ELEMENTS_PER_PAGE*octr->PageNumber+i].name_LNG_long;
 	}
 }
 
@@ -311,7 +248,7 @@ void RECTMENU_OnPressX(struct RectMenu* b)
 	RECTMENU_Hide(b);
 	sdata->ptrDesiredMenu = 0;
 
-	*OnPressX_SetPtr = (8 * octr->PageNumber) + b->rowSelected;
+	*OnPressX_SetPtr = (ELEMENTS_PER_PAGE * octr->PageNumber) + b->rowSelected;
 	*OnPressX_SetLock = 1;
 
 	octr->PageNumber = 0;

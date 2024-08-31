@@ -24,8 +24,11 @@
 #define IP_ADDRESS_SIZE		            16 // assuming IPv4 (which is "xxx.xxx.xxx.xxx" + '\0')
 #define PORT_SIZE			            6 // the port number as a string (0-65535 + '\0')
 
-#define NUM_SERVER_PAGES 2
-#define ROOMS_PER_PAGE 8
+#define ELEMENTS_PER_PAGE 8 // any menu item
+
+#define NUM_SERVERS 8
+#define NUM_SERVER_PAGES 3
+#define ROOMS_PER_PAGE ELEMENTS_PER_PAGE
 #define SERVER_NUM_ROOMS (NUM_SERVER_PAGES * ROOMS_PER_PAGE)
 #define SERVER_NULL_ROOM 255
 
