@@ -1,3 +1,5 @@
+//if you change this file, you should also change logger.h in the Saphi Client project
+
 namespace Logger
 {
 	void PrintBanner();
