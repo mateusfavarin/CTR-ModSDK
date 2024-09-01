@@ -345,6 +345,7 @@ void StatePS1_Game_Race()
 {
 	int i;
 	static unsigned msCount = 0;
+	static unsigned frameCounter = 0;
 
 	Ghostify();
 
@@ -375,11 +376,14 @@ void StatePS1_Game_Race()
 			msCount -= SECONDS(1);
 			octr->dnfTimer--;
 		}
-		char s_dnf = "DNF";
+
 		char s_dnfNumber[10];
+		char s_dnf[] = "DNF";
+		int color = RED;
+		if (octr->dnfTimer < 6) { color = frameCounter++ & FPS_DOUBLE(1) ? RED : WHITE; }
 		sprintf(s_dnfNumber, "%u", octr->dnfTimer);
-		DecalFont_DrawLine(s_dnfNumber, 256, 5, FONT_BIG, JUSTIFY_CENTER | RED);
-		DecalFont_DrawLine(s_dnf, 256, 5 + data.font_charPixHeight[FONT_BIG], FONT_SMALL, JUSTIFY_CENTER | RED);
+		DecalFont_DrawLine(s_dnfNumber, 192, 10, FONT_BIG, JUSTIFY_CENTER | color);
+		DecalFont_DrawLine(s_dnf, 192, 10 + data.font_charPixHeight[FONT_BIG], FONT_SMALL, JUSTIFY_CENTER | color);
 	}
 	else { msCount = 0; }
 }
