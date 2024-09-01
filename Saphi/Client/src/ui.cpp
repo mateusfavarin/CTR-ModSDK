@@ -152,6 +152,7 @@ void UI::Render(int width, int height)
     {
       g_dataManager.SaveData();
 #ifdef _DEBUG
+      //-stdout doesn't do what I want.
       g_gameData.m_reduxCommand = "\"" + g_reduxExecutable + "\" -run -no-kiosk -interpreter -debugger -8mb -iso \"" + s_patchedPath + "\"";
 #else
       g_gameData.m_duckCommand = "\"" + g_duckExecutable + "\" \"" + s_patchedPath + "\"";
