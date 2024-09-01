@@ -10,6 +10,12 @@ void StatePS1_Launch_Boot()
 
 extern char* countryNames[ELEMENTS_PER_PAGE];
 bool initString = true;
+char* s_onlineGameModes[NUM_SERVER_PAGES] = {
+	"Items",
+	"Itemless",
+	"Icy/STP"
+};
+
 
 void StatePS1_Launch_PickServer()
 {
@@ -21,15 +27,7 @@ void StatePS1_Launch_PickServer()
 	MenuWrites_serverId();
 
 	// If already picked
-	if(MenuFinished() == 1)
-	{
-		if (!initString)
-		{
-			strcpy(sdata->lngStrings[0x4e], countryNames[octr->serverId]);
-			initString = true;
-		}
-		return;
-	}
+	if(MenuFinished() == 1) { initString = true; return; }
 
 	UpdateMenu();
 	NewPage_serverId();
@@ -63,11 +61,29 @@ void StatePS1_Launch_PickRoom()
 {
 	MenuWrites_ServerRoom();
 
+	static int currGamemodePage = -1;
+
 	// If already picked
 	if(MenuFinished() == 1)
 	{
+		currGamemodePage = -1;
+		switch (octr->PageNumber)
+		{
+			case ONLINE_MODE_ITEMS:
+				octr->onlineGameMode = MODIFIER_ITEMS;
+			case ONLINE_MODE_ITEMLESS:
+				octr->onlineGameMode = MODIFIER_NONE;
+			case ONLINE_MODE_ICY_STP:
+				octr->onlineGameMode = MODIFIER_ICY | MODIFIER_STP;
+		}
 		ResetPsxGlobals();
 		return;
+	}
+
+	if (octr->PageNumber != currGamemodePage)
+	{
+		currGamemodePage = octr->PageNumber;
+		strcpy(sdata->lngStrings[0x4e], s_onlineGameModes[octr->PageNumber]);
 	}
 
 	UpdateMenu();
@@ -81,10 +97,7 @@ void StatePS1_Launch_PickRoom()
 	text[15] = '0' + ((serverTotal / 10) % 10);
 	text[16] = '0' + (serverTotal % 10);
 
-	DecalFont_DrawLine(
-		text,
-		menu.posX_curr,0xb8,
-		FONT_SMALL,JUSTIFY_CENTER|PAPU_YELLOW);
+	DecalFont_DrawLine(text, menu.posX_curr, 0xb8, FONT_SMALL,JUSTIFY_CENTER|PAPU_YELLOW);
 }
 
 void StatePS1_Launch_Error()
@@ -109,12 +122,6 @@ void StatePS1_Lobby_HostTrackPick()
 	// If already picked
 	if(MenuFinished() == 1)
 	{
-		if(octr->levelID > TURBO_TRACK)
-		{
-			octr->lapID = 0;
-			octr->boolSelectedLap = 1;
-		}
-
 		// do this without adding to enum,
 		// cause that means changing PS1/PC
 		void FakeState_Lobby_HostLapPick();

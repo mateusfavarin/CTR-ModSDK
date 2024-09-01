@@ -59,6 +59,10 @@ const CG_Message State::Launch_PickServer(OnlineCTR& octr)
 		port = 25565;
 		break;
 	case 1:
+		hostName = "na1.projectsaphi.com";
+		port = 65001;
+		break;
+	case 2:
 		hostName = "as1.projectsaphi.com";
 		port = 25565;
 		break;

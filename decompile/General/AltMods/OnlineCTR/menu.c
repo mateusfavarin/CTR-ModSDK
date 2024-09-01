@@ -69,8 +69,8 @@ int MenuFinished()
 char* countryNames[ELEMENTS_PER_PAGE] =
 {
 	"Europe",
+	"America",
 	"Asia",
-	"-",
 	"-",
 	"-",
 	"-",
@@ -104,16 +104,9 @@ void MenuWrites_serverId()
 
 int GetRoomChar(int pn)
 {
-	if(pn <= 9)
-	{
-		return '0' + pn;
-	}
-
-	// 10 or more
-	else
-	{
-		return 'A' + (pn-10);
-	}
+	int mod = pn % ELEMENTS_PER_PAGE;
+	if (mod == 0) { mod = ELEMENTS_PER_PAGE; }
+	return '0' + mod;
 }
 
 void NewPage_ServerRoom()
@@ -137,7 +130,7 @@ void NewPage_ServerRoom()
 		menuRows[i].stringIndex = 0x809a+i;
 		sdata->lngStrings[0x9a+i][5] = GetRoomChar(ELEMENTS_PER_PAGE*pn + i+1);
 		sdata->lngStrings[0x9a+i][9] = '0' + (octr->roomClientCount[ELEMENTS_PER_PAGE*pn+i]);
-		if(ELEMENTS_PER_PAGE*pn+i < SERVER_NUM_ROOMS && !octr->roomLocked[ELEMENTS_PER_PAGE*pn+i]) { menuRows[i].stringIndex &= 0x7FFF; }
+		if (ELEMENTS_PER_PAGE*pn+i < SERVER_NUM_ROOMS && !octr->roomLocked[ELEMENTS_PER_PAGE*pn+i]) { menuRows[i].stringIndex &= 0x7FFF; }
 	}
 }
 
@@ -148,13 +141,25 @@ void MenuWrites_ServerRoom()
 	OnPressX_SetLock = &octr->hasSelectedRoom;
 }
 
+static int HideUnusedTracks()
+{
+	for (int i = TURBO_TRACK + 1; i < NUM_TRACK_PAGES * ELEMENTS_PER_PAGE; i++)
+	{
+		sdata->lngStrings[data.metaDataLEV[i].name_LNG] = "-";
+	}
+}
+
 void NewPage_Tracks()
 {
-	int i;
+	int i, id;
+	static int hide = 1;
+	if (hide) { HideUnusedTracks(); hide = 0; }
 
 	for(i = 0; i < ELEMENTS_PER_PAGE; i++)
 	{
-		menuRows[i].stringIndex = data.metaDataLEV[ELEMENTS_PER_PAGE*octr->PageNumber+i].name_LNG;
+		id = ELEMENTS_PER_PAGE * octr->PageNumber + i;
+		menuRows[i].stringIndex = data.metaDataLEV[id].name_LNG;
+		if (id > TURBO_TRACK) { menuRows[i].stringIndex |= 0x8000; }
 	}
 }
 
@@ -200,8 +205,8 @@ void NewPage_Characters()
 
 	for(i = 0; i < ELEMENTS_PER_PAGE; i++)
 	{
-		menuRows[i].stringIndex =
-			data.MetaDataCharacters[ELEMENTS_PER_PAGE*octr->PageNumber+i].name_LNG_long;
+		menuRows[i].stringIndex = data.MetaDataCharacters[ELEMENTS_PER_PAGE*octr->PageNumber+i].name_LNG_long;
+		menuRows[i].stringIndex &= 0x7FFF;
 	}
 }
 

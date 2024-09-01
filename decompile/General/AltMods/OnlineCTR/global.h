@@ -15,17 +15,8 @@
 
 #define STATIC_ASSERT2 static_assert
 
-//#define true				1
-//#define false				0
-
-#define DONT_SHOW_NAME		            0
-#define SHOW_NAME			            1
-#define DEFAULT_IP			            "127.0.0.1" // the default IP address we want to use for private lobbies
-#define IP_ADDRESS_SIZE		            16 // assuming IPv4 (which is "xxx.xxx.xxx.xxx" + '\0')
-#define PORT_SIZE			            6 // the port number as a string (0-65535 + '\0')
-
 #define ELEMENTS_PER_PAGE 8 // any menu item
-#define NUM_TRACK_PAGES 4
+#define NUM_TRACK_PAGES 3
 #define NUM_CHARACTER_PAGES 2
 
 #define NUM_SERVERS 2
@@ -33,8 +24,8 @@
 #define ROOMS_PER_PAGE ELEMENTS_PER_PAGE
 #define SERVER_NUM_ROOMS (NUM_SERVER_PAGES * ROOMS_PER_PAGE)
 #define SERVER_NULL_ROOM 255
+#define ROOM_MAX_NUM_PLAYERS 8
 
- // 2 seconds to be very tolerant on client
 #ifdef USE_60FPS
 #define DISCONNECT_AT_UNSYNCED_FRAMES   120
 #else
@@ -42,7 +33,6 @@
 #endif
 
 #define NAME_LEN 9
-#define ROOM_MAX_NUM_PLAYERS 8
 #define ID_WAIT_ASSIGNMENT 0xFF
 #define ID_HOST 0
 
@@ -71,10 +61,20 @@ enum ClientState
 	NUM_STATES_FUNCS
 };
 
-enum OnlineGameMode
+/* Bit flags */
+enum OnlineGameModifiers
 {
-	ONLINE_ITEMS = 0,
-	ONLINE_ITEMLESS,
+	MODIFIER_NONE  = 0,
+	MODIFIER_ITEMS = (1 << 0),
+	MODIFIER_ICY   = (1 << 1),
+	MODIFIER_STP   = (1 << 2),
+};
+
+enum OnlineGameModeList
+{
+	ONLINE_MODE_ITEMS = 0,
+	ONLINE_MODE_ITEMLESS = 1,
+	ONLINE_MODE_ICY_STP = 2,
 };
 
 typedef struct RaceStats
@@ -118,7 +118,7 @@ struct OnlineCTR
 	// 0x14
 	uint8_t boolPlanetLEV;
 	uint8_t boolClientBusy;
-	uint8_t special;
+	uint8_t onlineGameMode;
 	int8_t windowsClientSync;
 
 	uint8_t roomClientCount[SERVER_NUM_ROOMS];
