@@ -118,7 +118,7 @@ struct OnlineCTR
 	// 0x14
 	uint8_t boolPlanetLEV;
 	uint8_t boolClientBusy;
-	uint8_t onlineGameMode;
+	uint8_t onlineGameModifiers;
 	int8_t windowsClientSync;
 
 	uint8_t roomClientCount[SERVER_NUM_ROOMS];

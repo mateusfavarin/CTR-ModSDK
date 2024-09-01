@@ -18,8 +18,8 @@ void DECOMP_VehPickupItem_ShootNow(struct Driver* d, int weaponID, int flags)
 	struct GameTracker* gGT = sdata->gGT;
 	int modelID;
 
-	#if 0 && defined(USE_ONLINE)
-	if(d->driverID == 0)
+	#ifdef USE_ONLINE
+	if ((octr->onlineGameModifiers & MODIFIER_ITEMS) && (d->driverID == 0))
 	{
 		octr->Shoot[0].boolJuiced = 0;
 		if(d->numWumpas >= 10) octr->Shoot[0].boolJuiced = 1;

@@ -49,6 +49,9 @@ void octr_initHook()
 	PROC_BirthWithObject(0x30f, ThreadFunc, 0, 0);
 
 	struct GameTracker* gGT = sdata->gGT;
+	gGT->gameMode2 &= ~(CHEAT_ADV | CHEAT_BOMBS | CHEAT_ENGINE | CHEAT_ICY | CHEAT_INVISIBLE | CHEAT_MASK | CHEAT_ONELAP | CHEAT_SUPERHARD | CHEAT_TURBO | CHEAT_TURBOCOUNT | CHEAT_TURBOPAD | CHEAT_WUMPA);
+	if (octr->onlineGameModifiers & MODIFIER_ICY) { gGT->gameMode2 |= CHEAT_ICY; }
+	if (octr->onlineGameModifiers & MODIFIER_STP) { gGT->gameMode2 |= CHEAT_TURBOPAD; }
 	if(gGT->levelID <= TURBO_TRACK)
 	{
 		DECOMP_CAM_StartOfRace(&gGT->cameraDC[0]);

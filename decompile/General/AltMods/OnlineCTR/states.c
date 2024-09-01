@@ -66,16 +66,19 @@ void StatePS1_Launch_PickRoom()
 	// If already picked
 	if(MenuFinished() == 1)
 	{
-		currGamemodePage = -1;
-		switch (octr->PageNumber)
+		switch (currGamemodePage)
 		{
 			case ONLINE_MODE_ITEMS:
-				octr->onlineGameMode = MODIFIER_ITEMS;
+				octr->onlineGameModifiers = MODIFIER_ITEMS;
+				break;
 			case ONLINE_MODE_ITEMLESS:
-				octr->onlineGameMode = MODIFIER_NONE;
+				octr->onlineGameModifiers = MODIFIER_NONE;
+				break;
 			case ONLINE_MODE_ICY_STP:
-				octr->onlineGameMode = MODIFIER_ICY | MODIFIER_STP;
+				octr->onlineGameModifiers = MODIFIER_ICY | MODIFIER_STP;
+				break;
 		}
+		currGamemodePage = -1;
 		ResetPsxGlobals();
 		return;
 	}
@@ -257,22 +260,6 @@ RECT drawTimeRECT =
 	.h = 0
 };
 
-static void Instance_Ghostify(struct Instance *inst, unsigned driverID, unsigned isDriver)
-{
-	if (!inst) { return; }
-
-	if (isDriver)
-	{
-		inst->flags |= 0x60000;
-		inst->alphaScale = 0xA00;
-	}
-	else
-	{
-		inst->flags |= 0x10000;
-		inst->alphaScale = 0x600;
-	}
-}
-
 static void Ghostify()
 {
 	struct Turbo *turboObj;
@@ -280,6 +267,8 @@ static void Ghostify()
 	struct GameTracker *gGT = sdata->gGT;
 	struct Icon **ptrIconArray;
 	struct Instance *inst;
+
+	if (octr->onlineGameModifiers & MODIFIER_ITEMS) { return; }
 
 	for (int driverID = 1; driverID < ROOM_MAX_NUM_PLAYERS; driverID++)
 	{
