@@ -77,6 +77,7 @@ namespace Logger
 			buf[bufSize - 1] = '\0'; //nullterm
 		vsnprintf(buf, bufSize, _Format, valist);
 		sstream << buf;
+		sstream.flush();
 		free(buf);
 	}
 }
