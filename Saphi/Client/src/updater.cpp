@@ -101,16 +101,40 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
           status = g_lang[message];
           statusIcon = icon;
         };
-#ifdef _DEBUG
+#if defined(_WIN32) && defined(__linux__)
+#error What the hell how is this linux and windows at the same time?
+#endif
+#ifdef _DEBUG //REDUX
       bool& hasEmulator = m_hasRedux;
       const std::string emuTarget = "Redux";
       const std::string& emuFolder = g_reduxFolder;
       const std::string& emuDlFolder = g_reduxDlFolder;
-#else
+      #if defined(_WIN32) //windows
+      const std::string emuArchive = "redux.zip";
+      const std::string emuPath = "/storage/assets/7dd/cb6/4a1/f58bfc1074666c68830644e824d684af4e62f6a0fd18805071d275b/pcsx-redux-nightly-19496.20240830.2-x64.zip";
+      const std::string domain = "distrib.app";
+      #elif defined(__linux__) //linux (non macos, non BSD)
+        #error not yet supported
+      #else
+        #error Unrecognized platform
+      #endif
+#else //DUCKSTATION
+      //platform independent
       bool& hasEmulator = m_hasDuck;
       const std::string emuTarget = "Duckstation";
       const std::string& emuFolder = g_duckFolder;
       const std::string& emuDlFolder = g_duckDlFolder;
+      #if defined(_WIN32) //windows
+      const std::string emuArchive = "duckstation.zip";
+      const std::string emuPath = "/stenzek/duckstation/releases/download/latest/duckstation-windows-x64-release.zip";
+      const std::string domain = "github.com";
+      #elif defined(__linux__) //linux (non macos, non BSD)
+      const std::string emuArchive = "DuckStation-x64.AppImage";
+      const std::string emuPath = "/stenzek/duckstation/releases/download/latest/DuckStation-x64.AppImage";
+      const std::string domain = "github.com";
+      #else
+        #error Unrecognized platform
+      #endif
 #endif
       if (!hasEmulator)
       {
@@ -122,50 +146,19 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
           const std::filesystem::path u8emuDlFolder = std::u8string(emuDlFolder.begin(), emuDlFolder.end());
           if (!std::filesystem::is_directory(u8emuDlFolder)) { std::filesystem::create_directory(u8emuDlFolder); }
         }
-#ifdef _DEBUG
-    #ifdef _WIN32
-        const std::string reduxArchive = "redux.zip";
-        //"https://distrib.app/storage/assets/7dd/cb6/4a1/f58bfc1074666c68830644e824d684af4e62f6a0fd18805071d275b/pcsx-redux-nightly-19496.20240830.2-x64.zip"
-        const std::string reduxPath = "/storage/assets/7dd/cb6/4a1/f58bfc1074666c68830644e824d684af4e62f6a0fd18805071d275b/pcsx-redux-nightly-19496.20240830.2-x64.zip";
-    #else
-#error Linux does not yet support redux (if it even has a linux version idk) because TheUbMunster was too lazy.
-    #endif
-#else
-    #ifdef _WIN32
-        const std::string duckArchive = "duckstation.zip";
-        const std::string duckPath = "/stenzek/duckstation/releases/download/latest/duckstation-windows-x64-release.zip";
-    #else
-        const std::string duckArchive = "DuckStation-x64.AppImage";
-        const std::string duckPath = "/stenzek/duckstation/releases/download/latest/DuckStation-x64.AppImage";
-    #endif
-#endif
-#ifdef _DEBUG
-        if (!Requests::DownloadFile("distrib.app", reduxPath, g_reduxDlFolder + reduxArchive))
-#else
-        if (!Requests::DownloadFile("github.com", duckPath, g_duckDlFolder + duckArchive))
-#endif
+        if (!Requests::DownloadFile(domain, emuPath, emuDlFolder + emuArchive))
         {
           updateStatus(std::format("Error: could not download {}.", emuTarget), IconType::FAIL);
           return false;
         }
-#ifdef _WIN32
         updateStatus(std::format("Decompressing {}...", emuTarget), IconType::RUNNING);
-#ifdef _DEBUG
-        if (!IO::DecompressFiles(g_reduxFolder, reduxArchive))
-#else
-        if (!IO::DecompressFiles(g_duckFolder, duckArchive))
-#endif
+        if (!IO::DecompressFiles(emuFolder, emuArchive))
         {
           updateStatus(std::format("Error: could not decompress {}.", emuTarget), IconType::FAIL);
           return false;
         }
-#endif
         updateStatus("Installing Saphi settings...", IconType::RUNNING);
-#ifdef _DEBUG
-        const std::string g_biosFolder = g_reduxFolder + "bios/";
-#else
-        const std::string g_biosFolder = g_duckFolder + "bios/";
-#endif
+        const std::string g_biosFolder = emuFolder + "bios/";
         const std::filesystem::path u8biosPath = std::u8string(g_biosFolder.begin(), g_biosFolder.end());
         if (!std::filesystem::is_directory(u8biosPath)) { std::filesystem::create_directory(u8biosPath); }
         std::string biosName;
@@ -180,11 +173,7 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
         const std::string concatBios = g_biosFolder + biosName;
         const std::filesystem::path u8concatBios = std::u8string(concatBios.begin(), concatBios.end());
         if (!std::filesystem::exists(u8concatBios)) { std::filesystem::copy_file(std::u8string(biosPath.begin(), biosPath.end()), u8concatBios); }
-#ifdef _DEBUG
-        const std::string emuPortable = g_reduxFolder + "portable.txt";
-#else
-        const std::string emuPortable = g_duckFolder + "portable.txt";
-#endif
+        const std::string emuPortable = emuFolder + "portable.txt";
         std::ofstream portableFile(emuPortable.c_str());
         portableFile.close();
         hasEmulator = true;
@@ -204,7 +193,7 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
             if (copyIni || !m_updated)
             {
               const std::string iniVersion = GetIniPath_Version(m_versionAvailable);
-#ifndef _DEBUG
+#if !defined(_DEBUG) //dont do this for redux.
               const std::string iniDuck = GetIniPath_Duck();
               const std::filesystem::path u8iniDuck = std::u8string(iniDuck.begin(), iniDuck.end());
               if (!std::filesystem::exists(u8iniDuck)) { std::filesystem::copy_file(std::u8string(iniVersion.begin(), iniVersion.end()), u8iniDuck); }
