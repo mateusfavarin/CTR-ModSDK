@@ -375,9 +375,11 @@ void StatePS1_Game_Race()
 			msCount -= SECONDS(1);
 			octr->dnfTimer--;
 		}
-		char msg[10];
-		sprintf(msg, "%u", octr->dnfTimer);
-		DecalFont_DrawLine(msg, 256, 5, FONT_BIG, JUSTIFY_CENTER | RED);
+		char s_dnf = "DNF";
+		char s_dnfNumber[10];
+		sprintf(s_dnfNumber, "%u", octr->dnfTimer);
+		DecalFont_DrawLine(s_dnfNumber, 256, 5, FONT_BIG, JUSTIFY_CENTER | RED);
+		DecalFont_DrawLine(s_dnf, 256, 5 + data.font_charPixHeight[FONT_BIG], FONT_SMALL, JUSTIFY_CENTER | RED);
 	}
 	else { msCount = 0; }
 }

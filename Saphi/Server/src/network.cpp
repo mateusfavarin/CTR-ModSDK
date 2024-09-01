@@ -117,6 +117,10 @@ void Network::Send(const SG_Message& message, const void* peer, bool reliable) c
     data = static_cast<const void*>(&message.weapon);
     size = sizeof(SG_MessageWeapon);
     break;
+  case ServerMessageType::SG_DNFTIMER:
+    data = static_cast<const void*>(&message.dnf);
+    size = sizeof(SG_MessageDNFTimer);
+    break;
   case ServerMessageType::SG_ENDRACE:
     data = static_cast<const void*>(&message.endRace);
     size = sizeof(SG_MessageEndRace);
