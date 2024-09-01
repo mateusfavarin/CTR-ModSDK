@@ -170,26 +170,8 @@ void OnlineInit_Drivers(struct GameTracker* gGT)
 		#endif
 	}
 
-	if (gGT->levelID != 0x26)
-	{
-		octr->CurrState = GAME_WAIT_FOR_RACE;
-#ifdef PINE_DEBUG
-		printf("statechange %d GAME_WAIT_FOR_RACE 1: \n", octr->stateChangeCounter++);
-#endif
-	}
+	if (gGT->levelID != 0x26) { octr->CurrState = GAME_WAIT_FOR_RACE; }
 }
-
-bool HasRaceEnded()
-{
-	int numPlayersDisconnected = 0;
-	for (int i = 0; i < octr->NumDrivers; i++)
-	{
-		if (octr->nameBuffer[i][0] == 0) { numPlayersDisconnected++; }
-	}
-	return octr->numDriversEnded == (octr->NumDrivers - numPlayersDisconnected);
-}
-
-RECT windowText = {0x118, 0x40, 0xD8, 0};
 
 void OnlineEndOfRace()
 {
@@ -198,15 +180,12 @@ void OnlineEndOfRace()
 		(octr->CurrState < GAME_RACE)) { return; }
 
 	if (octr->CurrState != GAME_SPECTATE) { octr->CurrState = GAME_END_RACE; }
-#ifdef PINE_DEBUG
-	printf("statechange %d GAME_END_RACE 2: \n", octr->stateChangeCounter++);
-#endif
 
 	static unsigned frameCounter = 0;
 	EndOfRace_Camera();
 	EndOfRace_Icons();
 	int color = frameCounter++ & FPS_DOUBLE(1) ? RED : WHITE;
-	if (HasRaceEnded())
+	if (octr->raceOver)
 	{
 		DecalFont_DrawLine("RACE COMPLETE", 256, 108, FONT_BIG, JUSTIFY_CENTER | color);
 	}

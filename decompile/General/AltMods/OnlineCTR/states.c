@@ -344,42 +344,47 @@ void StatePS1_Game_WaitForRace()
 void StatePS1_Game_Race()
 {
 	int i;
+	static unsigned msCount = 0;
+
 	Ghostify();
 
 	for(i = 1; i < ROOM_MAX_NUM_PLAYERS; i++)
 	{
 		if(octr->Shoot[i].boolNow != 0)
 		{
-			octr->Shoot[i].boolNow = 0;
-
+			int weapon;
 			struct Driver* d = sdata->gGT->drivers[i];
-
-			if(octr->Shoot[i].boolJuiced)
-				d->numWumpas = 10;
+			octr->Shoot[i].boolNow = 0;
+			if(octr->Shoot[i].boolJuiced) { d->numWumpas = 10; }
 
 			d->heldItemID = octr->Shoot[i].Weapon;
-
-			// copy/paste from ShootOnCirclePress
-			int weapon;
 			weapon = d->heldItemID;
 
 			// Missiles and Bombs share code,
 			// Change Bomb1x, Bomb3x, Missile3x, to Missile1x
-			if(
-				(weapon == 1) ||
-				(weapon == 10) ||
-				(weapon == 11)
-			)
-			{
-				weapon = 2;
-			}
-
-			DECOMP_VehPickupItem_ShootNow(
-				d,
-				weapon,
-				octr->Shoot[i].flags);
+			if ((weapon == 1) || (weapon == 10) || (weapon == 11)) { weapon = 2; }
+			DECOMP_VehPickupItem_ShootNow(d, weapon, octr->Shoot[i].flags);
 		}
 	}
+
+	if (octr->dnfTimer > 0)
+	{
+		msCount += sdata->gGT->elapsedTimeMS;
+		if (msCount >= SECONDS(1))
+		{
+			msCount -= SECONDS(1);
+			octr->dnfTimer--;
+		}
+		char msg[10];
+		sprintf(msg, "%u", octr->dnfTimer);
+		DecalFont_DrawLine(msg, 256, 5, FONT_BIG, JUSTIFY_CENTER | RED);
+	}
+	else { msCount = 0; }
+}
+
+void StatePS1_Game_EndRace()
+{
+
 }
 
 static void OnRaceEnd()
@@ -397,11 +402,6 @@ static void OnRaceEnd()
 			foundRacer = true;
 		}
 	}
-}
-
-void StatePS1_Game_EndRace()
-{
-
 }
 
 void StatePS1_Game_Spectate()

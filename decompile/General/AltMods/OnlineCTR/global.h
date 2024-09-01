@@ -88,47 +88,48 @@ typedef struct RaceStats
 // 0x8000C000 at 0x8000C400
 struct OnlineCTR
 {
-	// 0x0
+	int32_t ver_psx;
+	int32_t ver_pc;
+	int32_t ver_server;
 	int32_t CurrState;
 
-	// 0x4
 	int8_t PageNumber; // allow negative
 	uint8_t CountPressX;
 	uint8_t NumDrivers;
 	uint8_t DriverID;
 
-	// 0x8
 	uint8_t boolSelectedLap;
 	uint8_t boolSelectedLevel;
 	uint8_t lapID;
 	uint8_t levelID;
 
-	// 0xC
 	uint8_t IsBootedPS1;
 	uint8_t boolSelectedCharacter;
 	uint8_t numRooms;
 	uint8_t numDriversEnded;
 
-	// 0x10
 	uint8_t serverId;
 	uint8_t serverRoom;
 	uint8_t hasSelectedServer;
 	uint8_t hasSelectedRoom;
 
-	// 0x14
 	uint8_t boolPlanetLEV;
 	uint8_t boolClientBusy;
 	uint8_t onlineGameModifiers;
-	int8_t windowsClientSync;
+	uint8_t windowsClientSync;
+
+	uint8_t lastWindowsClientSync;
+	uint8_t desiredFPS;
+	uint8_t raceOver;
+
+	uint16_t dnfTimer;
+	int32_t frames_unsynced;
 
 	uint8_t roomClientCount[SERVER_NUM_ROOMS];
 	uint8_t roomLocked[SERVER_NUM_ROOMS];
 	uint8_t boolClientSelectedCharacters[ROOM_MAX_NUM_PLAYERS];
 	char nameBuffer[ROOM_MAX_NUM_PLAYERS][NAME_LEN + 1]; //+1 for nullterm
 	RaceStats raceStats[ROOM_MAX_NUM_PLAYERS];
-	int32_t ver_psx;
-	int32_t ver_pc;
-	int32_t ver_server;
 
 	// slot[0] is for game to tell client to send
 	// slot[1+] is for client to tell game to shoot
@@ -139,17 +140,6 @@ struct OnlineCTR
 		uint8_t flags;
 		uint8_t boolNow;
 	} Shoot[ROOM_MAX_NUM_PLAYERS];
-
-    // Frames that the client didn't update
-    int32_t frames_unsynced;
-
-    // Last windowsClientSync counter
-	int8_t lastWindowsClientSync;
-	int8_t desiredFPS;
-
-#ifdef PINE_DEBUG
-	int32_t stateChangeCounter;
-#endif
 };
 
 typedef struct TotalTime
@@ -190,9 +180,11 @@ enum ServerMessageType
 	SG_STARTRACE,
 	SG_KART,
 	SG_WEAPON,
+	SG_DNFTIMER,
 	SG_ENDRACE,
 	SG_DISCONNECT,
 	SG_FORCEENDRACE,
+	SG_RACEOVER,
 	SG_COUNT,
 	SG_EOF = 0xFF
 };
@@ -283,6 +275,12 @@ struct SG_MessageWeapon
 	uint8_t padding : 1;
 };
 
+struct SG_MessageDNFTimer
+{
+	uint8_t type;
+	uint16_t timer;
+};
+
 struct SG_MessageEndRace
 {
 	uint8_t type;
@@ -304,6 +302,7 @@ struct SG_Message
 		struct SG_MessageCharacter character;		// SG_CHARACTER
 		struct SG_MessageKart kart;					// SG_KART
 		struct SG_MessageWeapon weapon;				// SG_WEAPON
+		struct SG_MessageDNFTimer dnf;				// SG_DNFTIMER
 		struct SG_MessageEndRace endRace;			// SG_ENDRACE
 	};
 };

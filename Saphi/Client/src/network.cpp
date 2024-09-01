@@ -143,10 +143,15 @@ const SG_Message Network::Recv()
 					case ServerMessageType::SG_WEAPON:
 						msg.weapon = *reinterpret_cast<SG_MessageWeapon*>(event.packet->data);
 						break;
+					case ServerMessageType::SG_DNFTIMER:
+						msg.dnf = *reinterpret_cast<SG_MessageDNFTimer*>(event.packet->data);
+						break;
 					case ServerMessageType::SG_ENDRACE:
 						msg.endRace = *reinterpret_cast<SG_MessageEndRace*>(event.packet->data);
 						break;
 					case ServerMessageType::SG_FORCEENDRACE:
+						break;
+					case ServerMessageType::SG_RACEOVER:
 						break;
 					default:
 						msg.type = ServerMessageType::SG_EOF;

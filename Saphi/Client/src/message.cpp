@@ -38,12 +38,14 @@ void Message::NewClient(const SG_Message& message, OnlineCTR& octr)
   octr.DriverID = msg.clientID;
   octr.NumDrivers = msg.numClientsTotal;
   if (msg.trackSelected) { octr.levelID = msg.trackId; }
+  else { octr.levelID = 0; }
   octr.boolSelectedLevel = msg.trackSelected;
   octr.boolSelectedLap = false;
+  octr.raceOver = false;
   octr.lapID = 0;
-  octr.levelID = 0;
   octr.boolSelectedCharacter = 0;
   octr.numDriversEnded = 0;
+  octr.dnfTimer = 0;
   RESET_ARR(octr.boolClientSelectedCharacters);
   RESET_ARR(octr.nameBuffer);
   RESET_ARR(octr.raceStats);
@@ -154,11 +156,17 @@ void Message::Weapon(const SG_Message& message, OnlineCTR& octr)
   octr.Shoot[slot].flags = msg.flags;
 }
 
+void Message::DNFTimer(const SG_Message& message, OnlineCTR& octr)
+{
+  SG_MessageDNFTimer msg = message.dnf;
+  octr.dnfTimer = msg.timer;
+}
+
 void Message::EndRace(const SG_Message& message, OnlineCTR& octr)
 {
   const SG_MessageEndRace msg = message.endRace;
   const uint8_t driverID = octr.DriverID;
-  if (msg.clientID == driverID) { return; }
+  if (msg.clientID == driverID) { octr.dnfTimer = 0; return; }
 
   int slot = msg.clientID < driverID ? msg.clientID + 1 : msg.clientID;
   PlayerHoldSquare(slot);
@@ -172,6 +180,12 @@ void Message::EndRace(const SG_Message& message, OnlineCTR& octr)
 void Message::ForceEndRace(const SG_Message& message, OnlineCTR& octr)
 {
   octr.CurrState = ClientState::GAME_SPECTATE;
+  octr.dnfTimer = 0;
   const psxptr_t driver = g_psx.Read<psxptr_t>(ADDR_DRIVERS);
   g_psx.Read<uint32_t>(driver + 0x2C8) |= ActionFlags::RACE_END;
+}
+
+void Message::RaceOver(const SG_Message& message, OnlineCTR& octr)
+{
+  octr.raceOver = true;
 }
