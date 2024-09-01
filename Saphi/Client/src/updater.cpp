@@ -103,32 +103,23 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
         };
 #ifdef _DEBUG
       bool& hasEmulator = m_hasRedux;
+      const std::string emuTarget = "Redux";
+      const std::string& emuFolder = g_reduxFolder;
+      const std::string& emuDlFolder = g_reduxDlFolder;
 #else
       bool& hasEmulator = m_hasDuck;
+      const std::string emuTarget = "Duckstation";
+      const std::string& emuFolder = g_duckFolder;
+      const std::string& emuDlFolder = g_duckDlFolder;
 #endif
       if (!hasEmulator)
       {
-        //TODO: make this preprocessor garbage... not garbage.
-#ifdef _DEBUG
-        const std::filesystem::path u8emuFolder = std::u8string(g_reduxFolder.begin(), g_reduxFolder.end());
-        const std::string emuTarget = "Redux";
-#else
-        const std::filesystem::path u8emuFolder = std::u8string(g_duckFolder.begin(), g_duckFolder.end());
-        const std::string emuTarget = "Duckstation";
-#endif
+        const std::filesystem::path u8emuFolder = std::u8string(emuFolder.begin(), emuFolder.end());
         updateStatus(std::format("Downloading {}...", emuTarget), IconType::RUNNING);
         if (!std::filesystem::is_directory(u8emuFolder)) { std::filesystem::create_directory(u8emuFolder); }
-#ifdef _DEBUG
-        if (g_reduxFolder != g_reduxDlFolder)
-#else
-        if (g_duckFolder != g_duckDlFolder)
-#endif
+        if (emuFolder != emuDlFolder)
         {
-#ifdef _DEBUG
-          const std::filesystem::path u8emuDlFolder = std::u8string(g_reduxDlFolder.begin(), g_reduxDlFolder.end());
-#else
-          const std::filesystem::path u8emuDlFolder = std::u8string(g_duckDlFolder.begin(), g_duckDlFolder.end());
-#endif
+          const std::filesystem::path u8emuDlFolder = std::u8string(emuDlFolder.begin(), emuDlFolder.end());
           if (!std::filesystem::is_directory(u8emuDlFolder)) { std::filesystem::create_directory(u8emuDlFolder); }
         }
 #ifdef _DEBUG
