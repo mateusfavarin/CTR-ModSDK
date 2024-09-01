@@ -28,9 +28,3 @@
 [submodule "externals/xdelta"]
 	path = externals/xdelta
 	url = https://github.com/jmacd/xdelta
-[submodule "externals/fmtlog"]
-	path = externals/fmtlog
-	url = https://github.com/MengRao/fmtlog
-[submodule "fmtlog"]
-	path = externals/fmtlog
-	url = https://github.com/MengRao/fmtlog

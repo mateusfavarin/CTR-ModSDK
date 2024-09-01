@@ -4,8 +4,6 @@
 #include "logger.h"
 #include "stdarg.h"
 #include "stdio.h"
-#include "fmtlog.h"
-#include "fmtlog-inl.h"
 
 namespace Logger
 {
