@@ -23,12 +23,18 @@ bool Requests::DownloadFile(const std::string& domain, const std::string& sitePa
     const std::string pathStart = "/";
     std::string location = response->get_header_value("Location");
     if (location == domain + sitePath) { return false; }
-
-    size_t hostStartIndex = location.find(hostStart) + hostStart.length();
-    size_t pathStartIndex = location.find(pathStart, hostStartIndex);
-    std::string host = location.substr(hostStartIndex, pathStartIndex - hostStartIndex);
-    std::string path = location.substr(pathStartIndex);
-    return DownloadFile(host, path, filePath);
+    if (!(location.rfind("http", 0) == 0)) //location does *NOT* start with "http", probably a relative url.
+    {
+      return DownloadFile(domain, location, filePath);
+    }
+    else 
+    {
+      size_t hostStartIndex = location.find(hostStart) + hostStart.length();
+      size_t pathStartIndex = location.find(pathStart, hostStartIndex);
+      std::string host = location.substr(hostStartIndex, pathStartIndex - hostStartIndex);
+      std::string path = location.substr(pathStartIndex);
+      return DownloadFile(host, path, filePath);
+    }
   }
   return false;
 }

@@ -115,8 +115,9 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
       const std::string emuPath = "/pub/org/pcsx-redux/project/dev-win-x64/latest";
       const std::string domain = "distrib.app";
       #elif defined(__linux__) //linux (non macos, non BSD)
-      const std::string emuArchive = "Redux-x64.AppImage";
-      const std::string emuPath = "/pub/org/pcsx-redux/project/dev-linux-x64";
+      //emuArchive for redux/linux is a ZIP of an .AppImage
+      const std::string emuArchive = "redux.zip";
+      const std::string emuPath = "/pub/org/pcsx-redux/project/dev-linux-x64/latest";
       const std::string domain = "distrib.app";
       #else
         #error Unrecognized platform
@@ -154,9 +155,10 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
           updateStatus(std::format("Error: could not download {}.", emuTarget), IconType::FAIL);
           return false;
         }
-#ifdef _WIN32 //.AppImage doesn't need to be decompressed (this should only be run on windows).
+        //windows ZIP needs to be decompressed, as well as redux on linux is a ZIP of an appimage.
+#if defined(_WIN32) || (defined(__linux__) && defined(_DEBUG))
         updateStatus(std::format("Decompressing {}...", emuTarget), IconType::RUNNING);
-        if (!IO::DecompressFiles(emuFolder, emuArchive))
+        if (!IO::DecompressFiles(emuDlFolder, emuArchive))
         {
           updateStatus(std::format("Error: could not decompress {}.", emuTarget), IconType::FAIL);
           return false;
