@@ -7,6 +7,7 @@
 #include <CRC.h>
 #include <fstream>
 #include <filesystem>
+#include <format>
 
 Updater::Updater()
 {
@@ -151,12 +152,14 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
           updateStatus(std::format("Error: could not download {}.", emuTarget), IconType::FAIL);
           return false;
         }
+#ifdef _WIN32 //.AppImage doesn't need to be decompressed (this should only be run on windows).
         updateStatus(std::format("Decompressing {}...", emuTarget), IconType::RUNNING);
         if (!IO::DecompressFiles(emuFolder, emuArchive))
         {
           updateStatus(std::format("Error: could not decompress {}.", emuTarget), IconType::FAIL);
           return false;
         }
+#endif
         updateStatus("Installing Saphi settings...", IconType::RUNNING);
         const std::string g_biosFolder = emuFolder + "bios/";
         const std::filesystem::path u8biosPath = std::u8string(g_biosFolder.begin(), g_biosFolder.end());
