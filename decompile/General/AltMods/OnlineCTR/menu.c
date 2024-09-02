@@ -193,10 +193,12 @@ void NewPage_Laps()
 	}
 }
 
+extern unsigned char lapID;
+extern unsigned char boolSelectedLap;
 void MenuWrites_Laps()
 {
-	OnPressX_SetPtr = &octr->lapID;
-	OnPressX_SetLock = &octr->boolSelectedLap;
+	OnPressX_SetPtr = &lapID;
+	OnPressX_SetLock = &boolSelectedLap;
 }
 
 void NewPage_Characters()

@@ -119,7 +119,7 @@ const SG_Message Network::Recv()
 						msg.rooms = *reinterpret_cast<SG_MessageRooms*>(event.packet->data);
 						break;
 					case ServerMessageType::SG_NEWCLIENT:
-						msg.clientStatus = *reinterpret_cast<SG_MessageClientStatus*>(event.packet->data);
+						msg.clientStatus = *reinterpret_cast<SG_MessageNewClient*>(event.packet->data);
 						break;
 					case ServerMessageType::SG_UPDATEID:
 						msg.id = *reinterpret_cast<SG_MessageClientID*>(event.packet->data);

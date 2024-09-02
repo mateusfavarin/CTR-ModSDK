@@ -108,7 +108,7 @@ const CG_Message State::Lobby_HostTrackPick(OnlineCTR& octr)
 
 	CG_Message msg = Message(ClientMessageType::CG_TRACK);
 	msg.track.trackID = octr.levelID;
-	msg.track.lapCount = octr.lapID * 2 + 1;
+	msg.track.lapCount = octr.lapCount;
 	g_psx.Read<int8_t>(ADDR_gGT + 0x1d33) = static_cast<uint8_t>(msg.track.lapCount);
 	octr.CurrState = ClientState::LOBBY_CHARACTER_PICK;
 	return msg;

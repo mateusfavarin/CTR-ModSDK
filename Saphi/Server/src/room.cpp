@@ -101,6 +101,7 @@ MessageAction Room::NewRoom(const CG_Message message, const Network& net, Client
 	msg.clientStatus.numClientsTotal = static_cast<uint8_t>(m_clients.size());
 	msg.clientStatus.trackSelected = m_trackSelected;
 	msg.clientStatus.trackId = m_trackId;
+	msg.clientStatus.lapCount = m_lapCount;
 	net.Send(msg, client.peer);
 	return MessageAction::CONNECT;
 }

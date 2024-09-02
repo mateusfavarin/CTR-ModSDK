@@ -34,15 +34,13 @@ void Message::Rooms(const SG_Message& message, OnlineCTR& octr)
 
 void Message::NewClient(const SG_Message& message, OnlineCTR& octr)
 {
-  const SG_MessageClientStatus& msg = message.clientStatus;
+  const SG_MessageNewClient& msg = message.clientStatus;
   octr.DriverID = msg.clientID;
   octr.NumDrivers = msg.numClientsTotal;
-  if (msg.trackSelected) { octr.levelID = msg.trackId; }
-  else { octr.levelID = 0; }
+  if (msg.trackSelected) { octr.levelID = msg.trackId; octr.lapCount = msg.lapCount; }
   octr.boolSelectedLevel = msg.trackSelected;
   octr.boolSelectedLap = false;
   octr.raceOver = false;
-  octr.lapID = 0;
   octr.boolSelectedCharacter = 0;
   octr.numDriversEnded = 0;
   octr.dnfTimer = 0;

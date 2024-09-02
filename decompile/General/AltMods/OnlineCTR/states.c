@@ -138,12 +138,20 @@ void StatePS1_Lobby_HostTrackPick()
 	NewPage_Tracks();
 }
 
+unsigned char lapID;
+unsigned char boolSelectedLap = 0;
 void FakeState_Lobby_HostLapPick()
 {
 	MenuWrites_Laps();
 
 	// If already picked
-	if(MenuFinished() == 1) return;
+	if(MenuFinished() == 1)
+	{
+		octr->lapCount = lapID * 2 + 1;
+		octr->boolSelectedLap = 1;
+		boolSelectedLap = 0;
+		return;
+	}
 
 	PrintCharacterStats();
 

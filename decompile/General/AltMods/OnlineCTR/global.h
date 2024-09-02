@@ -92,36 +92,29 @@ struct OnlineCTR
 	int32_t ver_pc;
 	int32_t ver_server;
 	int32_t CurrState;
-
 	int8_t PageNumber; // allow negative
 	uint8_t CountPressX;
 	uint8_t NumDrivers;
 	uint8_t DriverID;
-
 	uint8_t boolSelectedLap;
 	uint8_t boolSelectedLevel;
-	uint8_t lapID;
 	uint8_t levelID;
-
 	uint8_t IsBootedPS1;
 	uint8_t boolSelectedCharacter;
 	uint8_t numRooms;
 	uint8_t numDriversEnded;
-
 	uint8_t serverId;
 	uint8_t serverRoom;
 	uint8_t hasSelectedServer;
 	uint8_t hasSelectedRoom;
-
 	uint8_t boolPlanetLEV;
 	uint8_t boolClientBusy;
 	uint8_t onlineGameModifiers;
 	uint8_t windowsClientSync;
-
 	uint8_t lastWindowsClientSync;
 	uint8_t desiredFPS;
 	uint8_t raceOver;
-
+	uint16_t lapCount;
 	uint16_t dnfTimer;
 	int32_t frames_unsynced;
 
@@ -205,13 +198,14 @@ struct SG_MessageRooms
 };
 
 // sent to each user when someone connects
-struct SG_MessageClientStatus
+struct SG_MessageNewClient
 {
 	uint8_t type;
 	uint8_t clientID;
 	uint8_t numClientsTotal;
 	uint8_t trackSelected;
 	uint8_t trackId;
+	uint16_t lapCount;
 };
 
 struct SG_MessageClientID
@@ -295,7 +289,7 @@ struct SG_Message
 	union
 	{
 		struct SG_MessageRooms rooms;				// SG_ROOMS
-		struct SG_MessageClientStatus clientStatus; // SG_NEWCLIENT
+		struct SG_MessageNewClient clientStatus;	// SG_NEWCLIENT
 		struct SG_MessageClientID id;				// SG_UPDATEID
 		struct SG_MessageName name;					// SG_NAME
 		struct SG_MessageTrack track;				// SG_TRACK
