@@ -15,7 +15,7 @@ void DECOMP_DecalFont_DrawLineStrlen(u_char* str, short len, int posX, short pos
 	}
 
 	// bug fix exclusive to versions after USA Retail
-	#if BUILD >= JpnTrial
+	#if (BUILD >= JpnTrial) || defined(USE_ONLINE)
 
 		flags &= 0x7ff;
 
@@ -28,7 +28,7 @@ void DECOMP_DecalFont_DrawLineStrlen(u_char* str, short len, int posX, short pos
 	for(*str != 0; *str != 0 && len != 0; str++, len--)
 	{
 		u_char* strcopy = str;
-		u_short iconID = 0xff;
+		short iconID = 0xff;
 		short charWidth = data.font_charPixWidth[fontType];
 		short pixWidthExtra = 0;
 		short pixHeightExtra = 0;
@@ -156,7 +156,7 @@ void DECOMP_DecalFont_DrawLineStrlen(u_char* str, short len, int posX, short pos
 				// The tilde as a diacritical mark
 				// It's implemented in CTR using the underscore character, shrunk down and placed above the character that follows
 				// Seen in the Spanish language for the Ñ, although because of the above mentioned you can use it on anything
-				
+
 				iconID = 0x2f;
 				pixWidthExtra = data.font_EurDiacriticalTilde[fontType * 3];
 				pixHeightExtra = data.font_EurDiacriticalTilde[(fontType * 3) + 1];
@@ -334,7 +334,7 @@ void DECOMP_DecalFont_DrawLineStrlen(u_char* str, short len, int posX, short pos
 					struct Icon** iconPtrArray = ICONGROUP_GETICONS(gGT->iconGroup[iconGroupID]);
 
 					DECOMP_DecalHUD_DrawPolyGT4
-					(						
+					(
 						iconPtrArray[iconID],
 
 						posX + pixWidthExtra,
@@ -362,7 +362,7 @@ void DECOMP_DecalFont_DrawLineStrlen(u_char* str, short len, int posX, short pos
 				if (iconStruct != 0)
 				{
 					DECOMP_DecalHUD_DrawPolyGT4
-					(						
+					(
 						iconStruct,
 
 						posX + pixWidthExtra,
@@ -391,7 +391,7 @@ void DECOMP_DecalFont_DrawLineStrlen(u_char* str, short len, int posX, short pos
 						DECOMP_DecalHUD_Arrow2D
 						(
 							iconPtrArray[iconID],
-							
+
 							posX + pixWidthExtra,
 							posY + pixHeightExtra,
 
@@ -411,7 +411,7 @@ void DECOMP_DecalFont_DrawLineStrlen(u_char* str, short len, int posX, short pos
 						DECOMP_DecalHUD_DrawPolyGT4
 						(
 							iconPtrArray[iconID],
-							
+
 							posX + pixWidthExtra,
 							posY + pixHeightExtra,
 

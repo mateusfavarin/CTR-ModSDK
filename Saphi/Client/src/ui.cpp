@@ -153,7 +153,11 @@ void UI::Render(int width, int height)
       g_dataManager.SaveData();
 #ifdef _DEBUG
       //-stdout doesn't do what I want.
+#ifdef USE_DECOMPILE_BUILD
+      g_gameData.m_reduxCommand = "\"" + g_reduxExecutable + "\" -run -no-kiosk -interpreter -debugger -8mb -iso \"../../build/ctr-u_decompile.bin\"";
+#else
       g_gameData.m_reduxCommand = "\"" + g_reduxExecutable + "\" -run -no-kiosk -interpreter -debugger -8mb -iso \"" + s_patchedPath + "\"";
+#endif
 #else
       g_gameData.m_duckCommand = "\"" + g_duckExecutable + "\" \"" + s_patchedPath + "\"";
 #endif
