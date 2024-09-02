@@ -149,47 +149,42 @@ $(foreach src,$(SRCS),$(eval $(BUILD_DIR)/$(call hash,$(src)).o: $(src) build_di
 build_dir:
 	mkdir -p $(BUILD_DIR)
 
-.PHONY: multithread_warning
-multithread_warning:
-	@echo "!!!NOTE!!! YOU CAN SPEED UP YOUR BUILD BY SPECIFYING A THREAD COUNT TO\
-	 GNU/make VIA -j FLAG. (e.g., 'make -j 24')"
-
 # these targets mainly just link the obj files
 
 #statically linked libs (will work oob on steamdeck)
 duck: LIBS = $(LIBS_STATIC)
 duck: EXTRA_CXXFLAGS = $(RELEASE_CXXFLAGS)
-duck: multithread_warning $(OBJS)
+duck: $(OBJS)
 	$(CC) $(OBJS) -o $(TARGET) $(COMMON_CXXFLAGS) $(EXTRA_CXXFLAGS) $(EXTRA_DEFINES)
 
 redux: LIBS = $(LIBS_STATIC)
 redux: EXTRA_CXXFLAGS = $(RELEASE_CXXFLAGS)
 redux: EXTRA_DEFINES = $(EXTRA_DEFINES__DEBUG)
-redux: multithread_warning $(OBJS)
+redux: $(OBJS)
 	$(CC) $(OBJS) -o $(TARGET) $(COMMON_CXXFLAGS) $(EXTRA_CXXFLAGS) $(EXTRA_DEFINES)
 
 #dynamically linked libs (won't work oob on steamdeck)
 duck-dynamic: LIBS = $(LIBS_DYNAMIC)
 duck-dynamic: EXTRA_CXXFLAGS = $(RELEASE_CXXFLAGS)
-duck-dynamic: multithread_warning $(OBJS)
+duck-dynamic: $(OBJS)
 	$(CC) $(OBJS) -o $(TARGET) $(COMMON_CXXFLAGS) $(EXTRA_CXXFLAGS) $(EXTRA_DEFINES)
 
 redux-dynamic: LIBS = $(LIBS_DYNAMIC)
 redux-dynamic: EXTRA_CXXFLAGS = $(RELEASE_CXXFLAGS)
 redux-dynamic: EXTRA_DEFINES = $(EXTRA_DEFINES__DEBUG)
-redux-dynamic: multithread_warning $(OBJS)
+redux-dynamic: $(OBJS)
 	$(CC) $(OBJS) -o $(TARGET) $(COMMON_CXXFLAGS) $(EXTRA_CXXFLAGS) $(EXTRA_DEFINES)
 
 #these two targets "debug", as in, -g -O0 so that you can GDB it.
 duck-debug: LIBS = $(LIBS_DYNAMIC)
 duck-debug: EXTRA_CXXFLAGS = $(DEBUG_CXXFLAGS)
-duck-debug: multithread_warning $(OBJS)
+duck-debug: $(OBJS)
 	$(CC) $(OBJS) -o $(TARGET) $(COMMON_CXXFLAGS) $(EXTRA_CXXFLAGS) $(EXTRA_DEFINES)
 
 redux-debug: LIBS = $(LIBS_DYNAMIC)
 redux-debug: EXTRA_CXXFLAGS = $(DEBUG_CXXFLAGS)
 redux-debug: EXTRA_DEFINES = $(EXTRA_DEFINES__DEBUG)
-redux-debug: multithread_warning $(OBJS)
+redux-debug: $(OBJS)
 	$(CC) $(OBJS) -o $(TARGET) $(COMMON_CXXFLAGS) $(EXTRA_CXXFLAGS) $(EXTRA_DEFINES)
 
 .PHONY: clean

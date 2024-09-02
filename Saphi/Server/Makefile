@@ -70,20 +70,15 @@ $(foreach src,$(SRCS),$(eval $(BUILD_DIR)/$(call hash,$(src)).o: $(src) build_di
 build_dir:
 	mkdir -p $(BUILD_DIR)
 
-.PHONY: multithread_warning
-multithread_warning:
-	@echo "!!!NOTE!!! YOU CAN SPEED UP YOUR BUILD BY SPECIFYING A THREAD COUNT TO\
-	 GNU/make VIA -j FLAG. (e.g., 'make -j 24')"
-
 # these target(s) mainly just link the obj files
 
 server: EXTRA_CXXFLAGS = $(RELEASE_CXXFLAGS)
-server: multithread_warning $(OBJS)
+server: $(OBJS)
 	$(CC) $(OBJS) -o $(TARGET) $(COMMON_CXXFLAGS) $(EXTRA_CXXFLAGS)
 
 #these target(s) "debug", as in, -g -O0 so that you can GDB it.
 server-debug: EXTRA_CXXFLAGS = $(DEBUG_CXXFLAGS)
-server-debug: multithread_warning $(OBJS)
+server-debug: $(OBJS)
 	$(CC) $(OBJS) -o $(TARGET) $(COMMON_CXXFLAGS) $(EXTRA_CXXFLAGS)
 
 .PHONY: clean
