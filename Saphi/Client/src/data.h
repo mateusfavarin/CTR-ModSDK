@@ -22,7 +22,7 @@ extern const std::string g_configString;
 std::string GetPathWithoutExtension(const std::string& path);
 const std::string GetPatchedGamePath(const std::string& version);
 const std::string GetIniPath_Version(const std::string& version);
-#ifndef _DEBUG
+#if !defined(_DEBUG)
 const std::string GetIniPath_Duck();
 #endif
 
