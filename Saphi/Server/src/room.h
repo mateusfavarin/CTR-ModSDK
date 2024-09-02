@@ -63,7 +63,6 @@ private:
 	void ResetControlVariables();
 	/* Message Functions */
 	MessageAction NewRoom(const CG_Message message, const Network& net, Client& client);
-	MessageAction Connect(const CG_Message message, const Network& net, Client& client);
 	MessageAction Disconnect(const CG_Message message, const Network& net, Client& client);
 	MessageAction Name(const CG_Message message, const Network& net, Client& client);
 	MessageAction Track(const CG_Message message, const Network& net, Client& client);

@@ -61,7 +61,7 @@ const CG_Message Network::Recv()
     case ENET_EVENT_TYPE_CONNECT:
       msg.type = ClientMessageType::CG_CONNECT;
       msg.peer = static_cast<void*>(event.peer);
-      enet_peer_timeout(event.peer, 1000000, 1000000, 5000);
+      enet_peer_timeout(event.peer, 1000000, 1000000, 1000);
       break;
     case ENET_EVENT_TYPE_DISCONNECT:
       msg.type = ClientMessageType::CG_DISCONNECT;

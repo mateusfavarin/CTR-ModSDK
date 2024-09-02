@@ -106,11 +106,6 @@ MessageAction Room::NewRoom(const CG_Message message, const Network& net, Client
 	return MessageAction::CONNECT;
 }
 
-MessageAction Room::Connect(const CG_Message message, const Network& net, Client& client)
-{
-	return MessageAction::NONE;
-}
-
 MessageAction Room::Disconnect(const CG_Message message, const Network& net, Client& client)
 {
 	net.DisconnectPeer(client.peer);

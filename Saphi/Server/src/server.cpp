@@ -15,7 +15,11 @@ void Server::Run()
       const ClientMessageType type = static_cast<const ClientMessageType>(msg.type);
       if (type == ClientMessageType::CG_NONE) { break; }
       bool joinRoom = type == ClientMessageType::CG_JOINROOM;
-      if (!m_clientRoomMap.contains(msg.peer) && !joinRoom) { continue; }
+      if (!m_clientRoomMap.contains(msg.peer) && !joinRoom)
+      {
+        if (type == ClientMessageType::CG_CONNECT) { SendInfoRooms(msg.peer); }
+        continue;
+      }
       unsigned roomID = joinRoom ? msg.room.room : m_clientRoomMap[msg.peer];
       MessageAction action = m_rooms[roomID].InterpretMessage(msg, msg.peer, m_net);
       bool broadcastRoomInfo = false;
