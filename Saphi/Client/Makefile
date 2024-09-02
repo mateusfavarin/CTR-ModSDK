@@ -66,8 +66,11 @@ COMMON_CXXFLAGS += -I../../externals/CRCpp/inc
 COMMON_CXXFLAGS += -I../../externals/enet/include
 COMMON_CXXFLAGS += -I../../externals/xdelta/xdelta3/
 
-build:
+build-duck:
 	$(CC) $(SRCS) -o $(TARGET) $(COMMON_CXXFLAGS) $(RELEASE_CXXFLAGS)
+
+build-redux:
+	$(CC) $(SRCS) -o $(TARGET) $(COMMON_CXXFLAGS) $(RELEASE_CXXFLAGS) -D_DEBUG
 
 debug-duck:
 	$(CC) $(SRCS) -o $(TARGET) $(COMMON_CXXFLAGS) $(DEBUG_CXXFLAGS)

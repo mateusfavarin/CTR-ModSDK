@@ -11,8 +11,8 @@ const std::string g_openBiosPath = g_dataFolder + "openbios-fastboot.bin";
 		const std::string g_reduxFolder = g_dataFolder + "redux/";
 		const std::string g_reduxExecutable = g_reduxDlFolder + "pcsx-redux.exe";
 	#else
-		const std::string g_reduxFolder;
-		const std::string g_reduxExecutable;
+		const std::string g_reduxFolder = getenv("HOME") + std::string("/.local/share/redux/");;
+		const std::string g_reduxExecutable = g_reduxDlFolder + "PCSX-Redux-HEAD-x86_64.AppImage";
 	#endif //TODO: linux support if redux supports linux idk
 #else
 	const std::string g_duckDlFolder = g_dataFolder + "duckstation/";

@@ -119,14 +119,28 @@ void Process::HandleSigbus()
 
 std::tuple<int, void*> Process::New(const std::string& command)
 {
+  #ifdef _DEBUG
+  const std::string& g_emuExecutable = g_reduxExecutable;
+  #else
+  const std::string& g_emuExecutable = g_duckExecutable;
+  #endif
   pid_t pid = fork();
   if (pid == INVALID_PID) { return {INVALID_PID, nullptr}; }
   else if (pid == 0)
   {
-    chmod(g_reduxExecutable.c_str(), 0777);
+    chmod(g_emuExecutable.c_str(), 0777);
     execl("/bin/sh", "sh", "-c", ("./" + command).c_str(), (char*) NULL);
     _exit(EXIT_FAILURE); // exec should not return, exit if it fails
   }
+
+  //TheUbMunster says:
+  //if the process doesn't close naturally, it seems the file
+  //in /dev/shm doesn't get deleted. If it sticks around and
+  //you try to re-launch it, then the while loop below will
+  //simply grab the first "emuTag" file, even if it belongs
+  //to the dead process.
+  //perhaps we should run '/dev/shm/"emuTag"*' just before
+  //launching the program?
 
   /*
     Duckstation PID works in mysteryous ways,
@@ -139,11 +153,17 @@ std::tuple<int, void*> Process::New(const std::string& command)
     for (const auto& entry : std::filesystem::directory_iterator("/dev/shm/"))
     {
       const std::string map = entry.path().string();
-      static const std::string duckTag = "pcsx_redux_";
-      const size_t matchPos = map.find(duckTag);
+      #if defined(_WIN32)
+      const std::string emuTag = "duckstation_";
+      #elif defined(__linux__)
+      const std::string emuTag = "pcsx-redux-wram-";
+      #else
+      #error Unrecognized platform
+      #endif
+      const size_t matchPos = map.find(emuTag);
       if (matchPos != std::string::npos)
       {
-        pid = stoi(map.substr(matchPos + duckTag.size()));
+        pid = stoi(map.substr(matchPos + emuTag.size()));
         foundPID = true;
         break;
       }
