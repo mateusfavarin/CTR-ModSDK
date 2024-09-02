@@ -1,30 +1,52 @@
+#disable the stupid builtins
+.SUFFIXES:
+
 TARGET := Client
 CC := g++
 
-SRCS := $(wildcard src/*.cpp)
-SRCS += ../../externals/imgui/imgui.cpp
-SRCS += ../../externals/imgui/imgui_demo.cpp
-SRCS += ../../externals/imgui/imgui_draw.cpp
-SRCS += ../../externals/imgui/imgui_tables.cpp
-SRCS += ../../externals/imgui/imgui_widgets.cpp
-SRCS += ../../externals/imgui/backends/imgui_impl_opengl3.cpp
-SRCS += ../../externals/imgui/backends/imgui_impl_sdl2.cpp
-SRCS += ../../externals/imgui/misc/cpp/imgui_stdlib.cpp
-SRCS += ../../externals/enet/callbacks.c
-SRCS += ../../externals/enet/compress.c
-SRCS += ../../externals/enet/host.c
-SRCS += ../../externals/enet/list.c
-SRCS += ../../externals/enet/packet.c
-SRCS += ../../externals/enet/peer.c
-SRCS += ../../externals/enet/protocol.c
-SRCS += ../../externals/enet/unix.c
-SRCS += ../../externals/xdelta/xdelta3/xdelta3.c
+#========================================================
+#SOURCES
+#========================================================
+
+SRCS := $(wildcard src/*.cpp) \
+../../externals/imgui/imgui.cpp \
+../../externals/imgui/imgui_demo.cpp \
+../../externals/imgui/imgui_draw.cpp \
+../../externals/imgui/imgui_tables.cpp \
+../../externals/imgui/imgui_widgets.cpp \
+../../externals/imgui/backends/imgui_impl_opengl3.cpp \
+../../externals/imgui/backends/imgui_impl_sdl2.cpp \
+../../externals/imgui/misc/cpp/imgui_stdlib.cpp \
+../../externals/enet/callbacks.c \
+../../externals/enet/compress.c \
+../../externals/enet/host.c \
+../../externals/enet/list.c \
+../../externals/enet/packet.c \
+../../externals/enet/peer.c \
+../../externals/enet/protocol.c \
+../../externals/enet/unix.c \
+../../externals/xdelta/xdelta3/xdelta3.c
+
+#intermediate object cache directory
+BUILD_DIR=objs
+#hashes the names to prevent name collisions in the build directory
+hash = $(shell echo -n "$(1)" | md5sum | cut -d' ' -f1)
+OBJS = $(foreach src,$(SRCS),$(BUILD_DIR)/$(call hash,$(src)).o)
+
+#========================================================
+#RELEASE TYPE FLAGS
+#========================================================
 
 RELEASE_CXXFLAGS := -O3
 DEBUG_CXXFLAGS := -g -O0
 
+#========================================================
+#IN-COMMON FLAGS
+#========================================================
+
 #all targets share these flags in common
 COMMON_CXXFLAGS = -std=c++20 \
+-pipe \
 -DCLIENT_SERVER \
 -DSIZEOF_SIZE_T=8 \
 -DSIZEOF_UNSIGNED_LONG_LONG=8 \
@@ -49,6 +71,10 @@ $(LIBS) \
 -I../../externals/CRCpp/inc \
 -I../../externals/enet/include \
 -I../../externals/xdelta/xdelta3/
+
+#========================================================
+#LIBRARY LINK TYPE FLAGS
+#========================================================
 
 LIBS_DYNAMIC = -Wl,-Bdynamic \
 -lGL \
@@ -78,6 +104,24 @@ LIBS_STATIC = -Wl,-Bstatic \
 -lz \
 -llzma
 
+#========================================================
+#ADDITIONAL DEFINE FLAGS
+#========================================================
+
+#-D_DEBUG essentially says "redux instead of duckstation".
+#on windows, this is set by MSBuild and also includes debug symbols.
+#but on linux, -g is specified via DEBUG_CXXFLAGS
+EXTRA_DEFINES__DEBUG := -D_DEBUG
+
+#note to future maintainers:
+#for the obj compilation (see the complex $(foreach...) below)
+#LIBS are embedded in COMMON_CXXFLAGS, which means that every
+#object file that uses them may interact with the linked libs
+#in a way that may substantially bloat the final executable
+#(but only if ld is too dumb to recognize they're all a cop(ies)
+#of the same lib, and it should de-duplicate them).
+#if this is the case, then fix it!
+
 #NOTE!!!
 
 #DO NOT ATTEMPT TO MAKE ANY TARGETS THAT RUN A "LIBS_STATIC" & "LIBS_DYNAMIC" IN A SINGLE MAKE INVOC
@@ -88,31 +132,61 @@ LIBS_STATIC = -Wl,-Bstatic \
 #targets has a different value for the same target-specific variable, then the first 
 #target to be built will cause that prerequisite to be built and the prerequisite will 
 #inherit the target-specific value from the first target. It will ignore the 
-#target-specific values from any other targets. 
+#target-specific values from any other targets.
 
+$(foreach src,$(SRCS),$(eval $(BUILD_DIR)/$(call hash,$(src)).o: $(src) build_dir ; \
+	@echo "Compiling $$< to $$@" ; \
+	$$(CC) -c $$< -o $$@ $$(COMMON_CXXFLAGS) $$(EXTRA_CXXFLAGS) $$(EXTRA_DEFINES) ; \
+	))
+
+.PHONY: build_dir
+build_dir:
+	mkdir -p $(BUILD_DIR)
+
+.PHONY: multithread_warning
+multithread_warning:
+	@echo "!!!NOTE!!! YOU CAN SPEED UP YOUR BUILD BY SPECIFYING A THREAD COUNT TO\
+	 GNU/make VIA -j FLAG. (e.g., 'make -j 24')"
+
+# these targets mainly just link the obj files
+
+#statically linked libs (will work oob on steamdeck)
 duck: LIBS = $(LIBS_STATIC)
-duck:
-	$(CC) $(SRCS) -o $(TARGET) $(COMMON_CXXFLAGS) $(RELEASE_CXXFLAGS)
+duck: EXTRA_CXXFLAGS = $(RELEASE_CXXFLAGS)
+duck: multithread_warning $(OBJS)
+	$(CC) $(OBJS) -o $(TARGET) $(COMMON_CXXFLAGS) $(EXTRA_CXXFLAGS) $(EXTRA_DEFINES)
 
 redux: LIBS = $(LIBS_STATIC)
-redux:
-	$(CC) $(SRCS) -o $(TARGET) $(COMMON_CXXFLAGS) $(RELEASE_CXXFLAGS) -D_DEBUG
+redux: EXTRA_CXXFLAGS = $(RELEASE_CXXFLAGS)
+redux: EXTRA_DEFINES = $(EXTRA_DEFINES__DEBUG)
+redux: multithread_warning $(OBJS)
+	$(CC) $(OBJS) -o $(TARGET) $(COMMON_CXXFLAGS) $(EXTRA_CXXFLAGS) $(EXTRA_DEFINES)
 
+#dynamically linked libs (won't work oob on steamdeck)
 duck-dynamic: LIBS = $(LIBS_DYNAMIC)
-duck-dynamic:
-	$(CC) $(SRCS) -o $(TARGET) $(COMMON_CXXFLAGS) $(RELEASE_CXXFLAGS)
+duck-dynamic: EXTRA_CXXFLAGS = $(RELEASE_CXXFLAGS)
+duck-dynamic: multithread_warning $(OBJS)
+	$(CC) $(OBJS) -o $(TARGET) $(COMMON_CXXFLAGS) $(EXTRA_CXXFLAGS) $(EXTRA_DEFINES)
 
 redux-dynamic: LIBS = $(LIBS_DYNAMIC)
-redux-dynamic:
-	$(CC) $(SRCS) -o $(TARGET) $(COMMON_CXXFLAGS) $(RELEASE_CXXFLAGS) -D_DEBUG
+redux-dynamic: EXTRA_CXXFLAGS = $(RELEASE_CXXFLAGS)
+redux-dynamic: EXTRA_DEFINES = $(EXTRA_DEFINES__DEBUG)
+redux-dynamic: multithread_warning $(OBJS)
+	$(CC) $(OBJS) -o $(TARGET) $(COMMON_CXXFLAGS) $(EXTRA_CXXFLAGS) $(EXTRA_DEFINES)
 
+#these two targets "debug", as in, -g -O0 so that you can GDB it.
 duck-debug: LIBS = $(LIBS_DYNAMIC)
-duck-debug:
-	$(CC) $(SRCS) -o $(TARGET) $(COMMON_CXXFLAGS) $(DEBUG_CXXFLAGS)
+duck-debug: EXTRA_CXXFLAGS = $(DEBUG_CXXFLAGS)
+duck-debug: multithread_warning $(OBJS)
+	$(CC) $(OBJS) -o $(TARGET) $(COMMON_CXXFLAGS) $(EXTRA_CXXFLAGS) $(EXTRA_DEFINES)
 
 redux-debug: LIBS = $(LIBS_DYNAMIC)
-redux-debug:
-	$(CC) $(SRCS) -o $(TARGET) $(COMMON_CXXFLAGS) $(DEBUG_CXXFLAGS) -D_DEBUG
+redux-debug: EXTRA_CXXFLAGS = $(DEBUG_CXXFLAGS)
+redux-debug: EXTRA_DEFINES = $(EXTRA_DEFINES__DEBUG)
+redux-debug: multithread_warning $(OBJS)
+	$(CC) $(OBJS) -o $(TARGET) $(COMMON_CXXFLAGS) $(EXTRA_CXXFLAGS) $(EXTRA_DEFINES)
 
+.PHONY: clean
 clean:
 	rm $(TARGET) || echo "Already clean!"
+	rm -r
