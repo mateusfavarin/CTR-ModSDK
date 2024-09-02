@@ -114,8 +114,6 @@ void StatePS1_Launch_Error()
 
 void StatePS1_Lobby_AssignRole()
 {
-	menu.posX_curr = 0x70; // X position
-	menu.posY_curr = 0x84;  // Y position
 }
 
 void StatePS1_Lobby_HostTrackPick()

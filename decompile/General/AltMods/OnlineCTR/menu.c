@@ -281,6 +281,9 @@ void PrintCharacterStats()
 	int i;
 	int color;
 
+	menu.posX_curr = 0x70;
+	menu.posY_curr = 0x84;
+
 	DecalFont_DrawLine(
 		countryNames[octr->serverId],
 		0x10, 0x10, FONT_SMALL, 0);
