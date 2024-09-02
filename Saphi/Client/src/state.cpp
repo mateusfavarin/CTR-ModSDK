@@ -40,6 +40,7 @@ const CG_Message State::Launch_Boot(OnlineCTR& octr)
 {
 	CG_Message msg = Message();
 	octr.CurrState = ClientState::LAUNCH_PICK_SERVER;
+	octr.bootedSaphi = true;
 	return msg;
 }
 
@@ -48,10 +49,10 @@ const CG_Message State::Launch_PickServer(OnlineCTR& octr)
 {
 	CG_Message msg = Message();
 	const int32_t levelID = g_psx.Read<int32_t>(ADDR_gGT + 0x1a10);
-	if (levelID != OCTR_MENU_LEVEL || !octr.hasSelectedServer) { return msg; }
+	if (levelID != OCTR_MENU_LEVEL || !octr.boolJoiningServer) { return msg; }
 
-	octr.boolClientBusy = true;
 	uint16_t port = 0;
+	octr.boolJoiningServer = false;
 	switch (octr.serverId)
 	{
 	case 0:
@@ -82,8 +83,10 @@ const CG_Message State::Launch_PickServer(OnlineCTR& octr)
 
 const CG_Message State::Launch_PickRoom(OnlineCTR& octr)
 {
+	if (!octr.boolSelectedRoom) { return Message(); }
+
 	CG_Message msg = Message(ClientMessageType::CG_JOINROOM);
-	octr.hasSelectedRoom ? msg.room.room = octr.serverRoom : msg.room.room = SERVER_NULL_ROOM;
+	msg.room.room = octr.serverRoom;
 	return msg;
 }
 

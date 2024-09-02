@@ -51,6 +51,8 @@ class Room
 public:
 	MessageAction InterpretMessage(const CG_Message& message, const void* peer, const Network& net);
 	void OnState(const Network& net);
+	inline OnlineState GetState() const { return m_state; }
+	inline const std::unordered_map<const void*, Client>& GetClients() const { return m_clients; }
 	inline size_t GetPlayerCount() const { return m_clients.size(); };
 	inline bool IsRoomLocked() const { return m_state != OnlineState::LOBBY || m_clients.size() == ROOM_MAX_NUM_PLAYERS; };
 

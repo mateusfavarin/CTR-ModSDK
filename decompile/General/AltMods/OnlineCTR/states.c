@@ -5,7 +5,10 @@ extern struct RectMenu menu;
 
 void StatePS1_Launch_Boot()
 {
-	DECOMP_DecalFont_DrawLine("Error: Failed booting Saphi", 0x100, 0xA8, FONT_SMALL, JUSTIFY_CENTER | ORANGE);
+	static const char s_errBoot[] = "Error: failed booting Saphi";
+	static const char s_errServer[] = "Error: failed connecting to the server";
+	const char* msg = octr->bootedSaphi ? s_errServer : s_errBoot;
+	DECOMP_DecalFont_DrawLine(msg, 0x100, 0xA8, FONT_SMALL, JUSTIFY_CENTER | ORANGE);
 }
 
 extern char* countryNames[ELEMENTS_PER_PAGE];
@@ -15,8 +18,6 @@ char* s_onlineGameModes[NUM_SERVER_PAGES] = {
 	"Itemless",
 	"Icy/STP"
 };
-
-
 void StatePS1_Launch_PickServer()
 {
 	if (initString)
@@ -31,6 +32,11 @@ void StatePS1_Launch_PickServer()
 
 	UpdateMenu();
 	NewPage_serverId();
+}
+
+void StatePS1_Launch_WaitServer()
+{
+	DECOMP_DecalFont_DrawLine("Trying to connect to the server...", 0x100, 0xA8, FONT_SMALL, JUSTIFY_CENTER | ORANGE);
 }
 
 void ResetPsxGlobals()

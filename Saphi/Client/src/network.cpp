@@ -25,7 +25,7 @@ bool Network::ConnectServer(const char* hostName, enet_uint16 port)
 	ENetEvent event;
 	if (enet_host_service(m_client, &event, 3000) <= 0 || event.type != ENET_EVENT_TYPE_CONNECT) { return false; }
 
-	enet_peer_timeout(m_server, 1000000, 1000000, 5000);
+	enet_peer_timeout(m_server, 1000000, 1000000, 1000);
 	return true;
 }
 

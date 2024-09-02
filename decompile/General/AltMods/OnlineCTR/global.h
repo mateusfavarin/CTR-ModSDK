@@ -46,6 +46,7 @@ enum ClientState
 	DISCONNECTED = -1,
 	LAUNCH_BOOT = 0,
 	LAUNCH_PICK_SERVER,
+	LAUNCH_WAIT_SERVER,
 	LAUNCH_PICK_ROOM,
 	LAUNCH_ERROR,
 	LOBBY_ASSIGN_ROLE,
@@ -100,15 +101,15 @@ struct OnlineCTR
 	uint8_t boolSelectedLevel;
 	uint8_t levelID;
 	uint8_t IsBootedPS1;
+	uint8_t bootedSaphi;
 	uint8_t boolSelectedCharacter;
 	uint8_t numRooms;
 	uint8_t numDriversEnded;
 	uint8_t serverId;
 	uint8_t serverRoom;
-	uint8_t hasSelectedServer;
-	uint8_t hasSelectedRoom;
+	uint8_t boolJoiningServer;
+	uint8_t boolSelectedRoom;
 	uint8_t boolPlanetLEV;
-	uint8_t boolClientBusy;
 	uint8_t onlineGameModifiers;
 	uint8_t windowsClientSync;
 	uint8_t lastWindowsClientSync;
@@ -415,6 +416,7 @@ struct CG_Message
 	// my functions
 	void StatePS1_Launch_Boot();
 	void StatePS1_Launch_PickServer();
+	void StatePS1_Launch_WaitServer();
 	void StatePS1_Launch_PickRoom();
 	void StatePS1_Launch_Error();
 	void StatePS1_Lobby_AssignRole();

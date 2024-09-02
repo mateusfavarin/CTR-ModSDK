@@ -17,22 +17,30 @@ void Server::Run()
       bool joinRoom = type == ClientMessageType::CG_JOINROOM;
       if (!m_clientRoomMap.contains(msg.peer) && !joinRoom) { continue; }
       unsigned roomID = joinRoom ? msg.room.room : m_clientRoomMap[msg.peer];
-      if (roomID == SERVER_NULL_ROOM)
-      {
-        SendInfoRooms(msg.peer);
-        continue;
-      }
       MessageAction action = m_rooms[roomID].InterpretMessage(msg, msg.peer, m_net);
+      bool broadcastRoomInfo = false;
       switch (action)
       {
       case MessageAction::CONNECT:
         m_clientRoomMap.insert({ msg.peer, roomID });
+        broadcastRoomInfo = true;
         break;
       case MessageAction::DISCONNECT:
         m_clientRoomMap.erase(msg.peer);
+        broadcastRoomInfo = true;
         break;
       default:
         break;
+      }
+      if (broadcastRoomInfo)
+      {
+        for (const Room& room : m_rooms)
+        {
+          if (room.GetState() == OnlineState::LOBBY)
+          {
+            for (auto& [key, value] : room.GetClients()) { SendInfoRooms(key); }
+          }
+        }
       }
     }
     for (Room& room : m_rooms) { room.OnState(m_net); }

@@ -23,7 +23,8 @@ void Message::Rooms(const SG_Message& message, OnlineCTR& octr)
     return;
   }
 
-  octr.hasSelectedServer = false;
+  if (octr.CurrState == ClientState::LAUNCH_WAIT_SERVER) { octr.CurrState = ClientState::LAUNCH_PICK_ROOM; }
+
   octr.numRooms = msg.numRooms;
   for (unsigned char i = 0; i < msg.numRooms; i++)
   {

@@ -99,7 +99,7 @@ void MenuWrites_serverId()
 {
 	pageMax = 0;
 	OnPressX_SetPtr = &octr->serverId;
-	OnPressX_SetLock = &octr->hasSelectedServer;
+	OnPressX_SetLock = &octr->boolJoiningServer;
 }
 
 int GetRoomChar(int pn)
@@ -138,7 +138,7 @@ void MenuWrites_ServerRoom()
 {
 	pageMax = NUM_SERVER_PAGES - 1;
 	OnPressX_SetPtr = &octr->serverRoom;
-	OnPressX_SetLock = &octr->hasSelectedRoom;
+	OnPressX_SetLock = &octr->boolSelectedRoom;
 }
 
 static int HideUnusedTracks()
