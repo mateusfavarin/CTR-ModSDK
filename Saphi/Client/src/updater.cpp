@@ -115,7 +115,9 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
       const std::string emuPath = "/pub/org/pcsx-redux/project/dev-win-x64/latest";
       const std::string domain = "distrib.app";
       #elif defined(__linux__) //linux (non macos, non BSD)
-        #error not yet supported
+      const std::string emuArchive = "Redux-x64.AppImage";
+      const std::string emuPath = "/pub/org/pcsx-redux/project/dev-linux-x64";
+      const std::string domain = "distrib.app";
       #else
         #error Unrecognized platform
       #endif
