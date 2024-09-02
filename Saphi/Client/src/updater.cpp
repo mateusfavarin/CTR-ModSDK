@@ -112,7 +112,7 @@ void Updater::Update(std::string& status, IconType& statusIcon, std::string& cur
       const std::string& emuDlFolder = g_reduxDlFolder;
       #if defined(_WIN32) //windows
       const std::string emuArchive = "redux.zip";
-      const std::string emuPath = "/storage/assets/7dd/cb6/4a1/f58bfc1074666c68830644e824d684af4e62f6a0fd18805071d275b/pcsx-redux-nightly-19496.20240830.2-x64.zip";
+      const std::string emuPath = "/pub/org/pcsx-redux/project/dev-win-x64/latest";
       const std::string domain = "distrib.app";
       #elif defined(__linux__) //linux (non macos, non BSD)
         #error not yet supported

@@ -10,6 +10,9 @@ const std::string g_openBiosPath = g_dataFolder + "openbios-fastboot.bin";
 	#ifdef _WIN32
 		const std::string g_reduxFolder = g_dataFolder + "redux/";
 		const std::string g_reduxExecutable = g_reduxDlFolder + "pcsx-redux.exe";
+	#else
+		const std::string g_reduxFolder;
+		const std::string g_reduxExecutable;
 	#endif //TODO: linux support if redux supports linux idk
 #else
 	const std::string g_duckDlFolder = g_dataFolder + "duckstation/";

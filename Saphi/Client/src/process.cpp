@@ -123,7 +123,7 @@ std::tuple<int, void*> Process::New(const std::string& command)
   if (pid == INVALID_PID) { return {INVALID_PID, nullptr}; }
   else if (pid == 0)
   {
-    chmod(g_duckExecutable.c_str(), 0777);
+    chmod(g_reduxExecutable.c_str(), 0777);
     execl("/bin/sh", "sh", "-c", ("./" + command).c_str(), (char*) NULL);
     _exit(EXIT_FAILURE); // exec should not return, exit if it fails
   }
@@ -139,7 +139,7 @@ std::tuple<int, void*> Process::New(const std::string& command)
     for (const auto& entry : std::filesystem::directory_iterator("/dev/shm/"))
     {
       const std::string map = entry.path().string();
-      static const std::string duckTag = "duckstation_";
+      static const std::string duckTag = "pcsx_redux_";
       const size_t matchPos = map.find(duckTag);
       if (matchPos != std::string::npos)
       {
