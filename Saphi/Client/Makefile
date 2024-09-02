@@ -1,8 +1,14 @@
+#NOTICE: this project requires g++ 13 or later
+
 #disable the stupid builtins
 .SUFFIXES:
 
 TARGET := Client
 CC := g++
+
+#this needs to be the first target in the file
+.PHONY: all
+all: duck
 
 #========================================================
 #SOURCES
@@ -189,4 +195,4 @@ redux-debug: multithread_warning $(OBJS)
 .PHONY: clean
 clean:
 	rm $(TARGET) || echo "Already clean!"
-	rm -r
+	rm -r $(BUILD_DIR)
