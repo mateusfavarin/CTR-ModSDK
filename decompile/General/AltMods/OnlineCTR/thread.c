@@ -122,9 +122,6 @@ void ThreadFunc(struct Thread* t)
 		if(octr->boolPlanetLEV)
 		{
 			octr->CurrState = boolCloseClient ? LAUNCH_BOOT : LAUNCH_PICK_SERVER;
-#ifdef PINE_DEBUG
-			printf("statechange %d yesno open client/server select 5: \n", octr->stateChangeCounter++);
-#endif
 			octr->hasSelectedServer = 0;
 			octr->hasSelectedRoom = 0;
 			return;
@@ -136,9 +133,6 @@ void ThreadFunc(struct Thread* t)
 		// if closed==1, go to 0 ("please open client")
 		// if closed==0, go to 1 (server select)
 		octr->CurrState = !boolCloseClient;
-#ifdef PINE_DEBUG
-		printf("statechange %d yesno open client/server select 6: \n", octr->stateChangeCounter++);
-#endif
 
 		// stop music,
 		// stop "most FX", let menu FX ring

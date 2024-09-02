@@ -91,7 +91,7 @@ void NewPage_serverId()
 	{
 		menuRows[i].stringIndex = 0x9a+i;
 		sdata->lngStrings[0x9a+i] = countryNames[i];
-		if (i > 1 && i < ELEMENTS_PER_PAGE - 1) { menuRows[i].stringIndex |= 0x8000; }
+		if (i > 2 && i < ELEMENTS_PER_PAGE - 1) { menuRows[i].stringIndex |= 0x8000; }
 	}
 }
 
@@ -193,10 +193,12 @@ void NewPage_Laps()
 	}
 }
 
+extern unsigned char lapID;
+extern unsigned char boolSelectedLap;
 void MenuWrites_Laps()
 {
-	OnPressX_SetPtr = &octr->lapID;
-	OnPressX_SetLock = &octr->boolSelectedLap;
+	OnPressX_SetPtr = &lapID;
+	OnPressX_SetLock = &boolSelectedLap;
 }
 
 void NewPage_Characters()

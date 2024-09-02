@@ -16,6 +16,8 @@ namespace Message
 	void StartRace(const SG_Message& message, OnlineCTR& octr);
 	void Kart(const SG_Message& message, OnlineCTR& octr);
 	void Weapon(const SG_Message& message, OnlineCTR& octr);
+	void DNFTimer(const SG_Message& message, OnlineCTR& octr);
 	void EndRace(const SG_Message& message, OnlineCTR& octr);
 	void ForceEndRace(const SG_Message& message, OnlineCTR& octr);
+	void RaceOver(const SG_Message& message, OnlineCTR& octr);
 }

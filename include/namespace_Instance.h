@@ -22,7 +22,7 @@ enum InstanceFlags
 	//
 	//
 	//
-	//
+	DRAW_SUCCESSFUL = 0x40,
 	HIDE_MODEL = 0x80,
 	TILEVIEW_EXISTS = 0x100,
 	PIXEL_LOD = 0x200,
@@ -457,16 +457,16 @@ struct InstDrawPerPlayer
 	int lodIndex;
 
     // 0xdc
-    short unkDC[2];
+    short depthOffset[2];
 
 	// 0xe0 - pointer to LOD ModelHeader
 	struct ModelHeader* mh;
 
 	// 0xe4
-	int unkE4;
-	int unkE8;
-	int unkEC;
-	int unkF0;
+	int unkE4; // ptrOT + depthOffset
+	int unkE8; // ptrOT + depthOffset
+	int unkEC; // drawFunc1
+	int unkF0; // drawFunc2
 
 	// 0xec - render function
 	// 0xf0 - func (for what?)

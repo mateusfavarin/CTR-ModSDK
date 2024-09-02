@@ -66,16 +66,19 @@ void StatePS1_Launch_PickRoom()
 	// If already picked
 	if(MenuFinished() == 1)
 	{
-		currGamemodePage = -1;
-		switch (octr->PageNumber)
+		switch (currGamemodePage)
 		{
 			case ONLINE_MODE_ITEMS:
-				octr->onlineGameMode = MODIFIER_ITEMS;
+				octr->onlineGameModifiers = MODIFIER_ITEMS;
+				break;
 			case ONLINE_MODE_ITEMLESS:
-				octr->onlineGameMode = MODIFIER_NONE;
+				octr->onlineGameModifiers = MODIFIER_NONE;
+				break;
 			case ONLINE_MODE_ICY_STP:
-				octr->onlineGameMode = MODIFIER_ICY | MODIFIER_STP;
+				octr->onlineGameModifiers = MODIFIER_ICY | MODIFIER_STP;
+				break;
 		}
+		currGamemodePage = -1;
 		ResetPsxGlobals();
 		return;
 	}
@@ -135,12 +138,20 @@ void StatePS1_Lobby_HostTrackPick()
 	NewPage_Tracks();
 }
 
+unsigned char lapID;
+unsigned char boolSelectedLap = 0;
 void FakeState_Lobby_HostLapPick()
 {
 	MenuWrites_Laps();
 
 	// If already picked
-	if(MenuFinished() == 1) return;
+	if(MenuFinished() == 1)
+	{
+		octr->lapCount = lapID * 2 + 1;
+		octr->boolSelectedLap = 1;
+		boolSelectedLap = 0;
+		return;
+	}
 
 	PrintCharacterStats();
 
@@ -257,22 +268,6 @@ RECT drawTimeRECT =
 	.h = 0
 };
 
-static void Instance_Ghostify(struct Instance *inst, unsigned driverID, unsigned isDriver)
-{
-	if (!inst) { return; }
-
-	if (isDriver)
-	{
-		inst->flags |= 0x60000;
-		inst->alphaScale = 0xA00;
-	}
-	else
-	{
-		inst->flags |= 0x10000;
-		inst->alphaScale = 0x600;
-	}
-}
-
 static void Ghostify()
 {
 	struct Turbo *turboObj;
@@ -280,6 +275,8 @@ static void Ghostify()
 	struct GameTracker *gGT = sdata->gGT;
 	struct Icon **ptrIconArray;
 	struct Instance *inst;
+
+	if (octr->onlineGameModifiers & MODIFIER_ITEMS) { return; }
 
 	for (int driverID = 1; driverID < ROOM_MAX_NUM_PLAYERS; driverID++)
 	{
@@ -355,42 +352,53 @@ void StatePS1_Game_WaitForRace()
 void StatePS1_Game_Race()
 {
 	int i;
+	static unsigned msCount = 0;
+	static unsigned frameCounter = 0;
+
 	Ghostify();
 
 	for(i = 1; i < ROOM_MAX_NUM_PLAYERS; i++)
 	{
 		if(octr->Shoot[i].boolNow != 0)
 		{
-			octr->Shoot[i].boolNow = 0;
-
+			int weapon;
 			struct Driver* d = sdata->gGT->drivers[i];
-
-			if(octr->Shoot[i].boolJuiced)
-				d->numWumpas = 10;
+			octr->Shoot[i].boolNow = 0;
+			if(octr->Shoot[i].boolJuiced) { d->numWumpas = 10; }
 
 			d->heldItemID = octr->Shoot[i].Weapon;
-
-			// copy/paste from ShootOnCirclePress
-			int weapon;
 			weapon = d->heldItemID;
 
 			// Missiles and Bombs share code,
 			// Change Bomb1x, Bomb3x, Missile3x, to Missile1x
-			if(
-				(weapon == 1) ||
-				(weapon == 10) ||
-				(weapon == 11)
-			)
-			{
-				weapon = 2;
-			}
-
-			DECOMP_VehPickupItem_ShootNow(
-				d,
-				weapon,
-				octr->Shoot[i].flags);
+			if ((weapon == 1) || (weapon == 10) || (weapon == 11)) { weapon = 2; }
+			DECOMP_VehPickupItem_ShootNow(d, weapon, octr->Shoot[i].flags);
 		}
 	}
+
+	if (octr->dnfTimer > 0)
+	{
+		msCount += sdata->gGT->elapsedTimeMS;
+		if (msCount >= SECONDS(1))
+		{
+			msCount -= SECONDS(1);
+			octr->dnfTimer--;
+		}
+
+		char s_dnfNumber[10];
+		char s_dnf[] = "DNF";
+		int color = RED;
+		if (octr->dnfTimer < 6) { color = frameCounter++ & FPS_DOUBLE(1) ? RED : WHITE; }
+		sprintf(s_dnfNumber, "%u", octr->dnfTimer);
+		DecalFont_DrawLine(s_dnfNumber, 192, 10, FONT_BIG, JUSTIFY_CENTER | color);
+		DecalFont_DrawLine(s_dnf, 192, 10 + data.font_charPixHeight[FONT_BIG], FONT_SMALL, JUSTIFY_CENTER | color);
+	}
+	else { msCount = 0; }
+}
+
+void StatePS1_Game_EndRace()
+{
+
 }
 
 static void OnRaceEnd()
@@ -408,11 +416,6 @@ static void OnRaceEnd()
 			foundRacer = true;
 		}
 	}
-}
-
-void StatePS1_Game_EndRace()
-{
-
 }
 
 void StatePS1_Game_Spectate()

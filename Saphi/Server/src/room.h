@@ -14,8 +14,9 @@
 #define BIND_STATE(type, func) { type, std::bind(&Room::func, this, std::placeholders::_1) }
 
 static constexpr unsigned FPS = 30;
-static constexpr unsigned IDLE_THRESHOLD = FPS * 20;
+static constexpr unsigned IDLE_THRESHOLD = FPS * 60;
 static constexpr long long DNF_THRESHOLD_LAP = 10; // std::chrono::seconds
+static constexpr long long RACE_OVER_TIMEOUT = 5; // std::chrono::seconds
 
 enum class OnlineState
 {

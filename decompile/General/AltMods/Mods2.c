@@ -3,12 +3,26 @@
 #include <common.h>
 
 #ifdef USE_ONLINE
+#include "OnlineCTR/global.h"
+
 Color HsvToRgb(int h, int s, int v);
 
 void FixReservesIncrement(struct Driver * driver, int reserves)
 {
 	if (driver->reserves > 30000) { driver->uncappedReserves += reserves; }
 	else { driver->reserves += reserves; }
+}
+
+void Online_CollidePointWithBucket(struct Thread* th, short* vec3_pos)
+{
+	if (!(octr->onlineGameModifiers & MODIFIER_ITEMS)) { return; }
+	while(th != 0)
+	{
+		DECOMP_PROC_CollidePointWithSelf(th, vec3_pos);
+
+		// next
+		th = th->siblingThread;
+	}
 }
 #endif
 

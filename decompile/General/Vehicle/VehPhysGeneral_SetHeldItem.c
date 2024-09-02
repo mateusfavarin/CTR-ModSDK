@@ -53,10 +53,13 @@ void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
 			// Choose Itemset based on number of Drivers
 			int mode = gGT->numPlyrCurrGame + gGT->numBotsNextGame;
 
-			#if 0 && defined(USE_ONLINE)
-			mode = octr->NumDrivers;
-			if(octr->NumDrivers == 1) mode = 2;
-			if(octr->NumDrivers == 7) mode = 8;
+			#ifdef USE_ONLINE
+			if (octr->onlineGameModifiers & MODIFIER_ITEMS)
+			{
+				mode = octr->NumDrivers;
+				if (octr->NumDrivers == 1) mode = 2;
+				if (octr->NumDrivers == 7) mode = 8;
+			}
 			#endif
 
 			switch(mode)

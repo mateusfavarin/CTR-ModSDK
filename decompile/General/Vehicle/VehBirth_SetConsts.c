@@ -1,9 +1,5 @@
 #include <common.h>
 
-#ifdef USE_ONLINE
-#include "../AltMods/OnlineCTR/global.h"
-#endif
-
 void DECOMP_VehBirth_SetConsts(struct Driver* driver)
 {
 	u_int metaPhysSize;
