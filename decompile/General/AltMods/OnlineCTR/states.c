@@ -36,6 +36,7 @@ void StatePS1_Launch_PickServer()
 
 void StatePS1_Launch_WaitServer()
 {
+	sdata->ptrActiveMenu = 0;
 	DECOMP_DecalFont_DrawLine("Trying to connect to the server...", 0x100, 0xA8, FONT_SMALL, JUSTIFY_CENTER | ORANGE);
 }
 
