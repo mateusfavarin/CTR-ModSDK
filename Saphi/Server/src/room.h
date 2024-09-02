@@ -87,7 +87,6 @@ private:
 	std::unordered_map<const void*, Client> m_clients;
 	std::unordered_map<ClientMessageType, std::function<MessageAction(const CG_Message, const Network& net, Client&)>> m_msgFunc = {
 		BIND_MSG(ClientMessageType::CG_JOINROOM, NewRoom),
-		BIND_MSG(ClientMessageType::CG_CONNECT, Connect),
 		BIND_MSG(ClientMessageType::CG_DISCONNECT, Disconnect),
 		BIND_MSG(ClientMessageType::CG_NAME, Name),
 		BIND_MSG(ClientMessageType::CG_TRACK, Track),
