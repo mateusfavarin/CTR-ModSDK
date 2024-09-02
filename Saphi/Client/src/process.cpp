@@ -153,12 +153,10 @@ std::tuple<int, void*> Process::New(const std::string& command)
     for (const auto& entry : std::filesystem::directory_iterator("/dev/shm/"))
     {
       const std::string map = entry.path().string();
-      #if defined(_WIN32)
-      const std::string emuTag = "duckstation_";
-      #elif defined(__linux__)
+      #if defined(_DEBUG)
       const std::string emuTag = "pcsx-redux-wram-";
       #else
-      #error Unrecognized platform
+      const std::string emuTag = "duckstation_";
       #endif
       const size_t matchPos = map.find(emuTag);
       if (matchPos != std::string::npos)
