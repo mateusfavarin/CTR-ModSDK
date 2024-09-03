@@ -61,8 +61,10 @@ private:
 		BIND_RECV(ServerMessageType::SG_STARTRACE,    Message::StartRace),
 		BIND_RECV(ServerMessageType::SG_KART,		  Message::Kart),
 		BIND_RECV(ServerMessageType::SG_WEAPON,		  Message::Weapon),
+		BIND_RECV(ServerMessageType::SG_DNFTIMER,	  Message::DNFTimer),
 		BIND_RECV(ServerMessageType::SG_ENDRACE,	  Message::EndRace),
 		BIND_RECV(ServerMessageType::SG_FORCEENDRACE, Message::ForceEndRace),
+		BIND_RECV(ServerMessageType::SG_RACEOVER,	  Message::RaceOver),
 	};
 
 	/* Game variables */

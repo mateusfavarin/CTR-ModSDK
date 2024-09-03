@@ -61,7 +61,7 @@ const CG_Message Network::Recv()
     case ENET_EVENT_TYPE_CONNECT:
       msg.type = ClientMessageType::CG_CONNECT;
       msg.peer = static_cast<void*>(event.peer);
-      enet_peer_timeout(event.peer, 1000000, 1000000, 5000);
+      enet_peer_timeout(event.peer, 1000000, 1000000, 1000);
       break;
     case ENET_EVENT_TYPE_DISCONNECT:
       msg.type = ClientMessageType::CG_DISCONNECT;
@@ -91,7 +91,7 @@ void Network::Send(const SG_Message& message, const void* peer, bool reliable) c
     break;
   case ServerMessageType::SG_NEWCLIENT:
     data = static_cast<const void*>(&message.clientStatus);
-    size = sizeof(SG_MessageClientStatus);
+    size = sizeof(SG_MessageNewClient);
     break;
   case ServerMessageType::SG_UPDATEID:
     data = static_cast<const void*>(&message.id);
@@ -116,6 +116,10 @@ void Network::Send(const SG_Message& message, const void* peer, bool reliable) c
   case ServerMessageType::SG_WEAPON:
     data = static_cast<const void*>(&message.weapon);
     size = sizeof(SG_MessageWeapon);
+    break;
+  case ServerMessageType::SG_DNFTIMER:
+    data = static_cast<const void*>(&message.dnf);
+    size = sizeof(SG_MessageDNFTimer);
     break;
   case ServerMessageType::SG_ENDRACE:
     data = static_cast<const void*>(&message.endRace);

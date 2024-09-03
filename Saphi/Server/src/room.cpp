@@ -30,6 +30,9 @@ static inline constexpr SG_Message Message(ServerMessageType type = ServerMessag
 	case ServerMessageType::SG_WEAPON:
 		msg.weapon.type = static_cast<uint8_t>(type);
 		break;
+	case ServerMessageType::SG_DNFTIMER:
+		msg.dnf.type = static_cast<uint8_t>(type);
+		break;
 	case ServerMessageType::SG_ENDRACE:
 		msg.endRace.type = static_cast<uint8_t>(type);
 		break;
@@ -100,13 +103,9 @@ MessageAction Room::NewRoom(const CG_Message message, const Network& net, Client
 	msg.clientStatus.numClientsTotal = static_cast<uint8_t>(m_clients.size());
 	msg.clientStatus.trackSelected = m_trackSelected;
 	msg.clientStatus.trackId = m_trackId;
+	msg.clientStatus.lapCount = m_lapCount;
 	net.Send(msg, client.peer);
 	return MessageAction::CONNECT;
-}
-
-MessageAction Room::Connect(const CG_Message message, const Network& net, Client& client)
-{
-	return MessageAction::NONE;
 }
 
 MessageAction Room::Disconnect(const CG_Message message, const Network& net, Client& client)
@@ -264,6 +263,10 @@ MessageAction Room::EndRace(const CG_Message message, const Network& net, Client
 {
 	if (!m_dnfTimerActive)
 	{
+		SG_Message msgDnfTimer = Message(ServerMessageType::SG_DNFTIMER);
+		msgDnfTimer.dnf.timer = static_cast<uint16_t>(DNF_THRESHOLD_LAP * static_cast<long long>(m_lapCount));
+		exception_map dnfExceptions = { { client.peer, true } };
+		Broadcast(net, msgDnfTimer, dnfExceptions);
 		m_dnfTimerActive = true;
 		m_dnfTimerStart = std::chrono::high_resolution_clock::now();
 	}
@@ -302,6 +305,7 @@ void Room::Race(const Network& net)
 	for (auto& [key, value] : m_clients)
 	{
 		if (value.state != OnlineState::RACE) { exceptions.insert({ value.peer, true }); }
+		else { value.state = OnlineState::RACE_END; }
 	}
 	Broadcast(net, forceEndRace, exceptions);
 
@@ -316,6 +320,8 @@ void Room::RaceEnd(const Network& net)
 
 	if (startClock)
 	{
+		SG_Message msgRaceOver = Message(ServerMessageType::SG_RACEOVER);
+		Broadcast(net, msgRaceOver);
 		startClock = false;
 		start = std::chrono::high_resolution_clock::now();
 		return;
@@ -323,7 +329,7 @@ void Room::RaceEnd(const Network& net)
 
 	std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
 	std::chrono::seconds timeElapsed = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-	if (timeElapsed.count() < 5) { return; }
+	if (timeElapsed.count() < RACE_OVER_TIMEOUT) { return; }
 
 	ResetControlVariables();
 	startClock = true;

@@ -6,6 +6,7 @@ void (*funcs[NUM_STATES_FUNCS]) () =
 {
 	StatePS1_Launch_Boot,
 	StatePS1_Launch_PickServer,
+	StatePS1_Launch_WaitServer,
 	StatePS1_Launch_PickRoom,
 	StatePS1_Launch_Error,
 	StatePS1_Lobby_AssignRole,
@@ -57,25 +58,11 @@ void ThreadFunc(struct Thread* t)
 		pb->rot[2] = 0xff5;
 	}
 
-	// only disable for no$psx testing,
-	// which can force in-game with 8000c000=LOBBY_LOADING
-	#if 1
-
-	// if client is intentionally idle
-	if(octr->boolClientBusy)
-	{
-		// isIdle = 0; // <- unnecesary but i'll leave for readability
-	}
-
-	// if client should not be idle
-	else
-	{
-        // If windowsClientSync hasn't been updated, it means it is idle/gone/lagging
-        if(octr->windowsClientSync == octr->lastWindowsClientSync){
-            isIdle = 1; // the counter is the same as last, start unsync procedure
-        } else {
-            octr->lastWindowsClientSync = octr->windowsClientSync; // client did update, change last counter
-        }
+	// If windowsClientSync hasn't been updated, it means it is idle/gone/lagging
+	if(octr->windowsClientSync == octr->lastWindowsClientSync){
+		isIdle = 1; // the counter is the same as last, start unsync procedure
+	} else {
+		octr->lastWindowsClientSync = octr->windowsClientSync; // client did update, change last counter
 	}
 
     // count frames that the client didn't update the game
@@ -115,30 +102,22 @@ void ThreadFunc(struct Thread* t)
 	int boolCloseClient = (octr->frames_unsynced > DISCONNECT_AT_UNSYNCED_FRAMES);
 
 	// if client closed, or server disconnected
-	if(boolCloseClient || (octr->CurrState == DISCONNECTED))
+	if(boolCloseClient || octr->CurrState == DISCONNECTED)
 	{
 		sdata->ptrActiveMenu = 0;
 
 		if(octr->boolPlanetLEV)
 		{
 			octr->CurrState = boolCloseClient ? LAUNCH_BOOT : LAUNCH_PICK_SERVER;
-#ifdef PINE_DEBUG
-			printf("statechange %d yesno open client/server select 5: \n", octr->stateChangeCounter++);
-#endif
-			octr->hasSelectedServer = 0;
-			octr->hasSelectedRoom = 0;
+			octr->boolJoiningServer = 0;
+			octr->boolSelectedRoom = 0;
 			return;
 		}
 
 		// calls memset on OnlineCTR struct
 		octr_entryHook();
 
-		// if closed==1, go to 0 ("please open client")
-		// if closed==0, go to 1 (server select)
-		octr->CurrState = !boolCloseClient;
-#ifdef PINE_DEBUG
-		printf("statechange %d yesno open client/server select 6: \n", octr->stateChangeCounter++);
-#endif
+		octr->CurrState = boolCloseClient ? LAUNCH_BOOT : LAUNCH_PICK_SERVER;
 
 		// stop music,
 		// stop "most FX", let menu FX ring
@@ -158,7 +137,6 @@ void ThreadFunc(struct Thread* t)
 		t->flags |= 0x800;
 		return;
 	}
-	#endif
 
 	// gameplay
 	if (octr->CurrState >= GAME_WAIT_FOR_RACE)
@@ -169,14 +147,6 @@ void ThreadFunc(struct Thread* t)
 
 	if (octr->CurrState >= 0)
 		funcs[octr->CurrState]();
-
-	// if connecting, or entering IP
-	if (octr->boolClientBusy)
-	{
-		DecalFont_DrawLine(
-			"SEE CLIENT WINDOW",
-			0x100,0x80,FONT_SMALL,JUSTIFY_CENTER|PAPU_YELLOW);
-	}
 
 	// not gameplay, must draw LAST
 	if (octr->CurrState <= LOBBY_WAIT_FOR_LOADING)
@@ -196,13 +166,9 @@ void ThreadFunc(struct Thread* t)
 				// clear width, then get width
 				int width = 0;
 				DECOMP_RECTMENU_GetWidth(m, &width, 1);
-
-				// draw
 				DECOMP_RECTMENU_DrawSelf(m, 0, 0, (int)width);
 			}
-
-			DECOMP_RECTMENU_DrawInnerRect(
-				&endRaceRECT, 0, gGT->backBuffer->otMem.startPlusFour);
+			DECOMP_RECTMENU_DrawInnerRect(&endRaceRECT, 0, gGT->backBuffer->otMem.startPlusFour);
 		}
 	}
 }

@@ -14,8 +14,9 @@
 #define BIND_STATE(type, func) { type, std::bind(&Room::func, this, std::placeholders::_1) }
 
 static constexpr unsigned FPS = 30;
-static constexpr unsigned IDLE_THRESHOLD = FPS * 20;
+static constexpr unsigned IDLE_THRESHOLD = FPS * 60;
 static constexpr long long DNF_THRESHOLD_LAP = 10; // std::chrono::seconds
+static constexpr long long RACE_OVER_TIMEOUT = 5; // std::chrono::seconds
 
 enum class OnlineState
 {
@@ -50,6 +51,8 @@ class Room
 public:
 	MessageAction InterpretMessage(const CG_Message& message, const void* peer, const Network& net);
 	void OnState(const Network& net);
+	inline OnlineState GetState() const { return m_state; }
+	inline const std::unordered_map<const void*, Client>& GetClients() const { return m_clients; }
 	inline size_t GetPlayerCount() const { return m_clients.size(); };
 	inline bool IsRoomLocked() const { return m_state != OnlineState::LOBBY || m_clients.size() == ROOM_MAX_NUM_PLAYERS; };
 
@@ -60,7 +63,6 @@ private:
 	void ResetControlVariables();
 	/* Message Functions */
 	MessageAction NewRoom(const CG_Message message, const Network& net, Client& client);
-	MessageAction Connect(const CG_Message message, const Network& net, Client& client);
 	MessageAction Disconnect(const CG_Message message, const Network& net, Client& client);
 	MessageAction Name(const CG_Message message, const Network& net, Client& client);
 	MessageAction Track(const CG_Message message, const Network& net, Client& client);
@@ -85,7 +87,6 @@ private:
 	std::unordered_map<const void*, Client> m_clients;
 	std::unordered_map<ClientMessageType, std::function<MessageAction(const CG_Message, const Network& net, Client&)>> m_msgFunc = {
 		BIND_MSG(ClientMessageType::CG_JOINROOM, NewRoom),
-		BIND_MSG(ClientMessageType::CG_CONNECT, Connect),
 		BIND_MSG(ClientMessageType::CG_DISCONNECT, Disconnect),
 		BIND_MSG(ClientMessageType::CG_NAME, Name),
 		BIND_MSG(ClientMessageType::CG_TRACK, Track),

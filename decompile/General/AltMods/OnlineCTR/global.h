@@ -15,17 +15,8 @@
 
 #define STATIC_ASSERT2 static_assert
 
-//#define true				1
-//#define false				0
-
-#define DONT_SHOW_NAME		            0
-#define SHOW_NAME			            1
-#define DEFAULT_IP			            "127.0.0.1" // the default IP address we want to use for private lobbies
-#define IP_ADDRESS_SIZE		            16 // assuming IPv4 (which is "xxx.xxx.xxx.xxx" + '\0')
-#define PORT_SIZE			            6 // the port number as a string (0-65535 + '\0')
-
 #define ELEMENTS_PER_PAGE 8 // any menu item
-#define NUM_TRACK_PAGES 4
+#define NUM_TRACK_PAGES 3
 #define NUM_CHARACTER_PAGES 2
 
 #define NUM_SERVERS 2
@@ -33,8 +24,8 @@
 #define ROOMS_PER_PAGE ELEMENTS_PER_PAGE
 #define SERVER_NUM_ROOMS (NUM_SERVER_PAGES * ROOMS_PER_PAGE)
 #define SERVER_NULL_ROOM 255
+#define ROOM_MAX_NUM_PLAYERS 8
 
- // 2 seconds to be very tolerant on client
 #ifdef USE_60FPS
 #define DISCONNECT_AT_UNSYNCED_FRAMES   120
 #else
@@ -42,7 +33,6 @@
 #endif
 
 #define NAME_LEN 9
-#define ROOM_MAX_NUM_PLAYERS 8
 #define ID_WAIT_ASSIGNMENT 0xFF
 #define ID_HOST 0
 
@@ -56,6 +46,7 @@ enum ClientState
 	DISCONNECTED = -1,
 	LAUNCH_BOOT = 0,
 	LAUNCH_PICK_SERVER,
+	LAUNCH_WAIT_SERVER,
 	LAUNCH_PICK_ROOM,
 	LAUNCH_ERROR,
 	LOBBY_ASSIGN_ROLE,
@@ -71,10 +62,20 @@ enum ClientState
 	NUM_STATES_FUNCS
 };
 
-enum OnlineGameMode
+/* Bit flags */
+enum OnlineGameModifiers
 {
-	ONLINE_ITEMS = 0,
-	ONLINE_ITEMLESS,
+	MODIFIER_NONE  = 0,
+	MODIFIER_ITEMS = (1 << 0),
+	MODIFIER_ICY   = (1 << 1),
+	MODIFIER_STP   = (1 << 2),
+};
+
+enum OnlineGameModeList
+{
+	ONLINE_MODE_ITEMS = 0,
+	ONLINE_MODE_ITEMLESS = 1,
+	ONLINE_MODE_ICY_STP = 2,
 };
 
 typedef struct RaceStats
@@ -88,47 +89,41 @@ typedef struct RaceStats
 // 0x8000C000 at 0x8000C400
 struct OnlineCTR
 {
-	// 0x0
+	int32_t ver_psx;
+	int32_t ver_pc;
+	int32_t ver_server;
 	int32_t CurrState;
-
-	// 0x4
 	int8_t PageNumber; // allow negative
 	uint8_t CountPressX;
 	uint8_t NumDrivers;
 	uint8_t DriverID;
-
-	// 0x8
 	uint8_t boolSelectedLap;
 	uint8_t boolSelectedLevel;
-	uint8_t lapID;
 	uint8_t levelID;
-
-	// 0xC
 	uint8_t IsBootedPS1;
+	uint8_t bootedSaphi;
 	uint8_t boolSelectedCharacter;
 	uint8_t numRooms;
 	uint8_t numDriversEnded;
-
-	// 0x10
 	uint8_t serverId;
 	uint8_t serverRoom;
-	uint8_t hasSelectedServer;
-	uint8_t hasSelectedRoom;
-
-	// 0x14
+	uint8_t boolJoiningServer;
+	uint8_t boolSelectedRoom;
 	uint8_t boolPlanetLEV;
-	uint8_t boolClientBusy;
-	uint8_t special;
-	int8_t windowsClientSync;
+	uint8_t onlineGameModifiers;
+	uint8_t windowsClientSync;
+	uint8_t lastWindowsClientSync;
+	uint8_t desiredFPS;
+	uint8_t raceOver;
+	uint16_t lapCount;
+	uint16_t dnfTimer;
+	int32_t frames_unsynced;
 
 	uint8_t roomClientCount[SERVER_NUM_ROOMS];
 	uint8_t roomLocked[SERVER_NUM_ROOMS];
 	uint8_t boolClientSelectedCharacters[ROOM_MAX_NUM_PLAYERS];
 	char nameBuffer[ROOM_MAX_NUM_PLAYERS][NAME_LEN + 1]; //+1 for nullterm
 	RaceStats raceStats[ROOM_MAX_NUM_PLAYERS];
-	int32_t ver_psx;
-	int32_t ver_pc;
-	int32_t ver_server;
 
 	// slot[0] is for game to tell client to send
 	// slot[1+] is for client to tell game to shoot
@@ -139,17 +134,6 @@ struct OnlineCTR
 		uint8_t flags;
 		uint8_t boolNow;
 	} Shoot[ROOM_MAX_NUM_PLAYERS];
-
-    // Frames that the client didn't update
-    int32_t frames_unsynced;
-
-    // Last windowsClientSync counter
-	int8_t lastWindowsClientSync;
-	int8_t desiredFPS;
-
-#ifdef PINE_DEBUG
-	int32_t stateChangeCounter;
-#endif
 };
 
 typedef struct TotalTime
@@ -190,9 +174,11 @@ enum ServerMessageType
 	SG_STARTRACE,
 	SG_KART,
 	SG_WEAPON,
+	SG_DNFTIMER,
 	SG_ENDRACE,
 	SG_DISCONNECT,
 	SG_FORCEENDRACE,
+	SG_RACEOVER,
 	SG_COUNT,
 	SG_EOF = 0xFF
 };
@@ -213,13 +199,14 @@ struct SG_MessageRooms
 };
 
 // sent to each user when someone connects
-struct SG_MessageClientStatus
+struct SG_MessageNewClient
 {
 	uint8_t type;
 	uint8_t clientID;
 	uint8_t numClientsTotal;
 	uint8_t trackSelected;
 	uint8_t trackId;
+	uint16_t lapCount;
 };
 
 struct SG_MessageClientID
@@ -283,6 +270,12 @@ struct SG_MessageWeapon
 	uint8_t padding : 1;
 };
 
+struct SG_MessageDNFTimer
+{
+	uint8_t type;
+	uint16_t timer;
+};
+
 struct SG_MessageEndRace
 {
 	uint8_t type;
@@ -297,13 +290,14 @@ struct SG_Message
 	union
 	{
 		struct SG_MessageRooms rooms;				// SG_ROOMS
-		struct SG_MessageClientStatus clientStatus; // SG_NEWCLIENT
+		struct SG_MessageNewClient clientStatus;	// SG_NEWCLIENT
 		struct SG_MessageClientID id;				// SG_UPDATEID
 		struct SG_MessageName name;					// SG_NAME
 		struct SG_MessageTrack track;				// SG_TRACK
 		struct SG_MessageCharacter character;		// SG_CHARACTER
 		struct SG_MessageKart kart;					// SG_KART
 		struct SG_MessageWeapon weapon;				// SG_WEAPON
+		struct SG_MessageDNFTimer dnf;				// SG_DNFTIMER
 		struct SG_MessageEndRace endRace;			// SG_ENDRACE
 	};
 };
@@ -422,6 +416,7 @@ struct CG_Message
 	// my functions
 	void StatePS1_Launch_Boot();
 	void StatePS1_Launch_PickServer();
+	void StatePS1_Launch_WaitServer();
 	void StatePS1_Launch_PickRoom();
 	void StatePS1_Launch_Error();
 	void StatePS1_Lobby_AssignRole();

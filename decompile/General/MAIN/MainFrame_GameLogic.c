@@ -480,11 +480,13 @@ LAB_80035098:
 						(gGT->overlayIndex_Threads != -1)
 					)
 					{
+#ifndef USE_ONLINE
 						gGT->unknownFlags_1d44 = (gGT->gameMode1 & 0x3e0020) | PAUSE_1;
 
 						DECOMP_MainFreeze_IfPressStart();
 
 						gGT->cooldownfromPauseUntilUnpause = FPS_DOUBLE(5);
+#endif
 					}
 				}
 			}

@@ -178,10 +178,6 @@ void DrawOverheadNames()
     gte_SetRotMatrix(m);
     gte_SetTransMatrix(m);
 
-	#if 0
-	DrawOverheadCalibration();
-	#endif
-
 	// start from P2
 	i = 1;
 	int color = (JUSTIFY_CENTER | ORANGE);
@@ -198,18 +194,6 @@ void DrawOverheadNames()
 	{
 		int len = GetOverheadLen(gGT->drivers[i]);
 		if(len == 0) continue;
-
-		// Mirror Mode Disabled
-		#if 0
-
-		// if mirror mode
-		if(octr->special != 0)
-		{
-			ptrDest->Screen_posX =
-			0x200 - ptrDest->Screen_posX;
-		}
-
-		#endif
 
 		DECOMP_DecalFont_DrawLineStrlen(
 			octr->nameBuffer[i],

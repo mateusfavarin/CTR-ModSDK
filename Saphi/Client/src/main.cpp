@@ -7,8 +7,9 @@
 
 int main(int argc, char* argv[])
 {
-#if !defined(_DEBUG)
-		//only hide the console window on release builds.
+Logger::PrintBanner();
+#if !defined(_DEBUG) //release
+  //only hide the console window on release builds.
 	#if defined(_WIN32)
 		HWND window = GetConsoleWindow();
 		//gotta do this nonsense, because if we use the window fetched above
@@ -21,7 +22,7 @@ int main(int argc, char* argv[])
 		//TODO: hide console window on linux.
 	#endif
 #else
-	Logger::PrintBanner();
+  //debug
 #endif
 
   App app;

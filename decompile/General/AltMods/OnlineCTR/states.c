@@ -5,12 +5,19 @@ extern struct RectMenu menu;
 
 void StatePS1_Launch_Boot()
 {
-	DECOMP_DecalFont_DrawLine("Error: Failed booting Saphi", 0x100, 0xA8, FONT_SMALL, JUSTIFY_CENTER | ORANGE);
+	static const char s_errBoot[] = "Error: failed booting Saphi";
+	static const char s_errServer[] = "Error: failed connecting to the server";
+	const char* msg = octr->bootedSaphi ? s_errServer : s_errBoot;
+	DECOMP_DecalFont_DrawLine(msg, 0x100, 0xA8, FONT_SMALL, JUSTIFY_CENTER | ORANGE);
 }
 
-extern char* countryNames[NUM_SERVERS];
+extern char* countryNames[ELEMENTS_PER_PAGE];
 bool initString = true;
-
+char* s_onlineGameModes[NUM_SERVER_PAGES] = {
+	"Items",
+	"Itemless",
+	"Icy/STP"
+};
 void StatePS1_Launch_PickServer()
 {
 	if (initString)
@@ -21,18 +28,16 @@ void StatePS1_Launch_PickServer()
 	MenuWrites_serverId();
 
 	// If already picked
-	if(MenuFinished() == 1)
-	{
-		if (!initString)
-		{
-			strcpy(sdata->lngStrings[0x4e], countryNames[octr->serverId]);
-			initString = true;
-		}
-		return;
-	}
+	if(MenuFinished() == 1) { initString = true; return; }
 
 	UpdateMenu();
 	NewPage_serverId();
+}
+
+void StatePS1_Launch_WaitServer()
+{
+	sdata->ptrActiveMenu = 0;
+	DECOMP_DecalFont_DrawLine("Trying to connect to the server...", 0x100, 0xA8, FONT_SMALL, JUSTIFY_CENTER | ORANGE);
 }
 
 void ResetPsxGlobals()
@@ -63,11 +68,32 @@ void StatePS1_Launch_PickRoom()
 {
 	MenuWrites_ServerRoom();
 
+	static int currGamemodePage = -1;
+
 	// If already picked
 	if(MenuFinished() == 1)
 	{
+		switch (currGamemodePage)
+		{
+			case ONLINE_MODE_ITEMS:
+				octr->onlineGameModifiers = MODIFIER_ITEMS;
+				break;
+			case ONLINE_MODE_ITEMLESS:
+				octr->onlineGameModifiers = MODIFIER_NONE;
+				break;
+			case ONLINE_MODE_ICY_STP:
+				octr->onlineGameModifiers = MODIFIER_ICY | MODIFIER_STP;
+				break;
+		}
+		currGamemodePage = -1;
 		ResetPsxGlobals();
 		return;
+	}
+
+	if (octr->PageNumber != currGamemodePage)
+	{
+		currGamemodePage = octr->PageNumber;
+		strcpy(sdata->lngStrings[0x4e], s_onlineGameModes[octr->PageNumber]);
 	}
 
 	UpdateMenu();
@@ -81,10 +107,7 @@ void StatePS1_Launch_PickRoom()
 	text[15] = '0' + ((serverTotal / 10) % 10);
 	text[16] = '0' + (serverTotal % 10);
 
-	DecalFont_DrawLine(
-		text,
-		menu.posX_curr,0xb8,
-		FONT_SMALL,JUSTIFY_CENTER|PAPU_YELLOW);
+	DecalFont_DrawLine(text, menu.posX_curr, 0xb8, FONT_SMALL,JUSTIFY_CENTER|PAPU_YELLOW);
 }
 
 void StatePS1_Launch_Error()
@@ -98,8 +121,6 @@ void StatePS1_Launch_Error()
 
 void StatePS1_Lobby_AssignRole()
 {
-	menu.posX_curr = 0x70; // X position
-	menu.posY_curr = 0x84;  // Y position
 }
 
 void StatePS1_Lobby_HostTrackPick()
@@ -109,12 +130,6 @@ void StatePS1_Lobby_HostTrackPick()
 	// If already picked
 	if(MenuFinished() == 1)
 	{
-		if(octr->levelID > TURBO_TRACK)
-		{
-			octr->lapID = 0;
-			octr->boolSelectedLap = 1;
-		}
-
 		// do this without adding to enum,
 		// cause that means changing PS1/PC
 		void FakeState_Lobby_HostLapPick();
@@ -128,12 +143,20 @@ void StatePS1_Lobby_HostTrackPick()
 	NewPage_Tracks();
 }
 
+unsigned char lapID;
+unsigned char boolSelectedLap = 0;
 void FakeState_Lobby_HostLapPick()
 {
 	MenuWrites_Laps();
 
 	// If already picked
-	if(MenuFinished() == 1) return;
+	if(MenuFinished() == 1)
+	{
+		octr->lapCount = lapID * 2 + 1;
+		octr->boolSelectedLap = 1;
+		boolSelectedLap = 0;
+		return;
+	}
 
 	PrintCharacterStats();
 
@@ -250,22 +273,6 @@ RECT drawTimeRECT =
 	.h = 0
 };
 
-static void Instance_Ghostify(struct Instance *inst, unsigned driverID, unsigned isDriver)
-{
-	if (!inst) { return; }
-
-	if (isDriver)
-	{
-		inst->flags |= 0x60000;
-		inst->alphaScale = 0xA00;
-	}
-	else
-	{
-		inst->flags |= 0x10000;
-		inst->alphaScale = 0x600;
-	}
-}
-
 static void Ghostify()
 {
 	struct Turbo *turboObj;
@@ -273,6 +280,8 @@ static void Ghostify()
 	struct GameTracker *gGT = sdata->gGT;
 	struct Icon **ptrIconArray;
 	struct Instance *inst;
+
+	if (octr->onlineGameModifiers & MODIFIER_ITEMS) { return; }
 
 	for (int driverID = 1; driverID < ROOM_MAX_NUM_PLAYERS; driverID++)
 	{
@@ -348,42 +357,53 @@ void StatePS1_Game_WaitForRace()
 void StatePS1_Game_Race()
 {
 	int i;
+	static unsigned msCount = 0;
+	static unsigned frameCounter = 0;
+
 	Ghostify();
 
 	for(i = 1; i < ROOM_MAX_NUM_PLAYERS; i++)
 	{
 		if(octr->Shoot[i].boolNow != 0)
 		{
-			octr->Shoot[i].boolNow = 0;
-
+			int weapon;
 			struct Driver* d = sdata->gGT->drivers[i];
-
-			if(octr->Shoot[i].boolJuiced)
-				d->numWumpas = 10;
+			octr->Shoot[i].boolNow = 0;
+			if(octr->Shoot[i].boolJuiced) { d->numWumpas = 10; }
 
 			d->heldItemID = octr->Shoot[i].Weapon;
-
-			// copy/paste from ShootOnCirclePress
-			int weapon;
 			weapon = d->heldItemID;
 
 			// Missiles and Bombs share code,
 			// Change Bomb1x, Bomb3x, Missile3x, to Missile1x
-			if(
-				(weapon == 1) ||
-				(weapon == 10) ||
-				(weapon == 11)
-			)
-			{
-				weapon = 2;
-			}
-
-			DECOMP_VehPickupItem_ShootNow(
-				d,
-				weapon,
-				octr->Shoot[i].flags);
+			if ((weapon == 1) || (weapon == 10) || (weapon == 11)) { weapon = 2; }
+			DECOMP_VehPickupItem_ShootNow(d, weapon, octr->Shoot[i].flags);
 		}
 	}
+
+	if (octr->dnfTimer > 0)
+	{
+		msCount += sdata->gGT->elapsedTimeMS;
+		if (msCount >= SECONDS(1))
+		{
+			msCount -= SECONDS(1);
+			octr->dnfTimer--;
+		}
+
+		char s_dnfNumber[10];
+		char s_dnf[] = "DNF";
+		int color = RED;
+		if (octr->dnfTimer < 6) { color = frameCounter++ & FPS_DOUBLE(1) ? RED : WHITE; }
+		sprintf(s_dnfNumber, "%u", octr->dnfTimer);
+		DecalFont_DrawLine(s_dnfNumber, 192, 10, FONT_BIG, JUSTIFY_CENTER | color);
+		DecalFont_DrawLine(s_dnf, 192, 10 + data.font_charPixHeight[FONT_BIG], FONT_SMALL, JUSTIFY_CENTER | color);
+	}
+	else { msCount = 0; }
+}
+
+void StatePS1_Game_EndRace()
+{
+
 }
 
 static void OnRaceEnd()
@@ -401,11 +421,6 @@ static void OnRaceEnd()
 			foundRacer = true;
 		}
 	}
-}
-
-void StatePS1_Game_EndRace()
-{
-
 }
 
 void StatePS1_Game_Spectate()

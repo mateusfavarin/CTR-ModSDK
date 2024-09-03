@@ -15,24 +15,36 @@ void Server::Run()
       const ClientMessageType type = static_cast<const ClientMessageType>(msg.type);
       if (type == ClientMessageType::CG_NONE) { break; }
       bool joinRoom = type == ClientMessageType::CG_JOINROOM;
-      if (!m_clientRoomMap.contains(msg.peer) && !joinRoom) { continue; }
-      unsigned roomID = joinRoom ? msg.room.room : m_clientRoomMap[msg.peer];
-      if (roomID == SERVER_NULL_ROOM)
+      if (!m_clientRoomMap.contains(msg.peer) && !joinRoom)
       {
-        SendInfoRooms(msg.peer);
+        if (type == ClientMessageType::CG_CONNECT)
+        {
+          m_orfanClients.insert({ msg.peer, true });
+          SendInfoRooms(msg.peer);
+        }
         continue;
       }
+      unsigned roomID = joinRoom ? msg.room.room : m_clientRoomMap[msg.peer];
       MessageAction action = m_rooms[roomID].InterpretMessage(msg, msg.peer, m_net);
+      bool broadcastRoomInfo = false;
       switch (action)
       {
       case MessageAction::CONNECT:
+        m_orfanClients.erase(msg.peer);
         m_clientRoomMap.insert({ msg.peer, roomID });
+        broadcastRoomInfo = true;
         break;
       case MessageAction::DISCONNECT:
+        m_orfanClients.erase(msg.peer);
         m_clientRoomMap.erase(msg.peer);
+        broadcastRoomInfo = true;
         break;
       default:
         break;
+      }
+      if (broadcastRoomInfo)
+      {
+        for (auto& [key, value] : m_orfanClients) { SendInfoRooms(key); }
       }
     }
     for (Room& room : m_rooms) { room.OnState(m_net); }

@@ -23,23 +23,19 @@ void Client::Run()
   const uint32_t& btnHeld = g_psx.Read<uint32_t>(ADDR_GAMEPAD + offsetof(Gamepad, buttonsHeldCurrFrame));
   if (btnHeld & Buttons::BTN_SELECT) { Disconnect(octr); }
 
-  if (octr.CurrState != ClientState::DISCONNECTED)
+  ClientState state = static_cast<ClientState>(octr.CurrState);
+  if (m_stateFuncs.contains(state))
   {
-    ClientState state = static_cast<ClientState>(octr.CurrState);
     const CG_Message msg = m_stateFuncs[state](octr);
     if (msg.type == ClientMessageType::CG_CONNECT)
     {
+      octr.CurrState = ClientState::LAUNCH_WAIT_SERVER;
       if (m_net.ConnectServer(msg.server.hostName, msg.server.port))
       {
         octr.DriverID = ID_WAIT_ASSIGNMENT;
-        octr.CurrState = ClientState::LAUNCH_PICK_ROOM;
       }
-      octr.boolClientBusy = false;
     }
-    else
-    {
-      m_net.Send(msg);
-    }
+    else { m_net.Send(msg); }
   }
 
   while (true)

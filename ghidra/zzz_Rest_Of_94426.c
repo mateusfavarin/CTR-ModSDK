@@ -1110,8 +1110,11 @@ code_r0x8006a52c:
 		sVar3 = *(short *)(iVar12 + 0xde);
         *(short *)(in_at + 0x134) = (short)((int)*(short *)(iVar12 + 0xdc) << 2);
         *(short *)(in_at + 0x136) = (short)((int)sVar3 << 2);
-        uVar17 = *(undefined4 *)(iVar12 + 0xe4);
+        
+		// ptrDepth + offset
+		uVar17 = *(undefined4 *)(iVar12 + 0xe4);
         uVar18 = *(undefined4 *)(iVar12 + 0xe8);
+		
         pcVar8 = *(code **)(iVar12 + 0xec);
         *(undefined4 *)(in_at + 0x38) = uVar17;
         *(undefined4 *)(in_at + 0x3c) = uVar17;
@@ -1136,7 +1139,10 @@ code_r0x8006a52c:
   in_t3 = *(uint *)(in_at + 0x10c);
   gte_rtpt_b();
   in_t9 = puVar21 + 1;
-  do {
+  
+  do 
+  {
+	// texIndex
     uVar11 = in_t3 & 0x1ff;
     iVar12 = uVar11 * 4;
     if (uVar11 != 0) {
@@ -1145,7 +1151,10 @@ code_r0x8006a52c:
     iVar7 = *(int *)(in_at + 0x1c);
     uVar11 = gte_stSXY2();
     iVar10 = gte_stFLAG();
-    if (-1 < iVar10 << 0xd) {
+	
+    if (-1 < iVar10 << 0xd) 
+	{
+	  // DRAW_CMD_FLAG_CULLING
       if ((int)(in_t3 << 3) < 0) 
 	  {
         gte_nclip_b();
@@ -1371,7 +1380,8 @@ void FUN_8006a8e0(void)
     }
     
 // from ghidra:
-//	iVar9 = *(int *)(in_at + 0x34);
+// OTMem curr
+//	  iVar9 = *(int *)(in_at + 0x34);
 //    *(uint *)(iVar5 + 0x140) = ((uVar1 & in_t4) + *(int *)(in_at + 0x30)) * 4 & in_t5;
 //    *(uint *)(iVar5 + 0x144) = ((uVar1 >> 8 & 0xff) + iVar9) * 4;
 
@@ -2011,7 +2021,10 @@ code_r0x8006b030:
   *(undefined4 *)(in_at + 0xc4) = uVar17;
   *(short *)(in_at + 0xce) = *(short *)(in_at + 0x44) - (short)((uint)iVar14 >> 0x10);
   in_t9 = puVar21 + 1;
-  do {
+  
+  do 
+  {
+	// texIndex
     uVar11 = in_t3 & 0x1ff;
     iVar14 = uVar11 * 4;
     if (uVar11 != 0) {
@@ -2020,8 +2033,12 @@ code_r0x8006b030:
     iVar8 = *(int *)(in_at + 0x1c);
     uVar11 = gte_stSXY2();
     iVar10 = gte_stFLAG();
-    if (-1 < iVar10 << 0xd) {
-      if ((int)(in_t3 << 3) < 0) {
+	
+    if (-1 < iVar10 << 0xd) 
+	{
+	  // DRAW_CMD_FLAG_CULLING
+      if ((int)(in_t3 << 3) < 0) 
+	  {
         gte_nclip_b();
         uVar15 = gte_stMAC0();
         if ((uVar15 == 0) ||
@@ -2305,7 +2322,10 @@ void FUN_8006bbc0(void)
   gte_ldVXY1(iVar12 - (uVar22 & 0xffff0000) | uVar22 & 0xffff);
   gte_ldVXY2(iVar12 - (uVar24 & 0xffff0000) | uVar24 & 0xffff);
   gte_rtpt();
-  do {
+  
+  do 
+  {
+	// texIndex
     iVar12 = ((uint)puVar27 & 0x1ff) * 4;
     if (((uint)puVar27 & 0x1ff) != 0) {
       iVar12 = *(int *)((int)register0x00000074 + iVar12 + -4);
@@ -2316,8 +2336,12 @@ void FUN_8006bbc0(void)
     uVar22 = gte_stSXY2();
     iVar26 = gte_stFLAG();
     uVar17 = uVar9;
-    if (-1 < iVar26 << 0xd) {
-      if ((int)puVar27 << 3 < 0) {
+	
+    if (-1 < iVar26 << 0xd) 
+	{
+	  // DRAW_CMD_FLAG_CULLING
+      if ((int)puVar27 << 3 < 0) 
+	  {
          gte_nclip_b();
          uVar18 = gte_stMAC0();
          if ((uVar18 == 0) ||
@@ -2361,8 +2385,12 @@ LAB_8006bd64:
     iVar26 = gte_stFLAG();
     uVar9 = (int)puVar27 << 2;
     uVar22 = uVar21;
-    if (-1 < iVar26 << 0xd) {
-      if ((int)puVar27 << 3 < 0) {
+	
+    if (-1 < iVar26 << 0xd) 
+	{
+	  // DRAW_CMD_FLAG_CULLING
+      if ((int)puVar27 << 3 < 0) 
+	  {
          gte_nclip_b();
          uVar19 = gte_stMAC0();
          uVar9 = (int)*(short *)(in_at + 0x24) ^ uVar9;
@@ -2392,6 +2420,7 @@ LAB_8006be24:
       uVar9 = (int)puVar27 << 1;
       if (uVar17 != 0) break;
       uVar16 = (uint)puVar27 >> 7 & 0x1fc;
+	  
       if ((int)puVar27 << 0x1f < 0) {
          uVar16 = *(uint *)(uVar16 + in_at + 0x140);
       }
@@ -3416,7 +3445,10 @@ void FUN_8006c9c4(void)
   gte_ldVXY1(iVar14 - (uVar17 & 0xffff0000) | uVar17 & 0xffff);
   gte_ldVXY2(iVar14 - (uVar19 & 0xffff0000) | uVar19 & 0xffff);
   gte_rtpt();
-  do {
+  
+  do 
+  {
+	// texIndex
     uVar8 = in_t3 & 0x1ff;
     iVar14 = uVar8 * 4;
     if (uVar8 != 0) {
@@ -3431,8 +3463,12 @@ void FUN_8006c9c4(void)
     iVar14 = *(int *)(in_at + 0x1c);
     uVar8 = gte_stSXY2();
     iVar11 = gte_stFLAG();
-    if (-1 < iVar11 << 0xd) {
-      if ((int)(in_t3 << 3) < 0) {
+    
+	if (-1 < iVar11 << 0xd) 
+	{
+	  // DRAW_CMD_FLAG_CULLING
+      if ((int)(in_t3 << 3) < 0) 
+	  {
          gte_nclip_b();
          uVar19 = gte_stMAC0();
          if ((uVar19 == 0) ||
@@ -3442,7 +3478,8 @@ void FUN_8006c9c4(void)
       else {
          uVar17 = gte_stSXY0();
       }
-      uVar19 = gte_stSXY1();
+      
+	  uVar19 = gte_stSXY1();
       gte_avsz3_b();
       uVar8 = ~(uVar17 - iVar14 | uVar19 - iVar14 | uVar8 - iVar14) | uVar17 & uVar8 & uVar19;
       if ((-1 < (int)uVar8) && (gte_stMAC0(), -1 < (int)(uVar8 << 0x10))) {
@@ -6691,12 +6728,16 @@ FUN_80070720(int param_1,int param_2,undefined4 param_3,undefined4 param_4,int p
 
   iVar1 = 0x1f800000;
   DAT_1f800020 = &_gp_4;
+  
+  // OTMem curr
   DAT_1f800034 = *(undefined4 *)(param_2 + 0xc);
 
   // number of players
   DAT_1f80005c = param_5;
 
   _DAT_1f800090 = param_6;
+  
+  // OTMem end
   DAT_1f800038 = *(int *)(param_2 + 8) + -4;
 
   // increment to last player's CameraDC
@@ -6769,6 +6810,7 @@ FUN_80070720(int param_1,int param_2,undefined4 param_3,undefined4 param_4,int p
 
   } while (0 < iVar3);
 
+  // otmem curr
   *(undefined4 *)(param_2 + 0xc) = *(undefined4 *)(iVar1 + 0x34);
 
   return param_3;
@@ -6807,12 +6849,16 @@ FUN_8007084c(undefined *param_1,int param_2,undefined4 param_3,undefined4 param_
 
   iVar1 = 0x1f800000;
   DAT_1f800020 = &_gp_4;
+  
+  // OTMem curr
   DAT_1f800034 = *(undefined4 *)(param_2 + 0xc);
 
   // put numPlyrCurrGame on scratchpad
   DAT_1f80005c = param_5;
 
   _DAT_1f800090 = param_6;
+  
+  // OTMem end
   DAT_1f800038 = *(int *)(param_2 + 8) + -4;
   
   // InstDrawPerPlayer
@@ -6869,6 +6915,7 @@ FUN_8007084c(undefined *param_1,int param_2,undefined4 param_3,undefined4 param_
 
   } while (0 < iVar2);
 
+  // OTMem curr
   *(undefined4 *)(param_2 + 0xc) = *(undefined4 *)(iVar1 + 0x34);
   return param_3;
 }
@@ -6967,29 +7014,53 @@ void FUN_80070950(undefined4 param_1,undefined4 param_2,int param_3)
   *(undefined4 *)(in_at + 0x40) = unaff_retaddr;
 
   // $gp temporarily overwritten
-  if (((*(uint *)(in_at + 0x50) & $gp) != 0) &&
-     (psVar8 = *(short **)(in_at + 0x58), psVar6 != (short *)0x0)) {
+  if (
+		((*(uint *)(in_at + 0x50) & $gp) != 0) &&
+		(
+			// pb from last draw
+			psVar8 = *(short **)(in_at + 0x58), 
+			
+			// curr pb != 0
+			psVar6 != (short *)0x0
+		)
+	 ) 
+  {
+	// save pb for next draw
     *(short **)(in_at + 0x58) = psVar6;
-    if (psVar8 != psVar6) {
+    
+	// if pushBuffer is used for the first time,
+	// and is not reused from the previous Draw
+	if (psVar8 != psVar6) 
+	{
       FUN_8006c600();
 
-	  // copy pushBuffer position to instance
+	  // copy pushBuffer data to scratchpad
+	  
+	  // pb->pos
       sVar1 = psVar6[1];
       sVar2 = psVar6[2];
       *(int *)(in_at + 0x44) = (int)*psVar6;
       *(int *)(in_at + 0x48) = (int)sVar1;
       *(int *)(in_at + 0x4c) = (int)sVar2;
 
+	  // RECT Y
 	  sVar1 = psVar6[0x11];
+	  
+	  // pb->distanceToScreen_PREV
       uVar13 = *(undefined4 *)(psVar6 + 0xc);
-      uVar18 = *(undefined4 *)(psVar6 + 0x7a);
-      *(undefined2 *)(in_at + 0x3c) = (short)extraout_v1;
+      
+	  // pb->ptrOT
+	  uVar18 = *(undefined4 *)(psVar6 + 0x7a);
+      
+	  // viewport XY
+	  *(undefined2 *)(in_at + 0x3c) = (short)extraout_v1;
       *(short *)(in_at + 0x3e) = sVar1;
 	  
       gte_ldOFX(extraout_v1 << 0xf);
       gte_ldOFY((int)sVar1 << 0xf);
       gte_ldH(uVar13);
       
+	  // ptrOT
 	  *(undefined4 *)(in_at + 0x30) = uVar18;
     }
     puVar29 = &_gp_4;
@@ -7074,9 +7145,11 @@ void FUN_80070950(undefined4 param_1,undefined4 param_2,int param_3)
         *(undefined2 *)(in_at + 0x74) = (short)uVar21;
         *(undefined2 *)(in_at + 0x76) = (short)uVar23;
         *(uint *)(in_at + 0x78) = uVar25;
+		
         uVar21 = uVar21 & 0xffff;
         uVar23 = uVar23 & 0xffff;
         uVar25 = uVar25 & 0xffff;
+		
         FUN_8006c49c();
         *(int *)(in_at + 0xbc) = (int)param_19;
         *(int *)(in_at + 0xc0) = (int)param_20;
@@ -7417,19 +7490,32 @@ code_r0x80070e84:
           }
         }
         
+		// Somehow? Check if instance should draw or skip
 		if (((-1 < (int)uVar15) && (-1 < iVar9)) &&
            ((-1 < iVar27 - extraout_v1_02 &&
             (((int)(uVar21 - *(ushort *)(in_at + 0x3c)) < 1 &&
-             ((int)(iVar19 - (uint)*(ushort *)(in_at + 0x3e)) < 1)))))) {
+             ((int)(iVar19 - (uint)*(ushort *)(in_at + 0x3e)) < 1)))))) 
+		{
           iVar3 = (iVar14 >> 5) + -2;
           iVar9 = (iVar27 >> 5) + 1;
           *(short *)(unaff_s8 + 0xdc) = (short)iVar3;
           *(short *)(unaff_s8 + 0xde) = (short)iVar9;
+		  
+		  // OTMem curr
           puVar28 = *(uint **)(in_at + 0x34);
           puVar11 = puVar28 + (iVar9 - iVar3);
-          if (0 < *(int *)(in_at + 0x38) - (int)(puVar11 + 1)) {
+		  
+		  // Somehow? Check if instance should draw or skip
+          if (0 < *(int *)(in_at + 0x38) - (int)(puVar11 + 1)) 
+		  {
+			// ===== Draw Base Model =====
+			// (not reflection or split yet)
+			  
+			// OTMem curr
             *(uint **)(in_at + 0x34) = puVar11 + 1;
-            iVar14 = *(int *)(in_at + 0x8c) >> 6;
+            
+			// depth
+			iVar14 = *(int *)(in_at + 0x8c) >> 6;
             puVar17 = puVar28;
 			
 			// not connected to PushBuffer
@@ -7451,26 +7537,38 @@ code_r0x80070e84:
             }
 			
 			// connected to PushBuffer
-            else {
+            else 
+			{
+			  // get depth
               iVar14 = *(int *)(in_at + 0xbc) + iVar14;
               iVar19 = iVar14 * 4;
-              if (iVar14 < 0) {
+              
+			  // Depth can't be less than ot[0]
+			  if (iVar14 < 0) {
                 iVar19 = 0;
               }
-              else {
+              
+			  else 
+			  {
+			    // Depth can't be more than ot[0x3ff]
                 if (0 < iVar19 + -0xffc) {
                   iVar19 = 0xffc;
                 }
               }
-              *(uint **)(psVar6 + 0x7a) = puVar28;
+              
+			  // pushBuffer offset 0xF4, 0xF8, 0xFC
+			  *(uint **)(psVar6 + 0x7a) = puVar28;
               *(uint **)(psVar6 + 0x7c) = puVar11;
               *(int *)(psVar6 + 0x7e) = iVar19;
+			  
               *puVar28 = 0;
             }
+			
             while (puVar17 != puVar11) {
               puVar17[1] = (uint)puVar17 & 0xffffff;
               puVar17 = puVar17 + 1;
             }
+			
             *(uint **)(unaff_s8 + 0xe4) = puVar28 + iVar3 * 0x3fffffff;
             *(uint **)(unaff_s8 + 0xe8) = puVar28 + iVar3 * 0x3fffffff;
 			
@@ -7480,45 +7578,74 @@ LAB_80071478:
 			  // RenderBucket_DrawFunc_Normal
               puVar5 = &FUN_8006a52c;
 
+			  // Skip reflection
               goto LAB_80071480;
             }
 			
 			// not reflective, just split-line
-            if (((uint)puVar29 & 0x4000) == 0) {
+            if (((uint)puVar29 & 0x4000) == 0) 
+			{
+			  // OTMem curr
               puVar28 = *(uint **)(in_at + 0x34);
+			  
+			  // if[...] skip reflection
               if ((*(uint *)(in_at + 0x68) | *(uint *)(in_at + 0x6c)) == 0) goto LAB_80071478;
             }
 			
 			// reflective
-            else {
+            else 
+			{
+			  // OTMem curr
               puVar28 = *(uint **)(in_at + 0x34);
             }
 			
+			// ======= Draw Reflection ==========
+			
             puVar11 = puVar28 + (iVar9 - iVar3);
-            if (*(int *)(in_at + 0x38) - (int)(puVar11 + 1) < 1) goto LAB_80071514;
-            *(uint **)(in_at + 0x34) = puVar11 + 1;
-            iVar9 = *(int *)(in_at + 0xc0) + (*(int *)(in_at + 0x8c) >> 6);
+			
+			// Somehow? Check if instance should draw or skip
+            if (*(int *)(in_at + 0x38) - (int)(puVar11 + 1) < 1)
+			{
+				// end function
+				goto LAB_80071514;
+			}
+            
+			// OTMem curr
+			*(uint **)(in_at + 0x34) = puVar11 + 1;
+            
+			// get depth
+			iVar9 = *(int *)(in_at + 0xc0) + (*(int *)(in_at + 0x8c) >> 6);
             iVar14 = iVar9 * 4;
+			
+			// Depth can't be less than ot[0]
             if (iVar9 < 0) {
               iVar14 = 0;
             }
-            else {
+			
+            else 
+			{
+			  // Depth can't be more than ot[0x3ff]
               if (0 < iVar14 + -0xffc) {
                 iVar14 = 0xffc;
               }
             }
+
+			// ptrOT + depth
             puVar17 = (uint *)(*(int *)(in_at + 0x30) + iVar14);
             uVar15 = *puVar17;
             *puVar17 = (uint)puVar11 & 0xffffff;
+			
             *puVar28 = uVar15;
             puVar17 = puVar28;
-            while (puVar17 != puVar11) {
+            
+			while (puVar17 != puVar11) {
               puVar17[1] = (uint)puVar17 & 0xffffff;
               puVar17 = puVar17 + 1;
             }
+			
             uVar15 = *(uint *)(in_at + 0x68);
 			
-			// no split-line and not relflective
+			// no split-line and not reflective
             if (((uint)puVar29 & 0x6000) == 0) goto LAB_80071478;
             
 			uVar21 = *(uint *)(in_at + 0x6c);
@@ -7589,8 +7716,12 @@ LAB_80071480:
                 puVar12 = &LAB_8006cdec; // reference to FUN_8006cdec(void), called later in this function indirectly. underwater or in mud something and near clip??
               }
             }
-            *(BADSPACEBASE **)param_3 = register0x00000074;
+            
+			// overwrite RBI pointer from QueueDraw?
+			*(BADSPACEBASE **)param_3 = register0x00000074;
             *(undefined **)(param_3 + 4) = unaff_s8;
+			
+			// DRAW_SUCCESSFUL
             puVar29 = (undefined *)((uint)puVar29 | 0x40);
 
 			// function to render the instance
@@ -7608,6 +7739,8 @@ LAB_80071480:
             *(undefined4 *)(unaff_s8 + 0xd0) = uVar18;
           }
         }
+		
+		// end function
         goto LAB_80071514;
       }
 

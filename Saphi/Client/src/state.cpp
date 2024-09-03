@@ -40,6 +40,7 @@ const CG_Message State::Launch_Boot(OnlineCTR& octr)
 {
 	CG_Message msg = Message();
 	octr.CurrState = ClientState::LAUNCH_PICK_SERVER;
+	octr.bootedSaphi = true;
 	return msg;
 }
 
@@ -48,10 +49,10 @@ const CG_Message State::Launch_PickServer(OnlineCTR& octr)
 {
 	CG_Message msg = Message();
 	const int32_t levelID = g_psx.Read<int32_t>(ADDR_gGT + 0x1a10);
-	if (levelID != OCTR_MENU_LEVEL || !octr.hasSelectedServer) { return msg; }
+	if (levelID != OCTR_MENU_LEVEL || !octr.boolJoiningServer) { return msg; }
 
-	octr.boolClientBusy = true;
 	uint16_t port = 0;
+	octr.boolJoiningServer = false;
 	switch (octr.serverId)
 	{
 	case 0:
@@ -59,23 +60,33 @@ const CG_Message State::Launch_PickServer(OnlineCTR& octr)
 		port = 25565;
 		break;
 	case 1:
+		hostName = "na1.projectsaphi.com";
+		port = 65001;
+		break;
+	case 2:
 		hostName = "as1.projectsaphi.com";
 		port = 25565;
 		break;
-
+	case 7:
+		hostName = "beta.projectsaphi.com";
+		port = 25565;
+		break;
 	default:
 		return msg;
 	}
 
 	msg.type = ClientMessageType::CG_CONNECT;
 	msg.server.hostName = hostName.c_str();
+	msg.server.port = port;
 	return msg;
 }
 
 const CG_Message State::Launch_PickRoom(OnlineCTR& octr)
 {
+	if (!octr.boolSelectedRoom) { return Message(); }
+
 	CG_Message msg = Message(ClientMessageType::CG_JOINROOM);
-	octr.hasSelectedRoom ? msg.room.room = octr.serverRoom : msg.room.room = SERVER_NULL_ROOM;
+	msg.room.room = octr.serverRoom;
 	return msg;
 }
 
@@ -100,7 +111,7 @@ const CG_Message State::Lobby_HostTrackPick(OnlineCTR& octr)
 
 	CG_Message msg = Message(ClientMessageType::CG_TRACK);
 	msg.track.trackID = octr.levelID;
-	msg.track.lapCount = octr.lapID * 2 + 1;
+	msg.track.lapCount = octr.lapCount;
 	g_psx.Read<int8_t>(ADDR_gGT + 0x1d33) = static_cast<uint8_t>(msg.track.lapCount);
 	octr.CurrState = ClientState::LOBBY_CHARACTER_PICK;
 	return msg;
