@@ -75,6 +75,9 @@ static void LogInit()
 		fmt::string_view threadName, fmt::string_view msg, size_t bodyPos,
 		size_t logFilePos)
 		{
+			//since the logfile is set to the log file and not stdout, we use this callback
+			//to print to stdout.
+
 			//printf("%s\n", msg.begin());
 			std::cout << msg.begin() << std::endl;
 		};
@@ -96,5 +99,5 @@ static void LogInit()
 		" J______FJ____,__F|_J_____F |__L  J__||__|        J______F\n"
 		"                  L_J                                     \n"
 		"Saphi Server\nBuild {0} ({1})", __DATE__, __TIME__);
-	fmtlog::startPollingThread(1000000); //idk the unit of time, ...seconds?
+	fmtlog::startPollingThread(1000000); //idk the unit of time, ...nanoseconds?
 }
