@@ -1,12 +1,75 @@
-//if you change this file, you should also change logger.h in the Saphi Server project
+#pragma once
+
+#include <fmtlog.h>
+#include <filesystem>
+#include <iostream>
+#include "../../General/AltMods/OnlineCTR/global.h"
 
 namespace Logger
 {
-	void PrintBanner();
-	void Log(const char* const _Format, ...);
-	void LogVerbose(const char* const _Format, ...);
-}
+	//do not call this function, used internally.
+	void LogCallback(int64_t ns, fmtlog::LogLevel level, fmt::string_view location,
+		size_t basePos, fmt::string_view threadName, fmt::string_view msg, size_t bodyPos,
+		size_t logFilePos)
+	{
+		//since the logfile is set to the log file and not stdout, we use this callback
+		//to print to stdout.
 
+		//printf("%s\n", msg.begin());
+		std::cout << msg.begin() << std::endl;
+	}
+
+	void LogInit()
+	{
+		fmtlog::setLogLevel(fmtlog::LogLevel::DBG);
+		fmtlog::setThreadName("main");
+		constexpr const char* logFileName = "log.txt", * oldLogFileName = "old-log.txt";
+		//change this to allow variable amounts of saved old log files?
+		//e.g., old-log-1.txt, old-log-2.txt, old-log-3.txt ...
+		if (std::filesystem::exists(oldLogFileName))
+		{
+			try
+			{
+				std::filesystem::remove(oldLogFileName);
+			}
+			catch (...)
+			{
+				logw("Old log file exists, and yet could not delete it");
+			}
+		}
+		if (std::filesystem::exists(logFileName))
+		{
+			try
+			{
+				std::filesystem::rename(logFileName, oldLogFileName);
+			}
+			catch (...)
+			{
+				logw("Previous log file exists, and yet could not rename it to old-log.txt");
+			}
+		}
+		void (*cb)(int64_t ns, fmtlog::LogLevel level, fmt::string_view location, size_t basePos,
+			fmt::string_view threadName, fmt::string_view msg, size_t bodyPos,
+			size_t logFilePos);
+		cb = LogCallback;
 #ifdef _DEBUG
-#define LOGGING_VERBOSE //comment out to disable.
+		fmtlog::setLogLevel(fmtlog::LogLevel::DBG); //includes all logs
+		fmtlog::setLogCB(cb, fmtlog::DBG);
+#else
+		fmtlog::setLogLevel(fmtlog::LogLevel::WRN); //does not include "DBG" or "INF"
+		fmtlog::setLogCB(cb, fmtlog::WRN);
 #endif
+		//you can set a log file *OR* the FILE* for stdout, not both.
+		fmtlog::setLogFile(logFileName);
+		logi("\n   ___                         _       __           ___   \n"
+			"  F __\".   ___ _    _ ___     FJ___    LJ         ,\"___\". \n"
+			" J (___|  F __` L  J '__ J   J  __ `.     ______  FJ---L] \n"
+			" J\\___ \\ | |--| |  | |--| |  | |--| |  FJ|______|J |   LJ \n"
+			".--___) \\F L__J J  F L__J J  F L  J J J  L______J| \\___--.\n"
+			"J\\______J\\____,__LJ  _____/LJ__L  J__LJ__L       J\\_____/F\n"
+			" J______FJ____,__F|_J_____F |__L  J__||__|        J_____F \n"
+			"                  L_J                                     \n"
+			"Saphi Client (Launcher Version {0})\nBuild {1} ({2})", VERSION_CLIENT, __DATE__, __TIME__);
+		fmtlog::startPollingThread(1000); //idk the unit of time, ...milliseconds?
+	}
+}

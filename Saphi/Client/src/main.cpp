@@ -7,7 +7,7 @@
 
 int main(int argc, char* argv[])
 {
-Logger::PrintBanner();
+	Logger::LogInit();
 #if !defined(_DEBUG) //release
   //only hide the console window on release builds.
 	#if defined(_WIN32)

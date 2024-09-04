@@ -109,12 +109,14 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;CLIENT_SERVER;SIZEOF_SIZE_T=8;SIZEOF_UNSIGNED_LONG_LONG=8;XD3_MAIN=0;XD3_DEBUG=0;XD3_USE_LARGEFILE64=1;REGRESSION_TEST=0;SECONDARY_DJW=1;SECONDARY_FGK=1;SECONDARY_LZMA=0;XD3_WIN32=1;EXTERNAL_COMPRESSION=0;SHELL_TESTS=0;_DEBUG;_CONSOLE;USE_DECOMPILE_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;CLIENT_SERVER;FMT_HEADER_ONLY;FMTLOG_HEADER_ONLY;SIZEOF_SIZE_T=8;SIZEOF_UNSIGNED_LONG_LONG=8;XD3_MAIN=0;XD3_DEBUG=0;XD3_USE_LARGEFILE64=1;REGRESSION_TEST=0;SECONDARY_DJW=1;SECONDARY_FGK=1;SECONDARY_LZMA=0;XD3_WIN32=1;EXTERNAL_COMPRESSION=0;SHELL_TESTS=0;_DEBUG;_CONSOLE;USE_DECOMPILE_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\externals\imgui\;$(ProjectDir)..\..\externals\json\include\;$(ProjectDir)..\..\externals\portable-file-dialogs\;$(ProjectDir)..\..\externals\cpp-httplib\;$(ProjectDir)..\..\externals\xdelta\xdelta3\;$(ProjectDir)..\..\externals\CRCpp\inc\;$(ProjectDir)..\..\externals\enet\include\;$(ProjectDir)..\..\decompile\General\AltMods\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\externals\fmtlog\;$(ProjectDir)..\..\externals\fmtlog\fmt\include\;$(ProjectDir)..\..\externals\imgui\;$(ProjectDir)..\..\externals\json\include\;$(ProjectDir)..\..\externals\portable-file-dialogs\;$(ProjectDir)..\..\externals\cpp-httplib\;$(ProjectDir)..\..\externals\xdelta\xdelta3\;$(ProjectDir)..\..\externals\CRCpp\inc\;$(ProjectDir)..\..\externals\enet\include\;$(ProjectDir)..\..\decompile\General\AltMods\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <DisableSpecificWarnings>4100;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <UseUnicodeForAssemblerListing>false</UseUnicodeForAssemblerListing>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,12 +133,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;CLIENT_SERVER;SIZEOF_SIZE_T=8;SIZEOF_UNSIGNED_LONG_LONG=8;XD3_MAIN=0;XD3_DEBUG=0;XD3_USE_LARGEFILE64=1;REGRESSION_TEST=0;SECONDARY_DJW=1;SECONDARY_FGK=1;SECONDARY_LZMA=0;XD3_WIN32=1;EXTERNAL_COMPRESSION=0;SHELL_TESTS=0;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;CLIENT_SERVER;FMT_HEADER_ONLY;FMTLOG_HEADER_ONLY;SIZEOF_SIZE_T=8;SIZEOF_UNSIGNED_LONG_LONG=8;XD3_MAIN=0;XD3_DEBUG=0;XD3_USE_LARGEFILE64=1;REGRESSION_TEST=0;SECONDARY_DJW=1;SECONDARY_FGK=1;SECONDARY_LZMA=0;XD3_WIN32=1;EXTERNAL_COMPRESSION=0;SHELL_TESTS=0;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\externals\imgui\;$(ProjectDir)..\..\externals\json\include\;$(ProjectDir)..\..\externals\portable-file-dialogs\;$(ProjectDir)..\..\externals\cpp-httplib\;$(ProjectDir)..\..\externals\xdelta\xdelta3\;$(ProjectDir)..\..\externals\CRCpp\inc\;$(ProjectDir)..\..\externals\enet\include\;$(ProjectDir)..\..\decompile\General\AltMods\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\externals\fmtlog\;$(ProjectDir)..\..\externals\fmtlog\fmt\include\;$(ProjectDir)..\..\externals\imgui\;$(ProjectDir)..\..\externals\json\include\;$(ProjectDir)..\..\externals\portable-file-dialogs\;$(ProjectDir)..\..\externals\cpp-httplib\;$(ProjectDir)..\..\externals\xdelta\xdelta3\;$(ProjectDir)..\..\externals\CRCpp\inc\;$(ProjectDir)..\..\externals\enet\include\;$(ProjectDir)..\..\decompile\General\AltMods\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <DisableSpecificWarnings>4100;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <UseUnicodeForAssemblerListing>false</UseUnicodeForAssemblerListing>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -227,7 +231,6 @@
     <ClCompile Include="src\data.cpp" />
     <ClCompile Include="src\io.cpp" />
     <ClCompile Include="src\languages.cpp" />
-    <ClCompile Include="src\logger.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\message.cpp" />
     <ClCompile Include="src\network.cpp" />

@@ -3,6 +3,7 @@
 #include <fmtlog.h>
 #include <filesystem>
 #include <iostream>
+#include "../../General/AltMods/OnlineCTR/global.h"
 
 namespace Logger
 {
@@ -68,7 +69,7 @@ namespace Logger
 			"J\\______J\\____,__LJ  _____/LJ__L  J__LJ__L       J\\______J\n"
 			" J______FJ____,__F|_J_____F |__L  J__||__|        J______F\n"
 			"                  L_J                                     \n"
-			"Saphi Server\nBuild {0} ({1})", __DATE__, __TIME__);
+			"Saphi Server (Version {0})\nBuild {1} ({2})", VERSION_SERVER, __DATE__, __TIME__);
 		fmtlog::startPollingThread(1000); //idk the unit of time, ...milliseconds?
 	}
 }
