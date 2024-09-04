@@ -25,7 +25,7 @@ void Server::Run()
       {
         if (type == ClientMessageType::CG_CONNECT)
         {
-          m_orfanClients.insert({ msg.peer, true });
+          m_orfanClients.insert(msg.peer);
           SendInfoRooms(msg.peer);
         }
         continue;
@@ -50,7 +50,7 @@ void Server::Run()
       }
       if (broadcastRoomInfo)
       {
-        for (auto& [key, value] : m_orfanClients) { SendInfoRooms(key); }
+        for (auto& peer : m_orfanClients) { SendInfoRooms(peer); }
       }
     }
     for (Room& room : m_rooms) { room.OnState(m_net); }

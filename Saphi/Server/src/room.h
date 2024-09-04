@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <string>
+#include <unordered_set>
 #include <unordered_map>
 #include <functional>
 #include <chrono>
@@ -34,7 +35,7 @@ enum class MessageAction
 	DISCONNECT,
 };
 
-typedef std::unordered_map<const void*, bool> exception_map;
+typedef std::unordered_set<const void*> exception_map;
 
 struct Client
 {

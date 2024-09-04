@@ -128,7 +128,7 @@ MessageAction Room::Disconnect(const CG_Message message, const Network& net, Cli
 				msg.name.clientID = value.id;
 				msg.name.numClientsTotal = numClients;
 				strncpy(msg.name.name, value.name.c_str(), sizeof(msg.name.name));
-				exception_map exceptions = { { value.peer, true } };
+				exception_map exceptions = { value.peer };
 				Broadcast(net, msg, exceptions);
 			}
 		}
@@ -137,7 +137,7 @@ MessageAction Room::Disconnect(const CG_Message message, const Network& net, Cli
 	msgDisconnect.name.clientID = updatedNames ? numClients - 1 : client.id;
 	msgDisconnect.name.numClientsTotal = numClients;
 	msgDisconnect.name.name[0] = '\0';
-	exception_map exceptionSelf = { { client.peer, true } };
+	exception_map exceptionSelf = { client.peer };
 	Broadcast(net, msgDisconnect, exceptionSelf);
 	m_clients.erase(client.peer);
 	if (m_clients.empty()) { ResetControlVariables(); }
@@ -166,7 +166,7 @@ MessageAction Room::Name(const CG_Message message, const Network& net, Client& c
 	msg.name.clientID = client.id;
 	client.name = std::string(message.name.name);
 	strncpy(msg.name.name, message.name.name, sizeof(msg.name.name));
-	exception_map exceptions = { { client.peer, true } };
+	exception_map exceptions = { client.peer };
 	Broadcast(net, msg, exceptions);
 	for (auto&[key, value] : m_clients)
 	{
@@ -188,7 +188,7 @@ MessageAction Room::Track(const CG_Message message, const Network& net, Client& 
 	m_trackSelected = true;
 	msg.track.trackID = m_trackId;
 	msg.track.lapCount = m_lapCount;
-	exception_map exceptions = { { client.peer, true } };
+	exception_map exceptions = { client.peer };
 	Broadcast(net, msg, exceptions);
 	return MessageAction::NONE;
 }
@@ -198,7 +198,7 @@ MessageAction Room::Character(const CG_Message message, const Network& net, Clie
 	SG_Message msg = Message(ServerMessageType::SG_CHARACTER);
 	msg.character.characterID = message.character.characterID;
 	msg.character.clientID = client.id;
-	exception_map exceptions = { { client.peer, true } };
+	exception_map exceptions = { client.peer };
 	Broadcast(net, msg, exceptions);
 	client.state = OnlineState::RACE_READY;
 	SG_Message msgLoad = Message(ServerMessageType::SG_STARTLOADING);
@@ -230,7 +230,7 @@ MessageAction Room::Kart(const CG_Message message, const Network& net, Client& c
 	msg.kart.posY = message.kart.posY;
 	msg.kart.posZ = message.kart.posZ;
 	msg.kart.wumpa = message.kart.wumpa;
-	exception_map exceptions = { { client.peer, true } };
+	exception_map exceptions = { client.peer };
 	Broadcast(net, msg, exceptions, false);
 	return MessageAction::NONE;
 }
@@ -242,7 +242,7 @@ MessageAction Room::Weapon(const CG_Message message, const Network& net, Client&
 	msg.weapon.flags = message.weapon.flags;
 	msg.weapon.juiced = message.weapon.juiced;
 	msg.weapon.weapon = message.weapon.weapon;
-	exception_map exceptions = { { client.peer, true } };
+	exception_map exceptions = { client.peer };
 	Broadcast(net, msg, exceptions);
 	return MessageAction::NONE;
 }
@@ -253,7 +253,7 @@ MessageAction Room::EndRace(const CG_Message message, const Network& net, Client
 	{
 		SG_Message msgDnfTimer = Message(ServerMessageType::SG_DNFTIMER);
 		msgDnfTimer.dnf.timer = static_cast<uint16_t>(DNF_THRESHOLD_LAP * static_cast<long long>(m_lapCount));
-		exception_map dnfExceptions = { { client.peer, true } };
+		exception_map dnfExceptions = { client.peer };
 		Broadcast(net, msgDnfTimer, dnfExceptions);
 		m_dnfTimerActive = true;
 		m_dnfTimerStart = std::chrono::high_resolution_clock::now();
@@ -264,7 +264,7 @@ MessageAction Room::EndRace(const CG_Message message, const Network& net, Client
 	msg.endRace.clientID = client.id;
 	msg.endRace.courseTime = message.endRace.courseTime;
 	msg.endRace.lapTime = message.endRace.lapTime;
-	exception_map exceptions = { { client.peer, true } };
+	exception_map exceptions = { client.peer };
 	Broadcast(net, msg, exceptions);
 	SG_Message msgEndRace = Message(ServerMessageType::SG_EOF);
 	CheckClientState(OnlineState::RACE_END, net, msgEndRace);
@@ -291,7 +291,7 @@ void Room::Race(const Network& net)
 	exception_map exceptions = {};
 	for (auto& [key, value] : m_clients)
 	{
-		if (value.state != OnlineState::RACE) { exceptions.insert({ value.peer, true }); }
+		if (value.state != OnlineState::RACE) { exceptions.insert(value.peer); }
 		else { value.state = OnlineState::RACE_END; }
 	}
 	Broadcast(net, forceEndRace, exceptions);
