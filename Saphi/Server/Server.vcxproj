@@ -189,6 +189,7 @@
     <ClCompile Include="src\server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\logger.h" />
     <ClInclude Include="src\network.h" />
     <ClInclude Include="src\room.h" />
     <ClInclude Include="src\server.h" />
