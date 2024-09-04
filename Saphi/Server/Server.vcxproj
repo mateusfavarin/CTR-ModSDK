@@ -183,14 +183,12 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
     </ClCompile>
-    <ClCompile Include="src\logger.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\network.cpp" />
     <ClCompile Include="src\room.cpp" />
     <ClCompile Include="src\server.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\logger.h" />
     <ClInclude Include="src\network.h" />
     <ClInclude Include="src\room.h" />
     <ClInclude Include="src\server.h" />

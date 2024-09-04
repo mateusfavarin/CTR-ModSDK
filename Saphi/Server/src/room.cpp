@@ -1,5 +1,5 @@
 #include "room.h"
-#include "logger.h"
+#include <fmtlog.h>
 
 #include <cstring>
 
@@ -95,7 +95,7 @@ void Room::ResetControlVariables()
 
 MessageAction Room::NewRoom(const CG_Message message, const Network& net, Client& client)
 {
-	Logger::LogVerbose("Room::NewRoom() [%s]\n", client.name.c_str());
+	logd("Room::NewRoom() [{0}]", client.name);
 	SG_Message msg = Message(ServerMessageType::SG_NEWCLIENT);
 	client.id = client.nextId;
 	client.idleFrameCount = 0;
@@ -110,7 +110,7 @@ MessageAction Room::NewRoom(const CG_Message message, const Network& net, Client
 
 MessageAction Room::Disconnect(const CG_Message message, const Network& net, Client& client)
 {
-	Logger::Log("Room::Disconnect() client disconnecting... [%s]\n", client.name.c_str());
+	logd("Room::Disconnect() client disconnecting... [{0}]", client.name);
 	net.DisconnectPeer(client.peer);
 	uint8_t numClients = static_cast<uint8_t>(m_clients.size());
 	bool updatedNames = false;
@@ -168,7 +168,7 @@ MessageAction Room::Name(const CG_Message message, const Network& net, Client& c
 	msg.name.numClientsTotal = static_cast<uint8_t>(GetPlayerCount());
 	msg.name.clientID = client.id;
 	client.name = std::string(message.name.name);
-	Logger::LogVerbose("Room::Name() client joined, name being broadcast... [%s]\n", client.name.c_str());
+	logd("Room::Name() client joined, name being broadcast... [{0}]", client.name);
 	strncpy(msg.name.name, message.name.name, sizeof(msg.name.name));
 	exception_map exceptions = { { client.peer, true } };
 	Broadcast(net, msg, exceptions);
@@ -189,7 +189,7 @@ MessageAction Room::Track(const CG_Message message, const Network& net, Client& 
 	SG_Message msg = Message(ServerMessageType::SG_TRACK);
 	m_trackId = message.track.trackID;
 	m_lapCount = message.track.lapCount;
-	Logger::LogVerbose("Room::Track() track selected... [%u]\n", m_trackId);
+	logd("Room::Track() track selected... [{0}]", m_trackId);
 	m_trackSelected = true;
 	msg.track.trackID = m_trackId;
 	msg.track.lapCount = m_lapCount;
@@ -202,7 +202,7 @@ MessageAction Room::Character(const CG_Message message, const Network& net, Clie
 {
 	SG_Message msg = Message(ServerMessageType::SG_CHARACTER);
 	msg.character.characterID = message.character.characterID;
-	Logger::LogVerbose("Room::Character() player [%s] selected character [%u]\n", client.name.c_str(), message.character.characterID);
+	logd("Room::Character() player [{0}] selected character [{1}]", client.name, message.character.characterID);
 	msg.character.clientID = client.id;
 	exception_map exceptions = { { client.peer, true } };
 	Broadcast(net, msg, exceptions);
@@ -215,7 +215,7 @@ MessageAction Room::Character(const CG_Message message, const Network& net, Clie
 MessageAction Room::StartRace(const CG_Message message, const Network& net, Client& client)
 {
 	client.state = OnlineState::RACE;
-	Logger::LogVerbose("Room::StartRace() race starting for client [%s]\n", client.name.c_str());
+	logd("Room::StartRace() race starting for client [{0}]", client.name);
 	SG_Message msg = Message(ServerMessageType::SG_STARTRACE);
 	CheckClientState(OnlineState::RACE, net, msg);
 	return MessageAction::NONE;
@@ -231,7 +231,7 @@ MessageAction Room::Kart(const CG_Message message, const Network& net, Client& c
 	{
 		if (client.idleFrameCount++ > IDLE_THRESHOLD)
 		{
-			Logger::LogVerbose("Room::Kart() %s idled out (DNF)\n", client.name.c_str());
+			logd("Room::Kart() {0} idled out (DNF)", client.name);
 			return Disconnect(message, net, client);
 		}
 	}
@@ -253,7 +253,7 @@ MessageAction Room::Weapon(const CG_Message message, const Network& net, Client&
 	msg.weapon.flags = message.weapon.flags;
 	msg.weapon.juiced = message.weapon.juiced;
 	msg.weapon.weapon = message.weapon.weapon;
-	Logger::LogVerbose("Room::Weapon() %s used weapon %u\n", client.name.c_str(), message.weapon.weapon);
+	logd("Room::Weapon() {0} used weapon {1}", client.name, message.weapon.weapon);
 	exception_map exceptions = { { client.peer, true } };
 	Broadcast(net, msg, exceptions);
 	return MessageAction::NONE;
@@ -273,7 +273,7 @@ MessageAction Room::EndRace(const CG_Message message, const Network& net, Client
 
 	SG_Message msg = Message(ServerMessageType::SG_ENDRACE);
 	client.state = OnlineState::RACE_END;
-	Logger::LogVerbose("Room::EndRace() race ended for player... [%s]\n", client.name.c_str());
+	logd("Room::EndRace() race ended for player... [{0}]", client.name);
 	msg.endRace.clientID = client.id;
 	msg.endRace.courseTime = message.endRace.courseTime;
 	msg.endRace.lapTime = message.endRace.lapTime;
