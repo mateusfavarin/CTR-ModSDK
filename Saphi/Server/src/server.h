@@ -3,6 +3,7 @@
 #include "network.h"
 #include "room.h"
 
+#include <unordered_set>
 #include <unordered_map>
 #include <chrono>
 
@@ -20,6 +21,6 @@ private:
 private:
 	Network m_net;
 	std::vector<Room> m_rooms;
-	std::unordered_map<const void*, bool> m_orfanClients;
+	std::unordered_set<const void*> m_orfanClients;
 	std::unordered_map<const void*, unsigned> m_clientRoomMap;
 };
