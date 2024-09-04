@@ -24,7 +24,7 @@ const CG_Message Network::Recv()
   msg.type = ClientMessageType::CG_NONE;
   msg.peer = nullptr;
 
-  if (enet_host_service(m_server, &event, 0) > 0)
+  if (enet_host_service(m_server, &event, 1) > 0)
   {
     CG_Header* header;
     switch (event.type)

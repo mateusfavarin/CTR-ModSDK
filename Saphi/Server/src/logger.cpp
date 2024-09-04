@@ -20,14 +20,14 @@ namespace Logger
 	void PrintBanner()
 	{
 		Log("   ___                         _       __           ___   \n"
-			"  F __\".   ___ _    _ ___     FJ___    LJ         ,\"___\". \n"
-			" J (___|  F __` L  J '__ J   J  __ `.     ______  FJ---L] \n"
-			" J\\___ \\ | |--| |  | |--| |  | |--| |  FJ|______|J |   LJ \n"
-			".--___) \\F L__J J  F L__J J  F L  J J J  L______J| \\___--.\n"
-			"J\\______J\\____,__LJ  _____/LJ__L  J__LJ__L       J\\_____/F\n"
-			" J______FJ____,__F|_J_____F |__L  J__||__|        J_____F \n"
-			"                  L_J                                     \n"
-			"Saphi Client (Launcher)\nBuild %s (%s)\n\n", __DATE__, __TIME__);
+		"  F __\".   ___ _    _ ___     FJ___    LJ          F __\". \n"
+		" J (___|  F __` L  J '__ J   J  __ `.     ______  J (___| \n"
+		" J\\___ \\ | |--| |  | |--| |  | |--| |  FJ|______| J\\___ \\ \n"
+		".--___) \\F L__J J  F L__J J  F L  J J J  L______J.--___) \\\n"
+		"J\\______J\\____,__LJ  _____/LJ__L  J__LJ__L       J\\______J\n"
+		" J______FJ____,__F|_J_____F |__L  J__||__|        J______F\n"
+		"                  L_J                                     \n"
+		"Saphi Server\nBuild %s (%s)\n\n", __DATE__, __TIME__);
 	}
 
 	void LogVerbose(const char* const _Format, ...)
