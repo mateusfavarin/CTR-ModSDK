@@ -1,7 +1,13 @@
 #include "server.h"
+#include <fmtlog.h>
 
 bool Server::Init()
 {
+#ifdef _DEBUG
+  fmtlog::setLogLevel(fmtlog::LogLevel::DBG);
+#else
+  fmtlog::setLogLevel(fmtlog::LogLevel::WRN);
+#endif
   return m_net.Init();
 }
 

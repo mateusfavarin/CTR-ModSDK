@@ -35,7 +35,7 @@ OBJS = $(foreach src,$(SRCS),$(BUILD_DIR)/$(call hash,$(src)).o)
 #========================================================
 
 RELEASE_CXXFLAGS := -O3
-DEBUG_CXXFLAGS := -g -O0
+DEBUG_CXXFLAGS := -g -O0 -D_DEBUG
 
 #========================================================
 #IN-COMMON FLAGS
@@ -45,9 +45,13 @@ DEBUG_CXXFLAGS := -g -O0
 COMMON_CXXFLAGS = -std=c++20 \
 -pipe \
 -DCLIENT_SERVER \
+-DFMT_HEADER_ONLY \
+-DFMTLOG_HEADER_ONLY \
 -Isrc \
 -I../../decompile/General/AltMods \
--I../../externals/enet/include
+-I../../externals/enet/include \
+-I../../externals/fmtlog/fmt/include/ \
+-I../../externals/fmtlog/
 
 #NOTE!!!
 
