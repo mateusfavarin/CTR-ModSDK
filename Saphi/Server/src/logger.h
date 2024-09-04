@@ -3,6 +3,7 @@
 #include <fmtlog.h>
 #include <filesystem>
 #include <iostream>
+#include <string_view>
 #include "../../General/AltMods/OnlineCTR/global.h"
 
 namespace Logger
@@ -13,10 +14,12 @@ namespace Logger
 			size_t logFilePos)
 	{
 		//since the logfile is set to the log file and not stdout, we use this callback
-	    //to print to stdout.
-		
-	    //printf("%s\n", msg.begin());
-	    std::cout << msg.begin() << std::endl;
+		//to print to stdout.
+
+		//printf("%s\n", msg.begin());
+		//std::string str{ msg.begin(), msg.end() };
+		std::string_view str{ msg.begin(), msg.size() };
+		std::cout << str << std::endl;
 	}
 
 	void LogInit()
