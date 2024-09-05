@@ -1,4 +1,7 @@
 #include <common.h>
+#ifdef USE_ONLINE
+#include "../AltMods/OnlineCTR/global.h"
+#endif
 
 // all in this file
 void DrawUnpluggedMsg(struct GameTracker* gGT, struct GamepadSystem* gGamepads);
@@ -501,6 +504,12 @@ void DrawFinalLap(struct GameTracker* gGT)
 	{
 		// time remaining in animation
 		textTimer = sdata->finalLapTextTimer[i];
+		#ifdef USE_ONLINE
+		//extract from sign bit
+		char isActuallyLastLap = (textTimer & 0x8000) != 0;
+		char isRaceComplete = (textTimer & 0x4000) != 0;
+		textTimer &= 0x3FFF; //correct the timer
+		#endif
 
 		// skip if not drawing "FINAL LAP"
 		if(textTimer == 0)
@@ -552,13 +561,56 @@ DrawFinalLapString:
 
 		// need to specify OT, or else "FINAL LAP" will draw on top of character icons,
 		// and by doing this, "FINAL LAP" draws under the character icons instead
+		#ifdef USE_ONLINE
+		if (isActuallyLastLap)
+		{
+			DECOMP_DecalFont_DrawLineOT(
+				sdata->lngStrings[0x8cc / 4],
+				resultPos[0], resultPos[1] - 0xF, // - 0xF is not vanilla
+				FONT_BIG, (JUSTIFY_CENTER | ORANGE),
+				pb->ptrOT);
+		}
+		#else
 		DECOMP_DecalFont_DrawLineOT(
-			sdata->lngStrings[0x8cc/4],
+			sdata->lngStrings[0x8cc / 4],
 			resultPos[0], resultPos[1],
 			FONT_BIG, (JUSTIFY_CENTER | ORANGE),
 			pb->ptrOT);
+		#endif
+
+		#ifdef USE_ONLINE
+		if (!isRaceComplete)
+		{
+			//display previous lap
+			TotalTime tt;
+			char displayTime[15];
+			int lapElapsed = gGT->drivers[0]->currLapTime;
+			int bestLap = gGT->drivers[0]->bestLapTime;
+			int drawColor = PERIWINKLE;
+			//if best lap or tied to it, colors the text green.
+			if (lapElapsed == bestLap)
+			{
+				drawColor = TINY_GREEN;
+			}
+
+			ElapsedTimeToTotalTime(&tt, lapElapsed);
+			tt.minutes = min(tt.minutes, 9);
+			sprintf(displayTime, "%d:%02d.%03d", tt.minutes, tt.seconds, tt.miliseconds);
+
+			DECOMP_DecalFont_DrawLineOT(
+				displayTime,
+				resultPos[0], resultPos[1],
+				FONT_SMALL, (JUSTIFY_CENTER | drawColor),
+				pb->ptrOT);
+		}
+		#endif
 
 		sdata->finalLapTextTimer[i]--;
+
+		#ifdef USE_ONLINE
+		if ((sdata->finalLapTextTimer[i] & 0x3FFF) == 0)
+			sdata->finalLapTextTimer[i] = 0; //clear bit hack flags
+		#endif
 	}
 }
 
