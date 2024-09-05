@@ -67,3 +67,7 @@ output.lua
 output.vert
 pcsx.json
 Saphi/Client/Client
+
+#logs
+/Saphi/Server/*.txt
+/Saphi/Client/*.txt

@@ -171,6 +171,9 @@
     <ClInclude Include="src\state.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
