@@ -565,7 +565,7 @@ DrawFinalLapString:
 		if (isActuallyLastLap)
 		{
 			DECOMP_DecalFont_DrawLineOT(
-				sdata->lngStrings[0x8cc / 4],
+				sdata->lngStrings[0x8cc/4],
 				resultPos[0], resultPos[1] - 0xF, // - 0xF is not vanilla
 				FONT_BIG, (JUSTIFY_CENTER | ORANGE),
 				pb->ptrOT);

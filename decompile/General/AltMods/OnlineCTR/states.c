@@ -18,6 +18,7 @@ char* s_onlineGameModes[NUM_SERVER_PAGES] = {
 	"Itemless",
 	"Icy/STP"
 };
+char launch_PickRoom_Choice = 0;
 void StatePS1_Launch_PickServer()
 {
 	if (initString)
@@ -93,6 +94,7 @@ void StatePS1_Launch_PickRoom()
 	if (octr->PageNumber != currGamemodePage)
 	{
 		currGamemodePage = octr->PageNumber;
+		launch_PickRoom_Choice = octr->PageNumber;
 		strcpy(sdata->lngStrings[0x4e], s_onlineGameModes[octr->PageNumber]);
 	}
 
@@ -102,6 +104,7 @@ void StatePS1_Launch_PickRoom()
 	int serverTotal = 0;
 	for(int i = 0; i < SERVER_NUM_ROOMS; i++) { serverTotal += octr->roomClientCount[i]; }
 
+	//sprintf?
 	char* text = "Server Total: 000";
 	text[14] = '0' + ((serverTotal / 100) % 10);
 	text[15] = '0' + ((serverTotal / 10) % 10);
@@ -147,21 +150,85 @@ unsigned char lapID;
 unsigned char boolSelectedLap = 0;
 void FakeState_Lobby_HostLapPick()
 {
+	//sets up the menu such that selecting entries in the menu
+	//correspond to modifying "lapID" rather than something else
 	MenuWrites_Laps();
 
 	// If already picked
-	if(MenuFinished() == 1)
+	if(MenuFinished() == 1) //queries if X has already been pressed
 	{
-		octr->lapCount = lapID * 2 + 1;
-		octr->boolSelectedLap = 1;
-		boolSelectedLap = 0;
+		if (lapID != 3) //3rd entry (0 based) is "CUSTOM"
+		{
+			octr->lapCount = lapID * 2 + 3; //3 5 7
+			octr->boolSelectedLap = 1;
+			boolSelectedLap = 0;
+		}
+		else
+		{ //custom lap count
+			void FakeState_Lobby_HostCustomLapPick();
+			FakeState_Lobby_HostCustomLapPick();
+		}
+		return;
+	}
+
+	PrintCharacterStats(); //prints stuff not directly related to the menu
+
+	UpdateMenu(); //code for scrolling left/right through pages, sfx
+	NewPage_Laps(); //prints the text on the screen
+}
+
+short rollingLapCount = 1;
+unsigned char customLapID;
+unsigned char boolSelectedCustomLap = 0;
+void FakeState_Lobby_HostCustomLapPick()
+{
+	MenuWrites_CustomLaps();
+
+	if (MenuFinished() == 1)
+	{
+		switch (customLapID)
+		{
+		case 0: //+1000
+			rollingLapCount += 1000; boolSelectedCustomLap = 0; //unselect the selected +/-
+			break;
+		case 1: //+100
+			rollingLapCount += 100; boolSelectedCustomLap = 0; //unselect the selected +/-
+			break;
+		case 2: //+10
+			rollingLapCount += 10; boolSelectedCustomLap = 0; //unselect the selected +/-
+			break;
+		case 3: //+1
+			rollingLapCount += 1; boolSelectedCustomLap = 0; //unselect the selected +/-
+			break;
+		case 4: //-1
+			rollingLapCount -= 1; boolSelectedCustomLap = 0; //unselect the selected +/-
+			break;
+		case 5: //-10
+			rollingLapCount -= 10; boolSelectedCustomLap = 0; //unselect the selected +/-
+			break;
+		case 6: //-100
+			rollingLapCount -= 100; boolSelectedCustomLap = 0; //unselect the selected +/-
+			break;
+		case 7: //CONFIRM
+			boolSelectedCustomLap = 1; //confirm
+			octr->lapCount = (uint16_t)rollingLapCount;
+			//confirm the regular "lap count"
+			octr->boolSelectedLap = 1;
+			boolSelectedLap = 0;
+			strcpy(sdata->lngStrings[0x4e], s_onlineGameModes[launch_PickRoom_Choice]);
+			break;
+		}
+		if (rollingLapCount > 9999)
+			rollingLapCount = 9999;
+		if (rollingLapCount < 1)
+			rollingLapCount = 1;
 		return;
 	}
 
 	PrintCharacterStats();
 
 	UpdateMenu();
-	NewPage_Laps();
+	NewPage_CustomLaps();
 }
 
 void StatePS1_Lobby_GuestTrackWait()

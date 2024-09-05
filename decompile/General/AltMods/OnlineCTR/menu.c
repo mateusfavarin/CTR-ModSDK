@@ -176,10 +176,10 @@ void NewPage_Laps()
 
 	// override "LAPS" with "1",
 	// reset "3" "5" "7" in case overwritten
-	sdata->lngStrings[0x9a] = "1";
-	sdata->lngStrings[0x9b] = "3";
-	sdata->lngStrings[0x9c] = "5";
-	sdata->lngStrings[0x9d] = "7";
+	sdata->lngStrings[0x9a] = "3";
+	sdata->lngStrings[0x9b] = "5";
+	sdata->lngStrings[0x9c] = "7";
+	sdata->lngStrings[0x9d] = "CUSTOM";
 	sdata->lngStrings[0x9e] = "-";
 	sdata->lngStrings[0x9f] = "-";
 	sdata->lngStrings[0xa0] = "-";
@@ -193,10 +193,47 @@ void NewPage_Laps()
 	}
 }
 
+extern short rollingLapCount;
+extern unsigned char customLapID;
+extern unsigned char boolSelectedCustomLap;
+void MenuWrites_CustomLaps()
+{
+	pageMax = 1;
+	OnPressX_SetPtr = &customLapID;
+	OnPressX_SetLock = &boolSelectedCustomLap;
+}
+
+void NewPage_CustomLaps()
+{
+	int i;
+
+	char lapCountTitleBuf[5];//9999+nullterm (5 chars)
+	sprintf(lapCountTitleBuf, "%d", rollingLapCount);
+	lapCountTitleBuf[4] = '\0'; //no overrun pls.
+	strcpy(sdata->lngStrings[0x4e], lapCountTitleBuf); //set the title
+
+	sdata->lngStrings[0x9a] = "+1000";
+	sdata->lngStrings[0x9b] = "+100";
+	sdata->lngStrings[0x9c] = "+10";
+	sdata->lngStrings[0x9d] = "+1";
+	sdata->lngStrings[0x9e] = "-1";
+	sdata->lngStrings[0x9f] = "-10";
+	sdata->lngStrings[0xa0] = "-100";
+	sdata->lngStrings[0xa1] = "CONFIRM";
+
+	for(i = 0; i < 4; i++)
+	{
+		// default, set all to unlocked
+		menuRows[i].stringIndex = 0x9a+i;
+		menuRows[4+i].stringIndex = 0x9a+4+i;
+	}
+}
+
 extern unsigned char lapID;
 extern unsigned char boolSelectedLap;
 void MenuWrites_Laps()
 {
+	pageMax = 1;
 	OnPressX_SetPtr = &lapID;
 	OnPressX_SetLock = &boolSelectedLap;
 }
@@ -225,6 +262,8 @@ void UpdateMenu()
 	if (pressedX == 1)
 	{
 		pressedX = 0;
+		//if we ever rewrite this, note that not all states may desire
+		//menu.rowSelected = 0; upon selection. (e.g., custom lap selection).
 		menu.rowSelected = 0;
 	}
 
