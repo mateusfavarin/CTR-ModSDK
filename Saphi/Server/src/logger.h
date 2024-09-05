@@ -8,6 +8,10 @@
 
 namespace Logger
 {
+	constexpr const char* logFileName = "log.txt";
+	constexpr const char* oldLogFileName = "old-log.txt";
+	constexpr const char* crashLogFileName = "crash-log.txt";
+
 	//do not call this function, used internally.
 	void LogCallback(int64_t ns, fmtlog::LogLevel level, fmt::string_view location,
 		    size_t basePos, fmt::string_view threadName, fmt::string_view msg, size_t bodyPos,
@@ -26,7 +30,6 @@ namespace Logger
 	{
 		fmtlog::setLogLevel(fmtlog::LogLevel::DBG);
 		fmtlog::setThreadName("main");
-		constexpr const char* logFileName = "log.txt", * oldLogFileName = "old-log.txt";
 		//change this to allow variable amounts of saved old log files?
 		//e.g., old-log-1.txt, old-log-2.txt, old-log-3.txt ...
 		if (std::filesystem::exists(oldLogFileName))
@@ -74,5 +77,26 @@ namespace Logger
 			"                  L_J                                     \n"
 			"Saphi Server (Version {0})\nBuild {1} ({2})", VERSION_SERVER, __DATE__, __TIME__);
 		fmtlog::startPollingThread(1000); //idk the unit of time, ...milliseconds?
+	}
+
+	void RenameLogAsCrash()
+	{
+		fmtlog::stopPollingThread();
+		if (std::filesystem::exists(crashLogFileName))
+		{
+			try
+			{
+				std::filesystem::remove(crashLogFileName);
+			}
+			catch (...)
+			{
+				loge("Old crash log file exists, and yet could not delete it");
+				//
+			}
+		}
+		fmtlog::closeLogFile();
+		std::filesystem::rename(logFileName, crashLogFileName);
+		fmtlog::setLogFile(crashLogFileName);
+		fmtlog::startPollingThread(1000);
 	}
 }

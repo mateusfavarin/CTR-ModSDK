@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 #else
 	try { server.Run(); }
 	catch (...)
-	{ loge("server.Run() threw something..."); }
+	{ Logger::RenameLogAsCrash(); loge("server.Run() threw something..."); }
 #endif
 	//server.Run() is a while (true) {}, so this should never be reached currently
 	logi("End of main() reached, server closing...");

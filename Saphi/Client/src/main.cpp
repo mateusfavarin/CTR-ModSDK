@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
   app.Run();
 #else
   try { app.Run(); }
-  catch (...) {}
+	catch (...) { Logger::RenameLogAsCrash(); }
 #endif
   app.Close();
   return 0;
