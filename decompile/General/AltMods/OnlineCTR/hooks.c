@@ -70,7 +70,10 @@ void OnlineInit_Drivers(struct GameTracker* gGT)
 	for(i = 0; i < 8; i++)
 	{
 		gGT->drivers[i] = 0;
-		sdata->kartSpawnOrderArray[i] = i;
+		if (octr->onlineGameModifiers & MODIFIER_ITEMS)
+			sdata->kartSpawnOrderArray[i] = i;
+		else
+			sdata->kartSpawnOrderArray[i] = 0;
 	}
 
 	// if first boot

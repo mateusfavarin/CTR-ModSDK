@@ -351,8 +351,6 @@ static void Ghostify()
 	struct Icon **ptrIconArray;
 	struct Instance *inst;
 
-	if (octr->onlineGameModifiers & MODIFIER_ITEMS) { return; }
-
 	for (int driverID = 1; driverID < ROOM_MAX_NUM_PLAYERS; driverID++)
 	{
 		gGT->drivers[driverID]->wheelSprites = ICONGROUP_GETICONS(gGT->iconGroup[0xC]);
@@ -390,7 +388,9 @@ void StatePS1_Game_WaitForRace()
 	}
 
 	gGT->trafficLightsTimer = 0xf40;
-	Ghostify();
+
+	if ((octr->onlineGameModifiers & MODIFIER_ITEMS) == 0)
+		Ghostify();
 
 	if((gGT->gameMode1 & START_OF_RACE) != 0)
 		return;
@@ -430,7 +430,8 @@ void StatePS1_Game_Race()
 	static unsigned msCount = 0;
 	static unsigned frameCounter = 0;
 
-	Ghostify();
+	if ((octr->onlineGameModifiers & MODIFIER_ITEMS) == 0)
+		Ghostify();
 
 	for(i = 1; i < ROOM_MAX_NUM_PLAYERS; i++)
 	{
