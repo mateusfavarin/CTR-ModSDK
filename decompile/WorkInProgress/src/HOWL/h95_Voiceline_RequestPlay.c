@@ -39,7 +39,7 @@ void Voiceline_RequestPlay(u_int voiceID, u_int param_2, u_int param_3)
     {
 		// inline audioRNG scramble
         sdata->audioRNG = ((sdata->audioRNG >> 3) + sdata->audioRNG * 0x20000000) * 5 + 1;
-		
+
         if ((sdata->timeSet1[param_2] & (1 << voiceID)) == 0)
         {
 			// 1/4 chance
@@ -79,24 +79,24 @@ void Voiceline_RequestPlay(u_int voiceID, u_int param_2, u_int param_3)
     {
         bVar3 = false;
     }
-	
+
 	// if intended to play as OtherFX
     if (bVar3)
     {
 		// override to CDSYS_XaPlay
         if (!bVar2 || !bVar5)
             goto LAB_8002ce20;
-		
+
 		// inline audioRNG scramble
         sdata->audioRNG = ((sdata->audioRNG >> 3) + sdata->audioRNG * 0x20000000) * 5 + 1;
-        
+
 		bVar4 = false;
-		
+
 		// coin flip to override to CDSYS_XaPlay
         if ((sdata->audioRNG & 1) == 0)
             goto LAB_8002cdcc;
     }
-	
+
 	// if play voice as CDSYS_XaPlay
     else
     {
@@ -112,7 +112,7 @@ void Voiceline_RequestPlay(u_int voiceID, u_int param_2, u_int param_3)
             {
                 return;
             }
-			
+
             sdata->timeSet1[param_2] |= (1 << (voiceID));
 
             iVar10 = sdata->Voiceline2.last;
@@ -152,7 +152,7 @@ void Voiceline_RequestPlay(u_int voiceID, u_int param_2, u_int param_3)
                 iVar10 = iVar7;
             }
 
-            LIST_AddFront(&sdata->Voiceline2.first, iVar10);
+            DECOMP_LIST_AddFront(&sdata->Voiceline2.first, iVar10);
 
         LAB_8002cee4:
 
@@ -166,7 +166,7 @@ void Voiceline_RequestPlay(u_int voiceID, u_int param_2, u_int param_3)
             return;
         }
     }
-	
+
 	// == Play voice as OtherFX sampled audio ==
 
     if (bVar1 == 0)
@@ -180,7 +180,7 @@ void Voiceline_RequestPlay(u_int voiceID, u_int param_2, u_int param_3)
         uVar8 = param_2 + 0x2c;
     }
 
-    OtherFX_Play(uVar8 & 0xffff, 2);
+    DECOMP_OtherFX_Play(uVar8 & 0xffff, 2);
 
 LAB_8002ce00:
 

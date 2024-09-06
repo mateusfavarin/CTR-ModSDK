@@ -72,27 +72,27 @@ void CS_Podium_Prize_ThTick3(struct Thread *th)
     if (CS_Boss_BoolShouldStart() == 0)
     {
 		int rewards = sdata->advProgress.rewards[4];
-		
+
 		char* arr;
 		hintID = 0;
-		
+
 		// Give Aku Hint at the first 7 podium
 		// rewards, teaching how to play
 		for(
-				arr = &prizeHintArr[0]; 
-				arr < &prizeHintArr[7]; 
+				arr = &prizeHintArr[0];
+				arr < &prizeHintArr[7];
 				arr++
 			)
 		{
 			int index = (int)*arr;
-			
+
 			if((rewards & (1 << (index-10))) == 0)
 			{
 				hintID = index;
 				break;
 			}
 		}
-		
+
 		if(hintID != 0)
 			DECOMP_MainFrame_RequestMaskHint(hintID, 0);
     }
@@ -108,7 +108,7 @@ LAB_800afa68:
     gGT->gameMode2 &= ~(0x4);
 
     // Play "Unlock" Sound
-    OtherFX_Play(0x67, 1);
+    DECOMP_OtherFX_Play(0x67, 1);
 
     // This thread is now dead
     th->flags |= 0x800;

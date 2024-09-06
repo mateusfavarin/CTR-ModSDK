@@ -8,7 +8,7 @@
 // v1 - some vector1
 // v2 - some vector2
 // v3 - some vector3
-void VehGroundSkids_Subset2(SVECTOR* unk, SVECTOR* v1, SVECTOR* v2, SVECTOR* v3)
+void DECOMP_VehGroundSkids_Subset2(SVECTOR* unk, SVECTOR* v1, SVECTOR* v2, SVECTOR* v3)
 {
 	//TODO: investigate parent function to give better names
 

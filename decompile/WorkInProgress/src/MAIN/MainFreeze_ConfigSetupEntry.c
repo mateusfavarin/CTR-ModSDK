@@ -21,7 +21,7 @@ void DECOMP_MainFreeze_ConfigSetupEntry()
 	short local_48 [8];
 	RECT local_38;
 	RECT local_30;
-	
+
 	if ((sdata_AnyPlayerTap & 0x40020) != 0)
 	{
 		sdata_boolOpenWheelConfig = 0;
@@ -71,7 +71,7 @@ void DECOMP_MainFreeze_ConfigSetupEntry()
 			}
 		}
 		DecalFont_DrawMultiLine(sdata_lngStrings[0x223],0x100,(int)sdata_posY_MultiLine[uVar7 * 2],0x1cc,1,-0x8000);
-		DecalFont_DrawLine(sdata_lngStrings[data_raceConfig_unk80084258[(short)sdata_WheelConfigOption].lngIndex],0x100,sdata_posY_Arrows[uVar7 * 2],1,0x8000);
+		DECOMP_DecalFont_DrawLine(sdata_lngStrings[data_raceConfig_unk80084258[(short)sdata_WheelConfigOption].lngIndex],0x100,sdata_posY_Arrows[uVar7 * 2],1,0x8000);
 		MainFreeze_ConfigDrawArrows(0x100,sdata_posY_Arrows[uVar7 * 2],sdata_lngStrings[data_raceConfig_unk80084258[(short)sdata_WheelConfigOption].lngIndex]);
 		sdata_unk_RaceWheelConfig[0] = (int)data_raceConfig_unk80084258[(short)sdata_WheelConfigOption].lo16;
 	}
@@ -93,7 +93,7 @@ void DECOMP_MainFreeze_ConfigSetupEntry()
 					sdata_gGamepads->gamepad[iVar9].unk44 = '\x04';
 					data_rwd[sdata_gamepadID_OwnerRaceWheelConfig].gamepadCenter = 0x80;
 				}
-				RECTMENU_ClearInput();
+				DECOMP_RECTMENU_ClearInput();
 			}
 			sdata_unk_RaceWheelConfig[0] = 0;
 		}
@@ -109,7 +109,7 @@ void DECOMP_MainFreeze_ConfigSetupEntry()
 	{
 					sdata_boolOpenWheelConfig = 0;
 					data_rwd[iVar9].range = data_raceConfig_unk80084270[(short)sdata_raceWheelConfigOptionIndex].hi1;
-					RECTMENU_ClearInput();
+					DECOMP_RECTMENU_ClearInput();
 				}
 			}
 			else
@@ -131,7 +131,7 @@ void DECOMP_MainFreeze_ConfigSetupEntry()
 		}
 		sdata_unk_RaceWheelConfig[0] = (int)data_raceConfig_unk80084270[(short)sdata_raceWheelConfigOptionIndex].lo16;
 		DecalFont_DrawMultiLine(sdata_lngStrings[0x228],0x100,(int)sdata_posY_MultiLine[uVar7 * 2],0x1cc,1,-0x8000);
-		DecalFont_DrawLine(sdata_lngStrings[data_raceConfig_unk80084270[(short)sdata_raceWheelConfigOptionIndex].lngIndex],0x100,sdata_posY_Arrows[uVar7 * 2],1,0x8000);
+		DECOMP_DecalFont_DrawLine(sdata_lngStrings[data_raceConfig_unk80084270[(short)sdata_raceWheelConfigOptionIndex].lngIndex],0x100,sdata_posY_Arrows[uVar7 * 2],1,0x8000);
 		MainFreeze_ConfigDrawArrows(0x100,sdata_posY_Arrows[uVar7 * 2],sdata_lngStrings[data_raceConfig_unk80084270[(short)sdata_raceWheelConfigOptionIndex].lngIndex]);
 	}
 	iVar9 = sdata_unk_RaceWheelConfig[0];
@@ -383,6 +383,6 @@ LAB_8003892c:
 	local_38.h = 0xa0;
 	local_38.y = (ushort)sdata_unk_drawingRaceWheelRects[1] - 0x3c;
 LAB_80038b24:
-	RECTMENU_DrawInnerRect(r,4,(u_long *)(sdata_gGT->pushBuffer_UI).ptrOT);
+	DECOMP_RECTMENU_DrawInnerRect(r,4,(u_long *)(sdata_gGT->pushBuffer_UI).ptrOT);
 	return;
 }

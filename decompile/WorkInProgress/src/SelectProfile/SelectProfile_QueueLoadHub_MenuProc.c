@@ -11,7 +11,7 @@ void DECOMP_SelectProfile_QueueLoadHub_MenuProc(struct RectMenu* menu)
   data.characterIDs[0] = sdata->advProgress.characterID;
 
   // Load AdvHub LEV depending on new profile
-  MainRaceTrack_RequestLoad(gGT->currLEV);
+  DECOMP_MainRaceTrack_RequestLoad(gGT->currLEV);
 
   // make Menu invisible
   RECTMENU_Hide(mb);

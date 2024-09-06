@@ -177,7 +177,7 @@ void DECOMP_AH_Door_ThTick(struct Thread* t)
       // Aku Hint "You must have two boss keys"
       hintId = 0x12;
     }
-	
+
 	// request hint and quit
     goto joined_r0x800b06ec;
   }
@@ -319,7 +319,7 @@ void DECOMP_AH_Door_ThTick(struct Thread* t)
             door->keyInst[i] = keyInst;
           }
         }
-		
+
         door->keyRot[0] = 0;
         door->keyRot[1] += FPS_HALF(0x40);
         door->keyRot[2] = 0;
@@ -352,7 +352,7 @@ void DECOMP_AH_Door_ThTick(struct Thread* t)
           // on last frame, doors "creek" open
           DECOMP_OtherFX_Play(0x94, 1);
           break;
-		
+
 		default:
 		  break;
         }
@@ -389,39 +389,39 @@ void DECOMP_AH_Door_ThTick(struct Thread* t)
     DECOMP_CAM_SetDesiredPosRot(&gGT->cameraDC[0], &desiredPos[0], &desiredRot[0]);
 
 #ifndef REBUILD_PS1
-    GAMEPAD_JogCon2(driver, 0, 0);
+    DECOMP_GAMEPAD_JogCon2(driver, 0, 0);
 #endif
 
     // start camera out transition (in "else" below)
     door->camFlags |= WdCam_FlyingOut;
-	
+
 	return;
   }
 
   // == door is opening ==
 
   door->doorRot[1] += FPS_HALF(0x10);
-  
+
   // right-hand door rot[x,y,z]
   desiredRot[0] = door->doorRot[0];
   desiredRot[1] = doorInst->instDef->rot[1] - door->doorRot[1];
   desiredRot[2] = door->doorRot[2];
-  
+
   // converted to TEST in rebuildPS1
   ConvertRotToMatrix(&door->otherDoor->matrix, &desiredRot[0]);
-  
+
   // left-hand door rot[x,y,z]
   desiredRot[1] = doorInst->instDef->rot[1] + door->doorRot[1];
 
   // converted to TEST in rebuildPS1
   ConvertRotToMatrix(&doorInst->matrix, &desiredRot[0]);
-  
+
   // if less than 11 frames have passed,
   // decrease key scale, then quit function
   if (door->keyShrinkFrame < 0xb)
   {
   	scaler = (short*)R232.keyFrame;
-  	
+
   	// loop through 4 keys
   	for (i = 0; i < 4; i++)
   	{
@@ -435,12 +435,12 @@ void DECOMP_AH_Door_ThTick(struct Thread* t)
   			keyInst->scale[2] = scaler[door->keyShrinkFrame];
   		}
   	}
-  
+
   	door->keyShrinkFrame++;
-  
+
   	return;
   }
-	
+
   // loop through 4 keys
   for (i = 0; i < 4; i++)
   {
@@ -450,59 +450,59 @@ void DECOMP_AH_Door_ThTick(struct Thread* t)
   		door->keyInst[i] = NULL;
   	}
   }
-	
+
   // if not last frame of opening door
   if(door->doorRot[1] < 0x400) return;
-  
-  
+
+
   // == Door is fully open ==
-    
+
   if (
       // if this is N Sane Beach
       ((lev == 0x1a) &&
-  
+
        // if this is door #4 (beach -> glacier)
        (doorID == 4)) ||
-  
+
       // if this is lost ruins (ruins -> glacier)
       (lev == 0x1b))
   {
     // open all doors to glacier
     sdata->advProgress.rewards[3] |= 0xc0;
   }
-  
+
   else if (
         // if this is N Sane Beach
         (lev == 0x1a) &&
-  
+
         // Door #5 (beach -> ruins)
         (doorID == 5))
   {
     // record that door is open
     sdata->advProgress.rewards[3] |= 0x10;
   }
-    
+
   // Gemstone valley (cup door)
   else if (lev == 0x19)
   {
     // record that door is open
     sdata->advProgress.rewards[3] |= 0x20;
   }
-    
+
   // Glacier Park (glacier -> citadel)
   else
   {
     // record that door is open
     sdata->advProgress.rewards[3] |= 0x100;
   }
-  	
+
   cDC->flags |= 0x400;
-  
+
   driver->funcPtrs[0] = DECOMP_VehPhysProc_Driving_Init;
-  
+
   // cutscene over
   door->camFlags &= ~(0x10);
-  
+
   // bring HUD back
   gGT->hudFlags = (char)door->hudFlags;
 }

@@ -1,6 +1,6 @@
 #include <common.h>
 
-void DECOMP_JitPool_Init(struct JitPool* AP, 
+void DECOMP_JitPool_Init(struct JitPool* AP,
 	int maxItems, int itemSize, char* name)
 {
   // dont call memset, overwrite the whole thing anyway

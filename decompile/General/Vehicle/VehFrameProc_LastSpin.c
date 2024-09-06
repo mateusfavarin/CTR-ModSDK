@@ -15,7 +15,7 @@ void DECOMP_VehFrameProc_LastSpin(struct Thread *t, struct Driver* d)
     if (inst->animIndex == 0)
     {
         // get number of frames in animation
-        // numFrames = VehFrameInst_GetNumAnimFrames(inst, 0);
+        // numFrames = DECOMP_VehFrameInst_GetNumAnimFrames(inst, 0);
 		numFrames = FPS_DOUBLE(20)+1;
 
         // if numFrames not zero
@@ -41,7 +41,7 @@ void DECOMP_VehFrameProc_LastSpin(struct Thread *t, struct Driver* d)
             }
 
             // Interpolate animation frame by speed
-            interp = VehCalc_InterpBySpeed(inst->animFrame, 3, startFrame);
+            interp = DECOMP_VehCalc_InterpBySpeed(inst->animFrame, 3, startFrame);
 
             // set animation frame
             inst->animFrame = interp;

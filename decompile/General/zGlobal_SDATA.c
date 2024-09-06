@@ -12,7 +12,7 @@ char memcardBytes[0x1680];
 struct sData sdata_static =
 {
 	.langBufferSize = 0x3F04,
-	
+
 #if NO_BSS
 	.arcade_difficultyParams = 0x8008da48,
 	.cup_difficultyParams = 0x8008da64,
@@ -20,28 +20,28 @@ struct sData sdata_static =
 	.arcade_difficultyParams = &sdata_static.arcadeDiff[0],
 	.cup_difficultyParams = &sdata_static.cupDiff[0],
 #endif
-	
+
 	.driver_pathIndexIDs =
 	{
 		0, -1, -1, 2,
 		0, -1, -1, 2
 	},
-	
+
 	// twice as many frames, half as much
 	// step for each frame of acceleration
 	.AI_AccelFrameCount = 0xa0,
 	.AI_AccelFrameSteps = 0x18,
-	
+
 	.AI_VelY_WhenBlasted_0x3000 = 0x3000,
-	
+
 	.s_camera = "camera",
-	
+
 	.FirstPersonCamera =
 	{
 		.posOffset = {0,0x60,0,0},
 		.rotOffset = {0x800,0x800,0,0},
 	},
-	
+
 	.s_DCH = "DCH",
 	.s_SPN = "SPN",
 	.s_ITL = "ITL",
@@ -49,111 +49,111 @@ struct sData sdata_static =
 	.s_FRN = "FRN",
 	.s_ENG = "ENG",
 	.s_JPN = "JPN",
-	
+
 	.s_XINF = "XINF",
-	
+
 	.s_BLADE = "BLADE",
 	.s_TURBO = "TRUBO",
 	.s_SPRING = "SPRING",
 	.s_GATE = "GATE",
-	
+
 	.s_NO_FUNC = "NO_FUNC",
-	
+
 	.boolDebugDispEnv = 0,
 	.LevClearColorRGB = {0,0,0},
-	
+
 	.HudAndDebugFlags = 0x100,
-	
+
 	.unk_CTR_MatrixToRot_table =
 	{
 		0,1,2,0,
 		0,0,0,0,
-		
+
 		1,2,0,1,
 		0,0,0,0,
 	},
-	
+
 	.trafficLightsTimer_prevFrame = 0,
-	
+
 	//.PausePtrsVRAM = {},
 	.pause_backup_renderFlags = 0,
 	.pause_state = 0,
-	
-	.unkPadSetActAlign = 
+
+	.unkPadSetActAlign =
 	{
 		0,1,-1,-1,
 		-1,-1,1,0
 	},
-	
+
 	.s_ghost = "ghost",
 	.s_ghost1 = "ghost1",
 	.s_ghost0 = "ghost0",
-	
+
 	.audioRNG = 0x15A37E63,
 	.boolAudioEnabled = 0,
 	.s_HOWL = "HOWL",
-	
+
 	.advHubSongSet =
 	{
 		.numSeqs = 0x14,
 		.ptrSongSetBits = &data.advHubSongSetBytes[0],
 	},
-	
+
 	.reverbModeBossID =
 	{
 		3,1,1,0,3,3,
-		
+
 		// padding
 		0,0
 	},
-	
+
 	.songBankBossID =
 	{
 		0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1E,
-		
+
 		// padding
 		0,0
 	},
-	
+
 	#if BUILD >= UsaRetail
 	.garageSoundIDs =
 	{
 		0xDC, 0xDF, 0, 0xE7, 0, 0xEE, 0xF0, 0
 	},
 	#endif
-	
+
 	.ptrMPK = 0,
 	.ptrLEV_DuringLoading = 0,
 	.PatchMem_Ptr = 0,
-	
+
 	#if BUILD >= UsaRetail
 	.PatchMem_Size = 0,
 	#endif
-	
+
 	.bookmarkID = 0,
 	.ptrBigfileCdPos_2 = 0,
-	
+
 	.queueReady = 1,
 	.queueRetry = 0,
 	.queueLength = 0,
 	.UnusedPadding1 = 0,
-	
+
 	.load_inProgress = 0,
 	.frameWhenLoadingFinished = 0,
-	
+
 	.s_FILE = "FILE",
-	
+
 	#if BUILD >= EurRetail
 	.lngFile = 0,
 	#endif
-	
+
 	.levBigLodIndex =
 	{
 		0,2,4,4,6,6,6,6
 	},
-	
+
 	.boolFirstBoot = 1,
-	
+
 	.s_ndi = "ndi",
 	.s_ending = "ending",
 	.s_intro = "intro",
@@ -161,23 +161,23 @@ struct sData sdata_static =
 	.s_garage = "garage",
 	.s_hub = "hub",
 	.s_credit = "credit",
-	
+
 	.modelMaskHints3D = 0,
-	
+
 	.mainGameState = 0,
-	
+
 	.Loading =
 	{
 		.stage = -1,
-		
+
 		// MAIN MENU LEVEL
 		.Lev_ID_To_Load = 0x27,
-		
+
 		// OnBegin is all zeros
 	},
-	
+
 	.numLngStrings = 0,
-	
+
 	.s_credit9 = "credit9",
 	.s_credit8 = "credit8",
 	.s_credit7 = "credit7",
@@ -187,14 +187,14 @@ struct sData sdata_static =
 	.s_credit3 = "credit3",
 	.s_credit2 = "credit2",
 	.s_credit1 = "credit1",
-	
+
 	.s_ending2 = "ending2",
 	.s_ending1 = "ending1",
-	
+
 	.s_ndi_needToRename = "ndi",
-	
+
 	.s_garage1 = "garage1",
-	
+
 	.s_intro9 = "intro9",
 	.s_intro8 = "intro8",
 	.s_intro7 = "intro7",
@@ -204,13 +204,13 @@ struct sData sdata_static =
 	.s_intro3 = "intro3",
 	.s_intro2 = "intro2",
 	.s_intro1 = "intro1",
-	
+
 	.s_hub5 = "hub5",
 	.s_hub4 = "hub4",
 	.s_hub3 = "hub3",
 	.s_hub2 = "hub2",
 	.s_hub1 = "hub1",
-	
+
 	.s_battle7 = "battle7",
 	.s_battle6 = "battle6",
 	.s_battle5 = "battle5",
@@ -218,7 +218,7 @@ struct sData sdata_static =
 	.s_battle3 = "battle3",
 	.s_battle2 = "battle2",
 	.s_battle1 = "battle1",
-	
+
 	.s_secret2 = "secret2",
 	.s_secret1 = "secret1",
 	.s_space = "space",
@@ -235,15 +235,15 @@ struct sData sdata_static =
 	.s_desert2 = "desert2",
 	.s_proto9 = "proto9",
 	.s_proto8 = "proto8",
-	
+
 	// all zeros
 	//.finalLapTextTimer = {},
-	
+
 	#if BUILD >= UsaRetail
 	.TurboDisplayPos_Only1P = 0,
 	.numPlayersFinishedRace = 0,
 	#endif
-	
+
 #if NO_BSS
 	.gGT = 0x80096b20,
 	.gGamepads = 0x80096804,
@@ -251,28 +251,28 @@ struct sData sdata_static =
 	.gGT = &sdata_static.gameTracker,
 	.gGamepads = &sdata_static.gamepadSystem,
 #endif
-	
+
 	.vsyncTillFlip = 0,
-	
+
 	.s_PrimMem = "PrimMem",
 	.s_OTMem = "OTMem",
-	
+
 	.boolPlayVideoSTR = 0,
-	
+
 	.AkuHint_RequestedHint = -1,
 	.AkuHint_boolInterruptWarppad = 0,
-	
+
 	.LOD = {1,2,4,4,8,8,8,8},
-	
+
 	// one for RaceWheel, one for Namco
 	.unk_drawingRaceWheelRects = {0x3C, 0x64},
-	
+
 	.posY_MultiLine = {0x92, 0xA0, 0x81, 0x8F},
-	
+
 	.posY_Arrows = {0x81, 0x8F},
-	
+
 	.unk_RaceWheelConfig = {0x320, -1, -1},
-	
+
 	.s_ot0 = "ot[0]",
 	.s_ot1 = "ot[1]",
 	.s_PLAYER = "PLAYER",
@@ -305,22 +305,22 @@ struct sData sdata_static =
 	.s_THUD = "THUD",
 	.s_PAUSE = "PAUSE",
 	.s_PAUS = "PAUS",
-	
+
 	.MainDrawCb_DrawSyncPtr = 0,
 	.ptrVlcTable = 0,
 	.bool_IsLoaded_VlcTable = 0,
-	
+
 	#if BUILD >= JpnTrial
 	.region = "XXXX",
 	#endif
-	
+
 	.unk_card_8008D404 = 0,
 	.memcard_ptrStart = 0,
 	.memcard_fd = -1,
 	.memcard_remainingAttempts = 8,
 	.s_memcardDirHeader = "bu00:",
 	.s_AnyFile = "*",
-	
+
 #if NO_BSS
 	.PtrMempack = 0x800990E4,
 #else
@@ -330,13 +330,13 @@ struct sData sdata_static =
 	.randomNumber = 100,
 	.unk_8008d428 = 0,
 	.unk_8008d42C = 0,
-	
+
 	.battleSetupExpandMenu = -1,
 	.battleSetupRowHighlighted = 5,
 	.battleSetupWeaponHighlighted = 0,
 	.battleSetup_Color_UI_1 = 0x405000,
 	.battleSetup_Color_UI_2 = 0x60A000,
-	
+
 	.RaceFlag_AnimationType = 0,
 	.RaceFlag_Position = 0,
 	.unk_CheckFlag1 = 300,
@@ -344,7 +344,7 @@ struct sData sdata_static =
 	.unk_CheckFlag2 = 0,
 	.RaceFlag_DrawOrder = 0,
 	.padding_8008d44e = 0,
-	
+
 #if BUILD >= UsaRetail
 	.RaceFlag_LoadingTextAnimFrame = -1,
 	.RaceFlag_Transition = 0,
@@ -352,11 +352,11 @@ struct sData sdata_static =
 
 	.RaceFlag_ElapsedTime = 0,
 	.RaceFlag_CopyLoadStage = -1,
-	
+
 	.DrawSolidBoxData = {0, 0xc0c0c0, 0},
-	
+
 	.strcatData1_colon = ":",
-	
+
 #if NO_BSS
 	.ptrToMemcardBuffer1 = 0x800992e4,
 	.ptrToMemcardBuffer2 = 0x800992e4,
@@ -367,13 +367,13 @@ struct sData sdata_static =
 	.ptrToMemcardBuffer1 = &sdata_static.memcardBytes[0],
 	.ptrToMemcardBuffer2 = &sdata_static.memcardBytes[0],
 #endif
-	
+
 	.mcStart = 2,
-	
+
 	.mcScreenText = 5,
-	
+
 	.LoadSave_SpinRateY = {64, -47, 51, 0},
-	
+
 	.stringFormat1 = "%02ld",
 	.stringFormat2 = "%ld",
 	.greyColor = 0x808080,
@@ -381,7 +381,7 @@ struct sData sdata_static =
 	.s_percent_sign = 0x25,
 	.redColor = 0xA0A000,
 	.ghostIconColor = 0x808080,
-	
+
 	.unk_BeforeTokenMenu =
 	{
 		0xEC, 0xFF,	// -20
@@ -389,14 +389,14 @@ struct sData sdata_static =
 		0x28, 0x2,	// 552
 		0xAA, 0x0	// 170
 	},
-	
+
 	.str_underscore = "_",
-	
+
 	.boolOpenTokenRelicMenu = 0,
 	.ptrPushBufferUI = 0,
 	.ptrFruitDisp = 0,
 	.menuReadyToPass = 0,
-	
+
 	.s_token = "token",
 	.s_relic1 = "relic1",
 	.s_key1 = "key1",
@@ -405,7 +405,7 @@ struct sData sdata_static =
 	.s_hudc = "hudc",
 	.s_hudt = "hudt",
 	.s_hudr = "hudr",
-	
+
 	.unknownWhatThisIs = 0x908000,
 	.raceClockStr = " :  :  ",
 	.s_Ln = "l ",
@@ -415,51 +415,51 @@ struct sData sdata_static =
 	.s_longInt = "%ld",
 	.s_spacebar = " ",
 	.s_x = "x",
-	
+
 	.framesSinceRaceEnded = 0,
-	
+
 	.s_subtractLongInt = "-%ld",
 	.s_additionLongInt = "+%ld",
 	.s_subtractInt = "-%d",
 	.s_999 = "999 ",
 	.s_intSpace = "%d ",
 	.s_str = "%s",
-	
-	.multiplayerWumpaHudData = 
+
+	.multiplayerWumpaHudData =
 	{
 		0x18003e0, 0x180020, 0x1000320, 0x180020
 	},
-	
+
 	.Battle_EndOfRace =
 	{
 		.Flags_PressX = 0,
-		
+
 		// default
 		#ifndef USE_NEW2P
-		
+
 		.textFlags1_2P = 0x350100,
 		.textFlags2_2P = 0x430100,
-		
+
 		// split side-by-side
 		#else
 		.textFlags1_2P = 0x350080,
 		.textFlags2_2P = 0x430080,
 		#endif
 	},
-	
+
 	.numIconsEOR = 1,
-	
+
 	.s_additionInt = "+%d",
-	
+
 	.UnlockBitIndex =
 	{
 		.CupCompletion_curr = {0xc, 0x10, 0x14, 0},
 		.CupCompletion_prev = {0x18, 0x1c, 0x20, 0},
 		.UnlockBattleMap = {2, 3, 4, 0},
 	},
-	
+
 	.unk_UsedIn_FUN_80057884 = 0,
-	
+
 	.s_NOSCRUB = "NOSCRUB",
 	.s_ROAD = "ROAD",
 	.s_SANDBAG = "SANDBAG",
@@ -486,7 +486,7 @@ struct sData sdata_static =
 	.s_nitro1 = "nitro1",
 	.s_tnt1 = "tnt1",
 	.s_beaker1 = "beaker1",
-	
+
 	.boolIsMaskThreadAlive = 0,
 	.s_head = "head"
 };

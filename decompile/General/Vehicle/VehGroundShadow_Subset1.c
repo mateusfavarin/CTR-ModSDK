@@ -4,7 +4,7 @@
 /// @param dst - destination texture layout
 /// @param iconIndex - icon index to take data from
 /// 0x8005b6b8
-bool VehGroundShadow_Subset1(struct TextureLayout* pDst, int iconIndex)
+bool DECOMP_VehGroundShadow_Subset1(struct TextureLayout* pDst, int iconIndex)
 {
   // get pointer to icon
   struct Icon* pIcon = sdata->gGT->ptrIcons[iconIndex];

@@ -122,7 +122,7 @@ void ThreadFunc(struct Thread* t)
 		// stop music,
 		// stop "most FX", let menu FX ring
 		Music_Stop();
-		howl_StopAudio(1,1,0);
+		DECOMP_howl_StopAudio(1,1,0);
 		sdata->unkAudioState = 0;
 
 		// load next level

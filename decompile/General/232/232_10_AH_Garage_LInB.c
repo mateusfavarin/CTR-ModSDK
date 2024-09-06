@@ -21,7 +21,7 @@ void DECOMP_AH_Garage_LInB(struct Instance *inst)
     if (inst->thread != NULL)
         return;
 
-    t = 
+    t =
 		DECOMP_PROC_BirthWithObject
 		(
 			SIZE_RELATIVE_POOL_BUCKET
@@ -31,7 +31,7 @@ void DECOMP_AH_Garage_LInB(struct Instance *inst)
 				SMALL,
 				STATIC
 			),
-        
+
 			DECOMP_AH_Garage_ThTick, // behavior
 			0, 				  // debug name
 			0                 // thread relative
@@ -43,7 +43,7 @@ void DECOMP_AH_Garage_LInB(struct Instance *inst)
     inst->thread = t;
     t->inst = inst;
     t->funcThDestroy = DECOMP_AH_Garage_ThDestroy;
-    
+
     garage = t->object;
     garage->direction = 0;
     garage->cooldown = 0;

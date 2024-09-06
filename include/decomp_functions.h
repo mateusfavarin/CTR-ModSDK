@@ -4,6 +4,7 @@ void DECOMP_CAM_Init(struct CameraDC* cDC, int cameraID, struct Driver* d, struc
 int DECOMP_CAM_Path_GetNumPoints(void);
 u_char DECOMP_CAM_Path_Move(int frameIndex, short *position, short *rotation, short *getPath);
 void DECOMP_CAM_SetDesiredPosRot(struct CameraDC* cDC, short* pos, short* rot);
+void DECOMP_CAM_ThTick(struct Thread *t);
 
 void DECOMP_CDSYS_Init(int boolUseDisc);
 u_int DECOMP_CDSYS_GetFilePosInt(char* fileString, int* filePos);
@@ -25,6 +26,7 @@ void DECOMP_CDSYS_XAPauseForce();
 void DECOMP_CDSYS_XAPauseAtEnd();
 
 void* DECOMP_COLL_LevModelMeta(unsigned int id);
+void DECOMP_COLL_PerBspLeaf_CheckInstances(struct BSP *node, struct ScratchpadStruct *sps);
 
 void DECOMP_CTR_CycleTex_AllModels(unsigned int numModels, struct Model** pModelArray, int timer);
 void DECOMP_CTR_CycleTex_LEV(struct AnimTex* animtex, int timer);
@@ -253,6 +255,8 @@ void DECOMP_LevInstDef_RePack(struct mesh_info* ptr_mesh_info, int boolAdvHub);
 
 struct Instance* DECOMP_LinkedCollide_Hitbox_Desc(struct HitboxDesc* objBoxDesc);
 
+void DECOMP_Particle_FuncPtr_SpitTire(struct Particle *p);
+
 // LIST
 void DECOMP_LIST_AddBack(struct LinkedList* L, struct Item* I);
 void DECOMP_LIST_AddFront(struct LinkedList* L, struct Item* I);
@@ -455,6 +459,9 @@ void DECOMP_VehBirth_TireSprites(struct Thread *t);
 void DECOMP_VehBirth_NonGhost(struct Thread* t, int index);
 struct Driver* DECOMP_VehBirth_Player(int index);
 
+void DECOMP_VehFrameProc_LastSpin(struct Thread *t, struct Driver* d);
+void DECOMP_VehFrameProc_Spinning(struct Thread *t, struct Driver *d);
+
 void DECOMP_VehPhysGeneral_PhysAngular(struct Thread *t, struct Driver *d);
 
 void DECOMP_VehPhysProc_Driving_PhysLinear(struct Thread *t, struct Driver *d);
@@ -504,6 +511,7 @@ void DECOMP_VehStuckProc_RevEngine_PhysLinear(struct Thread *t, struct Driver *d
 void DECOMP_VehStuckProc_RevEngine_Animate(struct Thread *t, struct Driver *d);
 void DECOMP_VehStuckProc_RevEngine_Init(struct Thread *t, struct Driver *d);
 
+void DECOMP_VehStuckProc_PlantEaten_Init(struct Thread *t, struct Driver *d);
 void DECOMP_VehStuckProc_Warp_Init(struct Thread *t, struct Driver *d);
 
 void DECOMP_VehPhysForce_ConvertSpeedToVec(struct Driver* driver);
@@ -520,6 +528,7 @@ void DECOMP_VehStuckProc_Tumble_Update(struct Thread *thread, struct Driver *dri
 void DECOMP_VehStuckProc_Tumble_PhysLinear(struct Thread *thread, struct Driver *driver);
 void DECOMP_VehStuckProc_Tumble_PhysAngular(struct Thread *thread, struct Driver *driver);
 void DECOMP_VehStuckProc_Tumble_Animate(struct Thread *thread,struct Driver *driver);
+void DECOMP_VehStuckProc_Warp_PhysAngular(struct Thread *th, struct Driver *d);
 
 // 230
 void DECOMP_MM_Battle_DrawIcon_Character(struct Icon* icon, int posX, int posY, struct PrimMem* primMem, u_long* ot, char transparency, short scale);

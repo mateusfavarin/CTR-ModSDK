@@ -13,23 +13,23 @@ void DECOMP_VehStuckProc_Warp_Init(struct Thread *th, struct Driver *d)
     d->KartStates.Warp.quadHeight = d->quadBlockHeight;
 
     // Warp sound?
-    OtherFX_Play(0x97, 1);
+    DECOMP_OtherFX_Play(0x97, 1);
 
     char i;
 
     //  (three sounds)
     for (i = 0; i < 3; i++)
     {
-        OtherFX_Stop1(d->driverAudioPtrs[i]);
+        DECOMP_OtherFX_Stop1(d->driverAudioPtrs[i]);
         d->driverAudioPtrs[i] = NULL;
     }
 
     u_char playerID = d->driverID;
-	
+
 	int engine = data.MetaDataCharacters
 		[data.characterIDs[playerID]].engineID;
 
-    EngineAudio_Stop((engine * 4) + playerID);
+    DECOMP_EngineAudio_Stop((engine * 4) + playerID);
 
     // CameraDC, freecam mode
     sdata->gGT->cameraDC[playerID].cameraMode = 3;
@@ -63,8 +63,8 @@ void *PlayerWarpingFuncTable[13] =
     NULL,
     NULL,
     NULL,
-    VehPhysProc_Driving_Audio,
-    VehStuckProc_Warp_PhysAngular,
+    DECOMP_VehPhysProc_Driving_Audio,
+    DECOMP_VehStuckProc_Warp_PhysAngular,
     NULL,
     NULL,
     NULL,

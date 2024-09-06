@@ -285,7 +285,7 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
       // %d
       sprintf(text, &sdata->s_int, i + 1);
 
-      DecalFont_DrawLine(
+      DECOMP_DecalFont_DrawLine(
 		text,
 		local_58[0] + 0x20,
 		local_58[1] - 1,
@@ -347,7 +347,7 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
       sVar18 = sVar18 + 0x5a;
 
       // draw string for number of points
-      DecalFont_DrawLine(
+      DECOMP_DecalFont_DrawLine(
 		text,
 		local_58[0] + 0x2d,
 		local_58[1] + 6,
@@ -392,7 +392,7 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
   r.h = 0x32;
 
   // Draw 2D Menu rectangle background
-  RECTMENU_DrawInnerRect(&r, 4, gGT->backBuffer->otMem.startPlusFour);
+  DECOMP_RECTMENU_DrawInnerRect(&r, 4, gGT->backBuffer->otMem.startPlusFour);
 
   // Timer
   if (sdata->framesSinceRaceEnded < 0x10f) {
@@ -406,7 +406,7 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
       ) &&
       (
         // PRESS * TO CONTINUE
-        DecalFont_DrawLine(sdata->lngStrings[0xC9], 0x100, 0xbe, 1, 0xffff8000),
+        DECOMP_DecalFont_DrawLine(sdata->lngStrings[0xC9], 0x100, 0xbe, 1, 0xffff8000),
 
         // If you press Cross or Circle
         (sdata->AnyPlayerTap & 0x50) != 0)
@@ -419,7 +419,7 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
       sdata->menuReadyToPass = sdata->menuReadyToPass | 8;
 
       // clear gamepad input (for menus)
-      RECTMENU_ClearInput();
+      DECOMP_RECTMENU_ClearInput();
     }
   }
 
@@ -489,7 +489,7 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
 			index = data.ArcadeCups[cupID].CupTrack[cupTrack].trackID;
 		}
 
-		MainRaceTrack_RequestLoad(index);
+		DECOMP_MainRaceTrack_RequestLoad(index);
       }
 
       // If this was the last race in the cup
@@ -519,7 +519,7 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
           gGT->cup.points[i] = 0;
         }
 
-        Podium_InitModels(gGT);
+        DECOMP_Podium_InitModels(gGT);
 
 		i = gGT->cup.cupID;
 
@@ -631,7 +631,7 @@ void DECOMP_UI_CupStandings_InputAndDraw(void)
         }
 
         // Level ID for Gemstone Valley (podiums)
-        MainRaceTrack_RequestLoad(0x19);
+        DECOMP_MainRaceTrack_RequestLoad(0x19);
       }
     }
   }

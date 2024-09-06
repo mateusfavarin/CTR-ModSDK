@@ -10,10 +10,10 @@ void CalculateVolumeFromDistance(u_int *soundCount_ID, u_int soundID, int distan
     {
         if ((*soundCount_ID != 0) && ((*soundCount_ID & 0xffff) != soundID))
         {
-            OtherFX_Stop1(*soundCount_ID);
+            DECOMP_OtherFX_Stop1(*soundCount_ID);
             *soundCount_ID = 0;
         }
-        
+
         if (distance < 301)
         {
             // full volume
@@ -30,7 +30,7 @@ void CalculateVolumeFromDistance(u_int *soundCount_ID, u_int soundID, int distan
         {
             if (*soundCount_ID == 0)
             {
-                soundID = OtherFX_Play_LowLevel(
+                soundID = DECOMP_OtherFX_Play_LowLevel(
                     soundID & 0xffff, 0,
                     (volume & 0xff) << 0x10 |
                     // no distortion, balance L/R
@@ -69,7 +69,7 @@ void CalculateVolumeFromDistance(u_int *soundCount_ID, u_int soundID, int distan
                         0x8080;
                 }
 
-                OtherFX_Modify(*soundCount_ID, soundFlag);
+                DECOMP_OtherFX_Modify(*soundCount_ID, soundFlag);
             }
         }
     }
@@ -78,7 +78,7 @@ void CalculateVolumeFromDistance(u_int *soundCount_ID, u_int soundID, int distan
     {
         if (*soundCount_ID != 0)
         {
-            OtherFX_Stop1(*soundCount_ID);
+            DECOMP_OtherFX_Stop1(*soundCount_ID);
             *soundCount_ID = 0;
         }
     }

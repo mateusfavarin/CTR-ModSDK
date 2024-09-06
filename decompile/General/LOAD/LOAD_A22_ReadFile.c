@@ -32,12 +32,12 @@ void * DECOMP_LOAD_ReadFile(struct BigHeader* bigfile, u_int loadType, int subfi
 	// if a destination pointer is not given
 	if (destination == (void *)0x0)
 	{
-		// set flag that we used MEMPACK_AllocMem
+		// set flag that we used DECOMP_MEMPACK_AllocMem
 		// to store this ReadFile somewhere random
 		//DAT_80083a40 = DAT_80083a40 | 1;
 		data.currSlot.flags = data.currSlot.flags | 1;
 
-		// MEMPACK_AllocMem
+		// DECOMP_MEMPACK_AllocMem
 		buf = (void *)DECOMP_MEMPACK_AllocMem(*size + 0x7ffU & 0xfffff800); // "FILE"
 
 		// if allocation failed

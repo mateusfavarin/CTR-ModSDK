@@ -375,7 +375,7 @@ void DECOMP_MM_TrackSelect_MenuProc(struct RectMenu* menu)
 			uVar15 = uVar15 + (((FPS_DOUBLE(3) - D230.trackSel_changeTrack_frameCount) * 0x73) / FPS_DOUBLE(3)) * (int)D230.trackSel_direction;
 		}
 
-		// This is just MATH_Cos and Math_Sin
+		// This is just DECOMP_MATH_Cos and Math_Sin
 		#if 0
 		// approximate trigonometry
 		sVar7 = (short)data.trigApprox[uVar15];

@@ -23,12 +23,12 @@ void DECOMP_VehStuckProc_PlantEaten_Update(struct Thread *t, struct Driver *d)
     inst->flags &= ~(HIDE_MODEL);
 
     // this lets you rev engine while falling
-    VehStuckProc_RevEngine_Init(t, d);
+    DECOMP_VehStuckProc_RevEngine_Init(t, d);
 }
 
 void DECOMP_VehStuckProc_PlantEaten_PhysLinear(struct Thread *t, struct Driver *d)
 {
-    VehPhysProc_Driving_PhysLinear(t, d);
+    DECOMP_VehPhysProc_Driving_PhysLinear(t, d);
 
     d->simpTurnState = 0;
 
@@ -41,7 +41,7 @@ void DECOMP_VehStuckProc_PlantEaten_PhysLinear(struct Thread *t, struct Driver *
 
     // acceleration prevention,
     // drop bits for jump button, 0x20?, reversing engine
-    d->actionsFlagSet &= ~(0x20024); 
+    d->actionsFlagSet &= ~(0x20024);
 	d->actionsFlagSet |= 8;
 
     // increment time spent in mask grab
@@ -89,7 +89,7 @@ void DECOMP_VehStuckProc_PlantEaten_Animate(struct Thread *t, struct Driver *d)
 		camVec.vz = 0;
 		alStack32[0] = 0;
 		alStack32[1] = 0;
-		
+
         RotTrans(&plantVector, &camVec, alStack32);
 
 		#ifdef USE_ONLINE

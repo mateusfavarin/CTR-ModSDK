@@ -127,7 +127,7 @@ void DECOMP_AA_EndEvent_DrawMenu(void)
 					}
 
 					if (hudC->scale[0] == 0x800)
-						OtherFX_Play(0x67, 1);
+						DECOMP_OtherFX_Play(0x67, 1);
 
 					// original code said < 0x2200, but the
 					// actual desired value is 0x2400, needs
@@ -161,7 +161,7 @@ void DECOMP_AA_EndEvent_DrawMenu(void)
 
 					txtColor = (gGT->timer & FPS_DOUBLE(1)) ? 0xFFFF8003 : 0xFFFF8004;
 
-					DecalFont_DrawLine(
+					DECOMP_DecalFont_DrawLine(
 						sdata->lngStrings[0x16F],
 						txtPos[0], txtPos[1],
 						1, txtColor);
@@ -314,7 +314,7 @@ void DECOMP_AA_EndEvent_DrawMenu(void)
 			str_number = (char)i + '1';
 
 			// print a single character, a number 1-8,
-			DecalFont_DrawLine(
+			DECOMP_DecalFont_DrawLine(
 				&str_number, letterPos[0] + 0x20, 0x5f, 2, 4);
 
 			// Draw the driver's character icon
@@ -351,7 +351,7 @@ void DECOMP_AA_EndEvent_DrawMenu(void)
 		short posX = (numPlyr < 2) ? 0xbe : 100;
 
 		// PRESS * TO CONTINUE
-		DecalFont_DrawLine(sdata->lngStrings[0xC9], 0x100, posX, 1, 0xffff8000);
+		DECOMP_DecalFont_DrawLine(sdata->lngStrings[0xC9], 0x100, posX, 1, 0xffff8000);
 
 		// If you do not "Press X to continue"
 		if ((sdata->AnyPlayerTap & 0x50) == 0)
@@ -360,7 +360,7 @@ void DECOMP_AA_EndEvent_DrawMenu(void)
 		// If you are here, it means you pressed X to continue
 
 		// clear gamepad input
-		RECTMENU_ClearInput();
+		DECOMP_RECTMENU_ClearInput();
 
 		sdata->menuReadyToPass = 0;
 		sdata->framesSinceRaceEnded = 0;
@@ -384,7 +384,7 @@ void DECOMP_AA_EndEvent_DrawMenu(void)
 		// End of Race based on number of players (1 or more)
 		menu222.posY_curr = (numPlyr == 1) ? 170 : 108;
 
-		RECTMENU_Show(&menu222);
+		DECOMP_RECTMENU_Show(&menu222);
 
 		// record that the menu is drawing
 		sdata->menuReadyToPass |= 1;
@@ -396,21 +396,21 @@ void DECOMP_AA_EndEvent_DrawMenu(void)
 		return;
 
 	// PRESS * TO CONTINUE
-	DecalFont_DrawLine(sdata->lngStrings[0xc9], 0x100, 0xbe, 1, 0xffff8000);
+	DECOMP_DecalFont_DrawLine(sdata->lngStrings[0xc9], 0x100, 0xbe, 1, 0xffff8000);
 
 	// If you have not pressed X
 	if ((sdata->AnyPlayerTap & 0x50) == 0)
 		return;
 
 	// clear gamepad input
-	RECTMENU_ClearInput();
+	DECOMP_RECTMENU_ClearInput();
 
 	// if event was not won
 	if (driver->driverRank > 0)
 	{
 		// pass pointer to menu buffer that shows Retry / Exit To Map,
 		// identical to buffer in 221 dll, except this one in EXE space
-		RECTMENU_Show(&data.menuRetryExit);
+		DECOMP_RECTMENU_Show(&data.menuRetryExit);
 
 		// record that the menu is now showing
 		sdata->menuReadyToPass |= 1;
@@ -510,7 +510,7 @@ void DECOMP_AA_EndEvent_DrawMenu(void)
 		gGT->podiumRewardID = 0x62;
 	}
 
-	MainRaceTrack_RequestLoad(levSpawn);
+	DECOMP_MainRaceTrack_RequestLoad(levSpawn);
 }
 
 void DECOMP_AA_EndEvent_DisplayTime(short driverId, short param_2)
@@ -582,7 +582,7 @@ void DECOMP_AA_EndEvent_DisplayTime(short driverId, short param_2)
 		sdata->numIconsEOR = numPlyr + gGT->numBotsNextGame;
 
 		// clear gamepad input (for menus)
-		RECTMENU_ClearInput();
+		DECOMP_RECTMENU_ClearInput();
 	}
 
 	tenseconds = (framesElapsed + param_2 > FPS_DOUBLE(300));
@@ -776,7 +776,7 @@ void DECOMP_AA_EndEvent_DisplayTime(short driverId, short param_2)
 	r.h += 6;
 
 	// Draw 2D Menu rectangle background
-	RECTMENU_DrawInnerRect(&r, 4, gGT->backBuffer->otMem.startPlusFour);
+	DECOMP_RECTMENU_DrawInnerRect(&r, 4, gGT->backBuffer->otMem.startPlusFour);
 	return;
 }
 

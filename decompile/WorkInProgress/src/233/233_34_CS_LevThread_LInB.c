@@ -16,15 +16,15 @@ void CS_LevThread_LInB(struct Instance* inst)
   if (inst->thread == NULL)
   {
     // thread for CS_Thread_ThTick
-    t = PROC_BirthWithObject(
+    t = DECOMP_PROC_BirthWithObject(
         SIZE_RELATIVE_POOL_BUCKET
         (
-          0x60, 
-          NONE, 
-          MEDIUM, 
+          0x60,
+          NONE,
+          MEDIUM,
           STATIC
-        ), 
-        
+        ),
+
         CS_Thread_ThTick(),	  // behavior
         OVR_233.s_introguy,  // debug name
         0						          // thread relative
@@ -35,7 +35,7 @@ void CS_LevThread_LInB(struct Instance* inst)
 
     // if the thread failed to allocate
     if (t == NULL) return;
-    
+
     // get the object that is attached to the thread
     cs = t->object;
 
@@ -87,7 +87,7 @@ void CS_LevThread_LInB(struct Instance* inst)
     cs->unk1e = 0;
     cs->flags = 0;
     cs->unk48 = 0;
-    
+
     cs->scaleSpeed = 0;
     cs->desiredScale = 0x1000;
     cs->unk44[0] = 0xff;

@@ -66,16 +66,16 @@ void DECOMP_MM_HighScore_Draw(u_short trackIndex, u_int rowIndex, u_int posX, u_
 		D230.transitionMeta_HighScores[0].currX + (short)(posX + 0x100),
 		D230.transitionMeta_HighScores[0].currY + (short)(posY + 0xe),
 		FONT_BIG, JUSTIFY_CENTER);
-					   
+
     u_int iconColor = D230.highscore_iconColor;
 
 	// "BEST TRACK TIMES"
     DECOMP_MM_HighScore_Text3D(
-		sdata->lngStrings[0xb3], 
-		D230.transitionMeta_HighScores[1].currX + (uVar10 + 0x20), 
-		D230.transitionMeta_HighScores[1].currY + (uVar9 + 0x2b), 
+		sdata->lngStrings[0xb3],
+		D230.transitionMeta_HighScores[1].currX + (uVar10 + 0x20),
+		D230.transitionMeta_HighScores[1].currY + (uVar9 + 0x2b),
 		FONT_SMALL, 0);
-	
+
 	// first entry: Time Trial or Relic
     entry = &sdata->gameProgress.highScoreTracks[levelID].scoreEntry[rowIndex*6];
 
@@ -85,7 +85,7 @@ void DECOMP_MM_HighScore_Draw(u_short trackIndex, u_int rowIndex, u_int posX, u_
     {
 		// draw ghost stars
         for (i = 0; i < 2; i++)
-        {	
+        {
             if (
 					((
 						sdata->gameProgress.highScoreTracks[levelID].timeTrialFlags >>
@@ -112,12 +112,12 @@ void DECOMP_MM_HighScore_Draw(u_short trackIndex, u_int rowIndex, u_int posX, u_
 						colorPtr[3], 0, 0x1000);
                 }
         }
-		
+
         // "BEST LAP TIME:"
         DECOMP_MM_HighScore_Text3D(
-			sdata->lngStrings[0xb4], 
-			D230.transitionMeta_HighScores[7].currX + (uVar10 + 0x124), 
-			D230.transitionMeta_HighScores[7].currY + (uVar9 + 0x2b), 
+			sdata->lngStrings[0xb4],
+			D230.transitionMeta_HighScores[7].currX + (uVar10 + 0x124),
+			D230.transitionMeta_HighScores[7].currY + (uVar9 + 0x2b),
 			FONT_SMALL, 0);
 
         // Character Name
@@ -134,11 +134,11 @@ void DECOMP_MM_HighScore_Draw(u_short trackIndex, u_int rowIndex, u_int posX, u_
 			D230.transitionMeta_HighScores[7].currX + (uVar10 + 0x160),
 			D230.transitionMeta_HighScores[7].currY + (uVar9 + 0x4a),
 			FONT_SMALL, 0);
-			
+
         // Character Icon
         DECOMP_RECTMENU_DrawPolyGT4(
 			gGT->ptrIcons[data.MetaDataCharacters[entry[0].characterID].iconID],
-			D230.transitionMeta_HighScores[7].currX + (offsetX + 0x124), 
+			D230.transitionMeta_HighScores[7].currX + (offsetX + 0x124),
 			D230.transitionMeta_HighScores[7].currY + (offsetY + 0x38),
 			&gGT->backBuffer->primMem,
 			(gGT->pushBuffer_UI).ptrOT,
@@ -184,6 +184,6 @@ void DECOMP_MM_HighScore_Draw(u_short trackIndex, u_int rowIndex, u_int posX, u_
     videoBox.y = D230.transitionMeta_HighScores[9].currY + offsetY + 0x5a;
 
     DECOMP_MM_TrackSelect_Video_Draw(
-		&videoBox, &D230.arcadeTracks, trackIndex, 
+		&videoBox, &D230.arcadeTracks, trackIndex,
 		(D230.highScore_transitionState == EXITING_MENU), 0);
 }

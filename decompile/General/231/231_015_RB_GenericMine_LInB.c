@@ -8,26 +8,26 @@ void DECOMP_RB_GenericMine_LInB(struct Instance *inst)
     struct GameTracker* gGT;
     struct MineWeapon* mw;
 	struct Instance* parentInst;
-	
+
 	gGT = sdata->gGT;
 
 	// if loaded Rocky Road or Nitro Court
 	// from outside crystal challenge, skip boxes
     if ((gGT->gameMode1 & CRYSTAL_CHALLENGE) == 0)
 		return;
-	
-    t =	
-		PROC_BirthWithObject
+
+    t =
+		DECOMP_PROC_BirthWithObject
 		(
 			// creation flags
 			SIZE_RELATIVE_POOL_BUCKET
 			(
-				sizeof(struct MineWeapon), 
-				NONE, 
-				SMALL, 
+				sizeof(struct MineWeapon),
+				NONE,
+				SMALL,
 				MINE
-			), 
-			
+			),
+
 			RB_GenericMine_ThTick,	// behavior
 			0,						// debug name
 			0						// thread relative
@@ -44,7 +44,7 @@ void DECOMP_RB_GenericMine_LInB(struct Instance *inst)
 	t->funcThCollide = DECOMP_RB_Hazard_ThCollide_Generic;
 	t->parentThread = parentInst->thread;
 	t->modelIndex = inst->model->id;
-	
+
 	mw = t->object;
 	mw->instParent = parentInst;
 	mw->driverTarget = NULL;
@@ -56,8 +56,8 @@ void DECOMP_RB_GenericMine_LInB(struct Instance *inst)
 	mw->frameCount_DontHurtParent = 0;
 	mw->extraFlags = 0;
 	mw->stopFallAtY = inst->matrix.t[1];
-	
+
 	DECOMP_RB_MinePool_Add(mw);
-		
+
     RB_Default_LInB(inst);
 }

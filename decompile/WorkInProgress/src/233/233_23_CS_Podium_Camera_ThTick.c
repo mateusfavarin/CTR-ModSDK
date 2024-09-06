@@ -113,7 +113,7 @@ void CS_Podium_Camera_ThTick(struct Thread *th)
       goto LAB_800af2ec;
 
     // PRESS * TO CONTINUE
-    DecalFont_DrawLine(sdata->lngStrings[0xC9], 256, 190, FONT_BIG, (0xffff0000 | JUSTIFY_CENTER));
+    DECOMP_DecalFont_DrawLine(sdata->lngStrings[0xC9], 256, 190, FONT_BIG, (0xffff0000 | JUSTIFY_CENTER));
   }
 
   if (((gGT->gameMode2 & 0x1000) == 0) && (sdata->ptrActiveMenu == NULL))
@@ -150,7 +150,7 @@ void CS_Podium_Camera_ThTick(struct Thread *th)
       RaceFlag_SetDrawOrder(0);
 
       // go to main menu
-      MainRaceTrack_RequestLoad(MAIN_MENU_LEVEL);
+      DECOMP_MainRaceTrack_RequestLoad(MAIN_MENU_LEVEL);
       return;
     }
 
@@ -270,7 +270,7 @@ void CS_Podium_Camera_ThTick(struct Thread *th)
     }
 
     // load LEV
-    MainRaceTrack_RequestLoad(stringOrLevID);
+    DECOMP_MainRaceTrack_RequestLoad(stringOrLevID);
 
     // This thread is now dead
     th->flags | 0x800;

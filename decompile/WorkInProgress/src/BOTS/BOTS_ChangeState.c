@@ -2,7 +2,7 @@
 
 // param4 - reason
 u_char DECOMP_BOTS_ChangeState(
-	struct Driver *victim, int damageType, 
+	struct Driver *victim, int damageType,
 	struct Driver *attacker, int damageReason)
 {
   int newSpeed;
@@ -13,7 +13,7 @@ u_char DECOMP_BOTS_ChangeState(
   {
     return 0;
   }
-  
+
   // if racer is not being mask grabbed
   // set kart state to normal
   victim->kartState = KS_NORMAL;
@@ -87,7 +87,7 @@ u_char DECOMP_BOTS_ChangeState(
           // if you are not being burned
           (victim->burnTimer == 0))
       {
-        OtherFX_Play(0x69, 1); // 0x69 - FlameJet_Burn
+        DECOMP_OtherFX_Play(0x69, 1); // 0x69 - FlameJet_Burn
       }
 
       // increase number of frames to be burned
@@ -106,7 +106,7 @@ u_char DECOMP_BOTS_ChangeState(
     victim->turbo_outsideTimer = 0;
 
     *(int *)(victim + 0x5cc) = 0; // 0x8008DC40 //0x0FF1FEB6
-	
+
     // VelY of AI when blasted (const 0x300),
     // to throw them into the air
     *(int *)(victim + 0x5d0) = sdata->AI_VelY_WhenBlasted_0x3000; // change y-velocity
@@ -148,7 +148,7 @@ u_char DECOMP_BOTS_ChangeState(
     if ((victim->instSelf->thread->modelIndex == 0x18) &&
         (*(int *)(victim + 0x5c8) == 0))
     {
-      OtherFX_Play(0x5a, 1); // 0x5A - squished
+      DECOMP_OtherFX_Play(0x5a, 1); // 0x5A - squished
     }
     victim->unk5ba = 3;
     *(int *)(victim + 0x5c8) = 0x300;
@@ -199,7 +199,7 @@ u_char DECOMP_BOTS_ChangeState(
   }
 
   // === Count Statistics ===
-  // Exactly the same as VehPickState_NewState
+  // Exactly the same as DECOMP_VehPickState_NewState
 
   if (damageType)
   {

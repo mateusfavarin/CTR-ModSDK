@@ -91,7 +91,7 @@ PLAY_AUDIO:
         volume = DECOMP_VehCalc_MapToRange(distance, 300, 9000, 0xff, 0);
     }
 
-    OtherFX_Play_LowLevel(
+    DECOMP_OtherFX_Play_LowLevel(
 		sound & 0xffff, 1,
 
         // if quadblock under camera is able to make an echo
@@ -99,10 +99,10 @@ PLAY_AUDIO:
 
 			// volume
 			| ((volume & 0xff) << 0x10)
-	
+
 			// Left/Right
 			| (balance & 0xff)
-	
+
 			// distortion
 			| 0x8000);
 }

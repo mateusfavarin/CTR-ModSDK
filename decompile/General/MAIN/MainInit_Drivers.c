@@ -35,7 +35,7 @@ void DECOMP_MainInit_Drivers(struct GameTracker *gGT)
     {
 		gGT->drivers[i] = DECOMP_VehBirth_Player(i);
     }
-	
+
 #ifndef REBUILD_PS1
 	// spawn all AIs
     if (
@@ -59,10 +59,10 @@ void DECOMP_MainInit_Drivers(struct GameTracker *gGT)
         {
             numDrivers = numPlyrCurrGame+1;
         }
-		
+
 		// Purple Gem Cup
 		else if(
-			
+
 			// If you are in Adventure cup
 			((gameMode & ADVENTURE_CUP) != 0) &&
 
@@ -77,7 +77,7 @@ void DECOMP_MainInit_Drivers(struct GameTracker *gGT)
 		{
 			numDrivers = 8;
 		}
-		
+
         else //if (numPlyrCurrGame == 2)
 		{
 			numDrivers = 6;
@@ -95,8 +95,8 @@ void DECOMP_MainInit_Drivers(struct GameTracker *gGT)
     if (gGT->numBotsNextGame != 0)
     {
 		// Init AI engine sounds
-        EngineAudio_InitOnce(0x10, 0x8080);
-        EngineAudio_InitOnce(0x11, 0x8080);
+        DECOMP_EngineAudio_InitOnce(0x10, 0x8080);
+        DECOMP_EngineAudio_InitOnce(0x11, 0x8080);
     }
 #endif
 
@@ -109,7 +109,7 @@ void DECOMP_MainInit_Drivers(struct GameTracker *gGT)
             gGT->drivers[i] = DECOMP_VehBirth_Player(i);
         }
     }
-	
+
 #ifdef REBUILD_PS1
 	i = 0;
 	int driverID = 0;
@@ -131,31 +131,31 @@ void DECOMP_MainInit_Drivers(struct GameTracker *gGT)
 			break;
 		}
 	}
-	
+
 	if(gGT->numPlyrCurrGame == 1)
 	{
 		driverID = 0;
 	}
-	
+
 	else if(gGT->numPlyrCurrGame == 2)
 	{
 		gGT->drivers[0]->instSelf->model = data.driverModel_lowLOD[0];
 		gGT->drivers[1]->instSelf->model = data.driverModel_lowLOD[1];
 		driverID = 2;
 	}
-	
+
 	else
 	{
 		gGT->drivers[0]->instSelf->model = data.driverModel_lowLOD[0];
 		gGT->drivers[1]->instSelf->model = data.driverModel_lowLOD[1];
 		gGT->drivers[2]->instSelf->model = data.driverModel_lowLOD[2];
-		
+
 		if(gGT->numPlyrCurrGame == 4)
-			gGT->drivers[3]->instSelf->model = sdata->PLYROBJECTLIST[i++];	
-		
+			gGT->drivers[3]->instSelf->model = sdata->PLYROBJECTLIST[i++];
+
 		driverID = 8;
 	}
-	
+
 	for(driverID; driverID < 7; driverID++)
 	{
 		if(gGT->drivers[driverID] == 0) break;
@@ -170,7 +170,7 @@ void DECOMP_MainInit_Drivers(struct GameTracker *gGT)
 		printf("%s\n", gGT->drivers[driverID]->instSelf->model->name);
 	}
 	#endif
-	
+
 #endif
 
     // if you're in time trial, not main menu, not loading.
@@ -180,28 +180,28 @@ void DECOMP_MainInit_Drivers(struct GameTracker *gGT)
         DECOMP_GhostReplay_Init2();
 
         DECOMP_GhostTape_Start();
-		
+
 		#ifdef REBUILD_PS1
-		
+
 		// 0: human ghost
 		// 1: n tropy / oxide
 		if(sdata->ptrGhostTape[1] != 0)
 		{
-			// N Tropy to Oxide	
+			// N Tropy to Oxide
 			void** pointers = ST1_GETPOINTERS(gGT->level1->ptrSpawnType1);
 			if(sdata->ptrGhostTape[1]->gh == pointers[ST1_NOXIDE])
 				i++;
 		}
-		
-		gGT->threadBuckets[GHOST].thread->inst->model = 
+
+		gGT->threadBuckets[GHOST].thread->inst->model =
 			sdata->PLYROBJECTLIST[i++];
-			
+
 		struct Model** humanPlyrDriverModel =
 			&gGT->threadBuckets[PLAYER].thread->inst->model;
-			
+
 		// that's characterIDs[1] from the MPK
 		// humanGhost = *humanPlyrDriverModel,
-		
+
 		// then replace with intended P1 model
 		*humanPlyrDriverModel =
 			data.driverModel_lowLOD[0];

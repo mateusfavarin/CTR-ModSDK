@@ -18,7 +18,7 @@ void DECOMP_SelectProfile_Destroy(void)
         {
             if (inst->next != 0)
             {
-                INSTANCE_Death();
+                DECOMP_INSTANCE_Death();
             }
             // increment loop counter
             inst = (int)inst + 3;

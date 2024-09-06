@@ -13,7 +13,7 @@ void DECOMP_VehFrameProc_Spinning(struct Thread *t, struct Driver *d)
 
     animIndex = inst->animIndex;
 
-    numFrames = VehFrameInst_GetNumAnimFrames(inst, animIndex);
+    numFrames = DECOMP_VehFrameInst_GetNumAnimFrames(inst, animIndex);
 
     // if there are no frames
     if (numFrames <= 0)
@@ -23,7 +23,7 @@ void DECOMP_VehFrameProc_Spinning(struct Thread *t, struct Driver *d)
     // if animation is not zero
     if (animIndex != 0)
     {
-        startFrame = VehFrameInst_GetStartFrame(animIndex, numFrames);
+        startFrame = DECOMP_VehFrameInst_GetStartFrame(animIndex, numFrames);
 
         // If animType is anything but Steering/Driving
         if ((unsigned int)(animIndex - 2) < 2)
@@ -37,7 +37,7 @@ void DECOMP_VehFrameProc_Spinning(struct Thread *t, struct Driver *d)
         if (inst->animFrame == startFrame)
         {
             // get number of frames in animation
-            numFrames = VehFrameInst_GetNumAnimFrames(inst, 0);
+            numFrames = DECOMP_VehFrameInst_GetNumAnimFrames(inst, 0);
 
             if (numFrames <= 0)
                 // quit
@@ -62,7 +62,7 @@ void DECOMP_VehFrameProc_Spinning(struct Thread *t, struct Driver *d)
 ANIM_SPIN:
 
     // Interpolate animation frame by speed
-    interp = VehCalc_InterpBySpeed(inst->animFrame, 4, startFrame);
+    interp = DECOMP_VehCalc_InterpBySpeed(inst->animFrame, 4, startFrame);
 
     // set animation frame
     inst->animFrame = interp;

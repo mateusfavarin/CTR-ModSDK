@@ -299,7 +299,7 @@ LAB_80035098:
 
 						// rig collisions to high-poly,
 						// wait until Stage 2 finishes, cause PhysLinear
-						// uses gGT->numPlyrCurrGame for VehPhysGeneral_SetHeldItem
+						// uses gGT->numPlyrCurrGame for DECOMP_VehPhysGeneral_SetHeldItem
 						#ifdef USE_HIGHMP
 						if(iVar11 == 2)
 						{
@@ -375,7 +375,7 @@ LAB_80035098:
 
 		#endif // 60fps
 
-		Particle_UpdateAllParticles();
+		DECOMP_Particle_UpdateAllParticles();
 
 #endif // rebuildps1
 	}

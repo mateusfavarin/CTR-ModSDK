@@ -7,7 +7,7 @@
 int DECOMP_GAMEPROG_CheckGhostsBeaten(int ghostID)
 {
 	int i;
-	
+
 	// check all tracks
 	for(i = 0; i < 18; i++)
 	{
@@ -17,7 +17,7 @@ int DECOMP_GAMEPROG_CheckGhostsBeaten(int ghostID)
 			return 0;
 		}
 	}
-	
+
 	// beaten on all tracks
 	return 1;
 }

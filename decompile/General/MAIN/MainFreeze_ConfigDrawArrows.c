@@ -25,7 +25,7 @@ void DECOMP_MainFreeze_ConfigDrawArrows(short offsetX, short offsetY, char* str)
 		ICONGROUP_GETICONS(gGT->iconGroup[4]);
 
 	// Draw left arrow
-	DecalHUD_Arrow2D
+	DECOMP_DecalHUD_Arrow2D
 	(
 		// largeFont
 		iconPtrArray[0x38],
@@ -48,7 +48,7 @@ void DECOMP_MainFreeze_ConfigDrawArrows(short offsetX, short offsetY, char* str)
 	);
 
 	// Draw right arrow
-	DecalHUD_Arrow2D
+	DECOMP_DecalHUD_Arrow2D
 	(
 		// largeFont
 		iconPtrArray[0x38],

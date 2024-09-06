@@ -33,7 +33,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 	{
 		return loadingStage;
 	}
-	
+
 	levelID = gGT->levelID;
 
 	switch(loadingStage)
@@ -44,7 +44,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 			// if level is not AdvGarage or Naughty Dog Box Scene
 			if ((levelID != ADVENTURE_CHARACTER_SELECT) && (levelID != NAUGHTY_DOG_CRATE))
 			{
-				Cutscene_VolumeBackup();
+				DECOMP_Cutscene_VolumeBackup();
 			}
 #endif
 			DECOMP_CDSYS_XAPauseRequest();
@@ -59,11 +59,11 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 				DECOMP_LOAD_VramFile(bigfile, 0x1fe, 0, &vramSize, 0xffffffff);
 				DECOMP_MainInit_VRAMDisplay();
 				#endif
-				
+
 				gGT->db[0].drawEnv.isbg = 0;
 				gGT->db[1].drawEnv.isbg = 0;
 			}
-			
+
 			// if not first boot (dont do this for ND Box)
 			else
 			{
@@ -100,26 +100,26 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 
 			gGT->visMem1 = 0;
 			gGT->visMem2 = 0;
-			
+
 			boolDefault1P = 1;
-			
+
 			if(levelID >= SCRAPBOOK)
 			{
 				// both in main menu, and after credits,
 				// checked and confirmed in retail version
 				gGT->gameMode1 |= MAIN_MENU;
 			}
-			
+
 			// credits
 			else if(levelID >= CREDITS_CRASH)
 			{
 				// enable cutscene flag
 				gGT->gameMode1 |= GAME_CUTSCENE;
-			
+
 				// lev swap (&20) and credits (&80)
 				gGT->gameMode2 |= (LEV_SWAP | CREDITS);
 			}
-				
+
 			// If you're in Naughty Dog Box Scene,
 			// Oxide Any% ending
 			// Oxide 101% ending
@@ -140,7 +140,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 					// Enter Adventure Character Selection
 					sdata->mainMenuState = 4;
 				}
-				
+
 				else
 				{
 					// get NextGame from the game you exited
@@ -169,7 +169,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 
 				// lev swap will be needed
 				gGT->gameMode2 |= LEV_SWAP;
-				
+
 				#ifdef USE_HIGHMP
 				if(gGT->podiumRewardID == 0)
 				{
@@ -179,7 +179,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 				}
 				#endif
 			}
-			
+
 			// driving track
 			else
 			{
@@ -187,7 +187,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 				gGT->numPlyrCurrGame = gGT->numPlyrNextGame;
 				boolDefault1P = 0;
 			}
-			
+
 			if(boolDefault1P != 0)
 			{
 				gGT->numPlyrCurrGame = 1;
@@ -201,50 +201,50 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 
 			// default
 			sdata->levelLOD = gGT->numPlyrCurrGame;
-			
+
 			// main menu or adv garage
 			if((gGT->gameMode1 & MAIN_MENU) != 0)
 			{
 				sdata->levelLOD = 1;
 			}
-			
+
 			// if relic, or time trial
 			if((gGT->gameMode1 & (TIME_TRIAL | RELIC_RACE)) != 0)
 			{
 				sdata->levelLOD = 8;
 			}
-			
+
 			// RAM optimization, dont do this OG code
 			#if 0
-			
+
 				// OG game
 				DECOMP_MainInit_PrimMem(gGT);
 				DECOMP_MainInit_OTMem(gGT);
-			
+
 			#else
-				
+
 				// first allocate OT for RaceFlag
 				DECOMP_MainInit_OTMem(gGT);
-				
 
-				// use HighMem for RaceFlag, dont use MEMPACK_AllocHighMem,
+
+				// use HighMem for RaceFlag, dont use DECOMP_MEMPACK_AllocHighMem,
 				// then later this allocation is extended to remainder of heap,
 				// this will always be LESS than OG game allocation, so it wont
 				// impact any intended loading screens
 				#ifndef REBUILD_PC
-					
+
 					int backup = sdata->mempack[0].firstFreeByte;
 					sdata->mempack[0].firstFreeByte = (int)sdata->mempack[0].lastFreeByte - 0xA000;
 					DECOMP_MainInit_PrimMem(gGT, 0xA000);
 					sdata->mempack[0].firstFreeByte = backup;
-				
+
 				// use low-end addressing for PC port
 				#else
-					
+
 					DECOMP_MainInit_PrimMem(gGT, 0xA000);
-				
+
 				#endif
-				
+
 			#endif
 
 			// RAM Optimization, NEVER do this here
@@ -260,7 +260,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 				DECOMP_MainInit_JitPoolsNew(gGT);
 			}
 			#endif
-			
+
 			break;
 		}
 		case 1:
@@ -275,32 +275,32 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 			if ((gGT->gameMode1 & (GAME_CUTSCENE | MAIN_MENU)) != 0) break;
 
 			// === pick overlay to load ===
-			
+
 			// 221 - Crystal Challenge
-			if ((gGT->gameMode1 & CRYSTAL_CHALLENGE) != 0) 	
+			if ((gGT->gameMode1 & CRYSTAL_CHALLENGE) != 0)
 				ovrRegion1 = 0;
 
 			// 223 - Relic Race
-			else if ((gGT->gameMode1 & RELIC_RACE) != 0) 
+			else if ((gGT->gameMode1 & RELIC_RACE) != 0)
 				ovrRegion1 = 2;
-			
+
 			// 224 - Time Trial
 			else if ((gGT->gameMode1 & TIME_TRIAL) != 0)
 				ovrRegion1 = 3;
-			
+
 			// 222 - Arcade/Trophy/Boss/C-T-R token
 			// if arcade, or adv that isn't listed above
 			else if ((gGT->gameMode1 & (ARCADE_MODE | ADVENTURE_MODE)) != 0)
 				ovrRegion1 = 1;
-			
+
 			// default VS/Battle overlay if no mode found
-			else 
+			else
 				ovrRegion1 = 4;
-			
+
 			#ifdef USE_HIGHMP
 			ovrRegion1 = 4;
 			#endif
-		
+
 			DECOMP_LOAD_OvrEndRace(ovrRegion1);
 			break;
 		}
@@ -312,7 +312,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 			DECOMP_LOAD_OvrLOD(gGT->numPlyrCurrGame);
 			#endif
 			break;
-		}	
+		}
 		case 3:
 		{
 			// main menu + scrapbook, 230
@@ -323,13 +323,13 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 			{
 				ovrRegion3 = 0;
 			}
-			
+
 			// race threads, 231
 			else if (levelID <= LAB_BASEMENT)
 			{
 				ovrRegion3 = 1;
 			}
-			
+
 			// advHub, 232
 			else if (
 						(levelID <= CITADEL_CITY) &&
@@ -338,13 +338,13 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 			{
 				ovrRegion3 = 2;
 			}
-			
+
 			// Cutscene, Credits, ND, Garage, Podium
 			else
 			{
 				ovrRegion3 = 3;
 			}
-			
+
 			DECOMP_LOAD_OvrThreads(ovrRegion3);
 			break;
 		}
@@ -363,7 +363,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 				// reset value, emulate overlay reloading
 				D230.menuMainMenu.state = 0x403;
 				#endif
-				
+
 				#ifdef USE_OXIDE
 				// if scrapbook unlocked, then unlock Oxide,
 				// flag 0x1000 must match the 1<<0 in the icon array,
@@ -371,7 +371,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 				if ((sdata->gameProgress.unlocks[1] & 0x10) != 0)
 					sdata->gameProgress.unlocks[0] |= 1;
 				#endif
-				
+
 				// all these are 230, except for adv garage in 233
 				switch(sdata->mainMenuState)
 				{
@@ -383,10 +383,10 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 					case 5:	DECOMP_MM_JumpTo_Scrapbook();		break;
 				}
 			}
-			
+
 			sdata->ptrMPK = 0;
 			sdata->load_inProgress = 1;
-			
+
 			data.driverModel_lowLOD[0] = 0;
 			data.driverModel_lowLOD[1] = 0;
 			data.driverModel_lowLOD[2] = 0;
@@ -397,7 +397,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 		{
 			sdata->PLYROBJECTLIST = (unsigned int)sdata->ptrMPK + 4;
 			if (sdata->ptrMPK == 0) sdata->PLYROBJECTLIST = 0;
-						
+
 			// clear and reset
 			DECOMP_LibraryOfModels_Clear(gGT);
 			DECOMP_LOAD_GlobalModelPtrs_MPK();
@@ -409,11 +409,11 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 			if (sdata->ptrMPK != 0)
 			{
 				gGT->mpkIcons = *(int*)sdata->ptrMPK;
-				
+
 				if(gGT->mpkIcons != 0)
 					DECOMP_DecalGlobal_Store(gGT, gGT->mpkIcons);
 			}
-			
+
 			// if level is not AdvGarage or Naughty Dog Box Scene
 			if ((levelID != ADVENTURE_CHARACTER_SELECT) && (levelID != NAUGHTY_DOG_CRATE))
 			{
@@ -421,7 +421,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 				DECOMP_CseqMusic_StopAll();
 				DECOMP_Music_LoadBanks();
 			}
-			
+
 			break;
 		}
 		case 6:
@@ -438,18 +438,18 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 				}
 
 #ifndef REBUILD_PS1
-				Cutscene_VolumeRestore();
+				DECOMP_Cutscene_VolumeRestore();
 #endif
 			}
-			
+
 			// == banks are done parsing ===
-			
+
 			#ifdef USE_HIGH1P
 			#define NUM_CHECK 8 // modding: 8 drivers
 			#else
 			#define NUM_CHECK 3 // OG game: 3 drivers in VS mode
 			#endif
-			
+
 			// loop through models
 			piVar15 = &data.driverModel_lowLOD[0];
 			for (iVar9 = 0; iVar9 < NUM_CHECK; iVar9++, piVar15++)
@@ -522,7 +522,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 				// loaded at HighMem in main pack, end of RAM,
 				// so the pointer maps dont bloat subpacks
 				DECOMP_MEMPACK_SwapPacks(0);
-				
+
 				#if 1
 				// biggest lev_swap (cutscene/adventure)
 				// is 0xBBA0 for gemstone ptr map, align up
@@ -535,7 +535,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 				sdata->PatchMem_Size = DECOMP_MEMPACK_GetFreeBytes();
 				sdata->PatchMem_Ptr = DECOMP_MEMPACK_AllocHighMem(sdata->PatchMem_Size); //, "Patch Table Memory");
 				#endif
-				
+
 				// make all futuere allocations in subpacks
 				DECOMP_MEMPACK_SwapPacks(gGT->activeMempackIndex);
 			}
@@ -561,7 +561,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 				// add PTR file to loading queue
 				uVar6 = DECOMP_LOAD_GetBigfileIndex(gGT->levelID, sdata->levelLOD, LVI_PTR);
 				DECOMP_LOAD_AppendQueue(bigfile, LT_RAW, uVar6, sdata->PatchMem_Ptr, &DECOMP_LOAD_Callback_LEV_Adv);
-			}			
+			}
 			break;
 		}
 		case 7:
@@ -571,7 +571,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 
 			// Set LEV pointer
 			gGT->level1 = lev;
-			
+
 			// iVar9 is set to sdata->ptrLEV_DuringLoading at the top of the function
 			gGT->visMem1 = lev->visMem;
 
@@ -592,7 +592,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 
 #ifndef REBUILD_PS1
 				// == must use RDATA strings ==
-				// they have bigger sizes that the 
+				// they have bigger sizes that the
 				// search algorithm depends on
 
 				// search for icon by string
@@ -621,7 +621,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 			if (gGT->mpkIcons != 0)
 			{
 				piVar15 = *(u_int *)((u_int)gGT->mpkIcons + 4);
-				
+
 #ifndef REBUILD_PS1
 				// search for icon by string
 				//what even are these first arguments? --Super
@@ -641,7 +641,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 				gGT->trafficLightIcon[3] = uVar16;
 #else
 				for(
-						struct Icon* firstIcon = piVar15; 
+						struct Icon* firstIcon = piVar15;
 						*(int*)&firstIcon->name[0];
 						firstIcon++
 					)
@@ -662,21 +662,21 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 				}
 #endif
 			}
-			
+
 			gGT->gameMode1_prevFrame = 1;
 
 			// RAM optimization, always do this here
 			#if 1
 			DECOMP_MEMPACK_SwapPacks(0);
 			DECOMP_MainInit_JitPoolsNew(gGT);
-			
+
 			// end of RAM, steal rest of heap
 			DECOMP_MainInit_PrimMem(gGT, 0);
 
 			if ((gGT->gameMode2 & LEV_SWAP) != 0)
 				DECOMP_MEMPACK_SwapPacks(gGT->activeMempackIndex);
 			#endif
-			
+
 			if
 			(
 				// 2 is for cutscene
@@ -694,7 +694,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 
 				return loadingStage + 1;
 			}
-			
+
 			// podium reward
 			if (gGT->podiumRewardID != 0)
 			{
@@ -707,7 +707,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 					iVar9--;
 					puVar8--;
 				} while (iVar9 > -1);
-			
+
 				// Get Memory Allocation System Index
 				iVar9 = DECOMP_LOAD_GetAdvPackIndex() - 1;
 
@@ -720,8 +720,8 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 
 				// VRAM for podium and all related models
 				DECOMP_LOAD_AppendQueue(
-					bigfile, LT_VRAM, 
-					BI_PODIUMVRMS + iVar9, 
+					bigfile, LT_VRAM,
+					BI_PODIUMVRMS + iVar9,
 					0, 0);
 
 				// podium first place
@@ -729,16 +729,16 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 
 				if
 				(
-					(podiumModel != 0) && 
-				
+					(podiumModel != 0) &&
+
 					// if not 0x7e + 0xF
 					// if not oxide
 					(podiumModel != 0x8d)
 			 	)
 				{
 					DECOMP_LOAD_AppendQueue(
-						bigfile, LT_DRAM, 
-						BI_DANCEMODELWIN + iVar9 + (podiumModel - 0x7e) * 2, 
+						bigfile, LT_DRAM,
+						BI_DANCEMODELWIN + iVar9 + (podiumModel - 0x7e) * 2,
 						&data.podiumModel_firstPlace, 0xfffffffe);
 				}
 
@@ -748,29 +748,29 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 				if (podiumModel != 0)
 				{
 					DECOMP_LOAD_AppendQueue(
-						bigfile, LT_DRAM, 
-						BI_DANCEMODELLOSE + iVar9 + (podiumModel - 0x7e) * 2, 
+						bigfile, LT_DRAM,
+						BI_DANCEMODELLOSE + iVar9 + (podiumModel - 0x7e) * 2,
 						&data.podiumModel_secondPlace, 0xfffffffe);
 				}
-			
+
 				// podium third place exists
 				podiumModel = gGT->podium_modelIndex_Third;
-				
+
 				if (podiumModel != 0)
 				{
 					DECOMP_LOAD_AppendQueue(
-						bigfile, LT_DRAM, 
-						BI_DANCEMODELLOSE + iVar9 + (podiumModel - 0x7e) * 2, 
+						bigfile, LT_DRAM,
+						BI_DANCEMODELLOSE + iVar9 + (podiumModel - 0x7e) * 2,
 						&data.podiumModel_thirdPlace, 0xfffffffe);
 				}
-				
+
 				// TAWNA
 				podiumModel = gGT->podium_modelIndex_tawna;
 
 				// add TAWNA to loading queue
 				DECOMP_LOAD_AppendQueue(
-					bigfile, LT_DRAM, 
-					BI_DANCETAWNAGIRL + iVar9 + (podiumModel - 0x8f) * 2, 
+					bigfile, LT_DRAM,
+					BI_DANCETAWNAGIRL + iVar9 + (podiumModel - 0x8f) * 2,
 					&data.podiumModel_tawna, 0xfffffffe);
 
 				// if 0x7e+5 (dingo)
@@ -778,15 +778,15 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 				{
 					// add "DingoFire" to loading queue
 					DECOMP_LOAD_AppendQueue(
-						bigfile, LT_DRAM, 
-						BI_DINGOFIRE + iVar9, 
+						bigfile, LT_DRAM,
+						BI_DINGOFIRE + iVar9,
 						&data.podiumModel_dingoFire, 0xfffffffe);
 				}
 
 				// add Podium
 				DECOMP_LOAD_AppendQueue(
-					bigfile, LT_DRAM, 
-					BI_PODIUM + iVar9, 
+					bigfile, LT_DRAM,
+					BI_PODIUM + iVar9,
 					0, &DECOMP_LOAD_Callback_Podiums);
 
 				// Disable LEV instances on Adv Hub, for podium scene
@@ -796,7 +796,7 @@ int DECOMP_LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigH
 			break;
 		}
 		case 8:
-		{			
+		{
 			// If you're in Adventure Arena
 			if
 			(

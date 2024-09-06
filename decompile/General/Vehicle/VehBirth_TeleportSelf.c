@@ -489,11 +489,11 @@ LAB_80058568:
     d->instSelf->animFrame = FPS_DOUBLE(10);
 
 	#if 0 // 10 =
-		VehFrameInst_GetStartFrame(
+		DECOMP_VehFrameInst_GetStartFrame(
 
 			0, // midpoint
 
-			VehFrameInst_GetNumAnimFrames(
+			DECOMP_VehFrameInst_GetNumAnimFrames(
 				d->instSelf, 	// driver instance
 				0				// anim #0, steer
 			)

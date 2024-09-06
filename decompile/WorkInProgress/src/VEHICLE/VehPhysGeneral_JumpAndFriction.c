@@ -113,7 +113,7 @@ void DECOMP_VehPhysGeneral_JumpAndFriction(struct Thread *t, struct Driver *d)
         d->jump_InitialVelY = (short)(jumpForce >> 2);
 
         // spring weapon sound
-        OtherFX_Play_Echo(9, 1, d->actionsFlagSet & 0x10000);
+        DECOMP_OtherFX_Play_Echo(9, 1, d->actionsFlagSet & 0x10000);
 
         d->jump_unknown = 0x180;
         goto PROCESS_JUMP;
@@ -173,7 +173,7 @@ void DECOMP_VehPhysGeneral_JumpAndFriction(struct Thread *t, struct Driver *d)
       d->jump_InitialVelY = d->const_JumpForce;
 
       // play jump sound
-      OtherFX_Play_Echo(8, 1, d->actionsFlagSet & 0x10000);
+      DECOMP_OtherFX_Play_Echo(8, 1, d->actionsFlagSet & 0x10000);
     }
 
     // if being forced to jump (by turtles)
@@ -187,7 +187,7 @@ void DECOMP_VehPhysGeneral_JumpAndFriction(struct Thread *t, struct Driver *d)
           // if jump_InitialVelY was just now set to const_jump
           (d->jump_InitialVelY == d->const_JumpForce))
       {
-        OtherFX_Play(0x7e, 1);
+        DECOMP_OtherFX_Play(0x7e, 1);
       }
 
       // currently forced airborne
@@ -336,8 +336,8 @@ void DECOMP_VehPhysGeneral_JumpAndFriction(struct Thread *t, struct Driver *d)
     // If you're "blasted", flipping around after hit by missile, bomb, etc
     if (d->kartState == KS_BLASTED)
     {
-      GAMEPAD_ShockFreq(d, 8, 0);
-      GAMEPAD_ShockForce1(d, 8, 0x7f);
+      DECOMP_GAMEPAD_ShockFreq(d, 8, 0);
+      DECOMP_GAMEPAD_ShockForce1(d, 8, 0x7f);
     }
   }
 

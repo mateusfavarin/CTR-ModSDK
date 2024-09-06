@@ -1,6 +1,6 @@
 #include <common.h>
 //- only called once, wonder how that doesn't halt the exection. or maybe it does, are there hangs when save/load happens?
-uint8_t MEMCARD_WaitForHwEvent(void)
+uint8_t DECOMP_MEMCARD_WaitForHwEvent(void)
 {
     while (1)
     {

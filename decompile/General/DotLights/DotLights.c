@@ -6,7 +6,7 @@ void DECOMP_DotLights(struct GameTracker* gGT)
   int d1;
   int iVar5;
   int sortaPosY;
-  
+
   struct Icon* icon;
   int newPosX;
   int sizeX;
@@ -15,19 +15,19 @@ void DECOMP_DotLights(struct GameTracker* gGT)
   int playerIndex;
   int lightIndex;
   int newPosY;
-  
+
   // use as counter
   d1 = 0;
 
   // time on traffic light counter
   iVar1 = gGT->trafficLightsTimer;
-  
+
   // if timer is negative, skip the whole function
   if (iVar1 < -0x3bf) goto SkipLights;
-  
+
   // default, lights are near center of screen
   sortaPosY = 0x1000;
-  
+
   // green light (1,1,1,1)
   if (iVar1 < 1)
   {
@@ -48,7 +48,7 @@ void DECOMP_DotLights(struct GameTracker* gGT)
 
 	goto DrawLights;
   }
-  
+
   // any of the red lights
   for(lightIndex = 1; lightIndex < 4; lightIndex++)
   {
@@ -59,12 +59,12 @@ void DECOMP_DotLights(struct GameTracker* gGT)
 			// Play "red light" Sound
 			DECOMP_OtherFX_Play(0x45,0);
 		  }
-		  
+
 		  d1 |= (1<<lightIndex);
-		  
+
 	  }
   }
-  
+
   // draw red lights if they are on
   if(d1 != 0) goto DrawLights;
 
@@ -76,9 +76,9 @@ void DECOMP_DotLights(struct GameTracker* gGT)
   iVar1 = (0xf00 - gGT->trafficLightsTimer) * 0x1000;
   iVar5 = (int)((long long)((long long)iVar1 * -0x77777777) >> 0x20);
   sortaPosY = (iVar5 + iVar1 >> 9) - (iVar1 >> 0x1f);
-  
+
 DrawLights:
-  
+
   for(playerIndex = 0; playerIndex < gGT->numPlyrCurrGame; playerIndex++)
   {
       pb = &gGT->pushBuffer[playerIndex];
@@ -89,7 +89,7 @@ DrawLights:
 
 	  // pointer to first traffic light icon
       icon = gGT->trafficLightIcon[0];
-	  
+
 	  // distance between each light,
 	  // adjusted sizeX,
 	  // (icon endX - icon startX) * scale / 0x1000
@@ -102,7 +102,7 @@ DrawLights:
 	  // posX of first light
 	  // (window sizeX/2) - (light sizeX*2)
 	  newPosX = (pb->rect.w + sizeX * -4) / 2;
-	  
+
 	  #ifdef USE_16BY9
 	  // counter the DrawPolyFT4 midpoint shifting
 	  newPosX -= (sizeX * 125) / 1000;
@@ -122,15 +122,15 @@ DrawLights:
 	  {
 
 		DECOMP_DecalHUD_DrawPolyFT4(
-		
+
 			// icon pointer
 			gGT->trafficLightIcon
 			[
 				// on or off
 				((d1 & (1<<(3-lightIndex)))!=0)
-				
+
 				+ (2*(lightIndex==3))
-				
+
 			],
 
 			// posX
@@ -148,7 +148,7 @@ DrawLights:
 			0,scale);
 	  }
   }
-  
+
 SkipLights:
 
   // keep record of previous frame's countdown timer

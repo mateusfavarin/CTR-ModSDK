@@ -8,6 +8,6 @@ uint8_t DECOMP_MEMCARD_WriteFile(int start_offset, const uint8_t *data, int end_
         return 7;
     }
 
-    MEMCARD_CloseFile();
+    DECOMP_MEMCARD_CloseFile();
     return 1;
 }

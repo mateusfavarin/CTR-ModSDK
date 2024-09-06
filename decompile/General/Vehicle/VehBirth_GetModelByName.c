@@ -1,6 +1,6 @@
 #include <common.h>
 
-struct Model* VehBirth_GetModelByName(char *searchName)
+struct Model* DECOMP_VehBirth_GetModelByName(char *searchName)
 {
     struct Model *m;
     struct Model **models;
@@ -44,8 +44,8 @@ struct Model* VehBirth_GetModelByName(char *searchName)
     {
         // loop until all strings are checked (until current is not nullptr)
         for (
-				i = 0,	m = models[i]; 
-				m != NULL; 
+				i = 0,	m = models[i];
+				m != NULL;
 				i++,	m = models[i]
 			)
         {

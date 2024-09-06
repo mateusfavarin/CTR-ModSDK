@@ -1,6 +1,6 @@
 #include <common.h>
 
-// param2 = BASCUS-94426G* 
+// param2 = BASCUS-94426G*
 // TODO: 4 bytes over budget
 char *DECOMP_MEMCARD_FindFirstGhost(int slotIdx, char *srcString)
 {
@@ -11,7 +11,7 @@ char *DECOMP_MEMCARD_FindFirstGhost(int slotIdx, char *srcString)
 
     struct DIRENTRY *firstEntry;
     struct DIRENTRY someEntry;
-    MEMCARD_StringSet(sdata->s_bu00_BASCUS_94426_slots, slotIdx, srcString);
+    DECOMP_MEMCARD_StringSet(sdata->s_bu00_BASCUS_94426_slots, slotIdx, srcString);
 
     // string for directory and file of save that is in use
     firstEntry = firstfile(sdata->s_bu00_BASCUS_94426_slots, &someEntry);

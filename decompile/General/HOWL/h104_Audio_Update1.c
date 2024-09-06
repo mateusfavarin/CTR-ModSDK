@@ -20,7 +20,7 @@ void DECOMP_Audio_Update1(void)
         break;
     case 7:
 		#ifndef REBUILD_PS1
-        Garage_LerpFX();
+        DECOMP_Garage_LerpFX();
 		#endif
         break;
     case 8:
@@ -51,9 +51,9 @@ void DECOMP_Audio_Update1(void)
         DECOMP_Audio_SetMaskSong(0);
 
 		#ifdef USE_ONLINE
-		
+
 		d = gGT->drivers[0];
-		
+
 		#else
 
 		// human driver in the lead
@@ -73,7 +73,7 @@ void DECOMP_Audio_Update1(void)
 
 		if(d == 0)
 			break;
-		
+
 		#endif
 
 		#ifndef REBUILD_PS1
@@ -100,9 +100,9 @@ void DECOMP_Audio_Update1(void)
         DECOMP_Audio_SetMaskSong(0);
 
 		#ifdef USE_ONLINE
-		
+
 		d = gGT->drivers[0];
-		
+
 		#else
 
 		// human driver in the lead
@@ -119,10 +119,10 @@ void DECOMP_Audio_Update1(void)
             }
             d = 0;
         }
-		
+
 		if(d == 0)
 			break;
-		
+
 		#endif
 
 		// if need to XASeek
@@ -135,7 +135,7 @@ void DECOMP_Audio_Update1(void)
                 // (FINAL LAP! music)
                 DECOMP_CDSYS_XASeek(1, 0, 6);
             }
-			
+
 			// dont need to XASeek
             sdata->boolNeedXASeek = 0;
         }
@@ -177,9 +177,9 @@ void DECOMP_Audio_Update1(void)
         DECOMP_Audio_SetMaskSong(20);
 
 		#ifdef USE_ONLINE
-		
+
 		d = gGT->drivers[0];
-		
+
 		#else
 
 		// human driver in the lead
@@ -196,10 +196,10 @@ void DECOMP_Audio_Update1(void)
             }
             d = 0;
         }
-		
+
 		if(d == 0)
 			break;
-		
+
 		#endif
 
 		#ifndef REBUILD_PS1
@@ -222,9 +222,9 @@ void DECOMP_Audio_Update1(void)
     case 14:
 
 		#ifdef USE_ONLINE
-		
+
 		d = gGT->drivers[0];
-		
+
 		#else
 
 		// human driver in the lead
@@ -241,10 +241,10 @@ void DECOMP_Audio_Update1(void)
             }
             d = 0;
         }
-		
+
 		if(d == 0)
 			break;
-		
+
 		#endif
 
 		// if need to XASeek
@@ -256,7 +256,7 @@ void DECOMP_Audio_Update1(void)
             {
                 DECOMP_CDSYS_XASeek(1, 0, 4);
             }
-			
+
 			// dont need to XASeek
             sdata->boolNeedXASeek = 0;
         }
@@ -276,7 +276,7 @@ void DECOMP_Audio_Update1(void)
                 {
 					// defeat music
 					uVar1 = 5;
-					
+
                     if (
 							(d->driverRank == 0) ||
 							((gGT->gameMode1 & ADVENTURE_CUP) != 0) ||
@@ -299,7 +299,7 @@ void DECOMP_Audio_Update1(void)
                     // If there is a track where N Tropy has not been beaten
                     if ((uVar2 & 0xffff) == 0)
                     {
-                        // OtherFX_Play
+                        // DECOMP_OtherFX_Play
                         DECOMP_OtherFX_Play(0x5f, 0);
 
                         // count how many times N Tropy has been beaten
@@ -333,7 +333,7 @@ void DECOMP_Audio_Update1(void)
             // if n tropy just opened
             else
             {
-                // OtherFX_Play
+                // DECOMP_OtherFX_Play
                 DECOMP_OtherFX_Play(0x5f, 0);
 
                 // N Tropy opened

@@ -324,7 +324,7 @@ void DECOMP_VehPhysProc_Driving_PhysLinear(struct Thread* thread, struct Driver*
 
 #ifndef REBUILD_PS1
 				// gamepad vibration
-				GAMEPAD_ShockForce1(driver, 4, driverTimer + (approxTrig >> 5) + approximateSpeed2 + 0x18);
+				DECOMP_GAMEPAD_ShockForce1(driver, 4, driverTimer + (approxTrig >> 5) + approximateSpeed2 + 0x18);
 #endif
 
 				driverTimerNegativeFinal = driverTimerNegativePrelim | 1;

@@ -21,7 +21,7 @@ void DECOMP_VehStuckProc_MaskGrab_Init(struct Thread* t, struct Driver *d)
     //d->KartStates.MaskGrab.boolWhistle = false;
 
     // Mask Object
-    d->KartStates.MaskGrab.maskObj = VehPickupItem_MaskUseWeapon(d, 1);
+    d->KartStates.MaskGrab.maskObj = DECOMP_VehPickupItem_MaskUseWeapon(d, 1);
 
     d->matrixArray = 0;
     d->matrixIndex = 0;

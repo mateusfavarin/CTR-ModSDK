@@ -42,7 +42,7 @@ u_int DECOMP_SelectProfile_InputLogic(struct RectMenu* menu, short param_2, u_in
 
             if (menu->rowSelected != currRow)
             {
-                OtherFX_Play(0, 1);
+                DECOMP_OtherFX_Play(0, 1);
             }
              // If you press Cross or Circle
             if (((tap & 0x50) == 0) ||
@@ -51,7 +51,7 @@ u_int DECOMP_SelectProfile_InputLogic(struct RectMenu* menu, short param_2, u_in
                 // If you press Triangle or Square
                 if ((tap & 0x40020) != 0)
                 {
-                    OtherFX_Play(2, 1);
+                    DECOMP_OtherFX_Play(2, 1);
                     uVar5 = 1;
                     // row selected is -1, so we know to reinitialize
                     // the menu when we return to it next time
@@ -61,7 +61,7 @@ u_int DECOMP_SelectProfile_InputLogic(struct RectMenu* menu, short param_2, u_in
              // If you do not press Cross or Circle
             else
             {
-                OtherFX_Play(1, 1);
+                DECOMP_OtherFX_Play(1, 1);
                 uVar5 = 1;
                 if (sdata->data94_afterRand[0x26] == 1)
                 {
@@ -75,18 +75,18 @@ u_int DECOMP_SelectProfile_InputLogic(struct RectMenu* menu, short param_2, u_in
             u_char cancel = (tap & 0x40020) != 0;
             if (cancel)
             {
-                OtherFX_Play(2, 1);
+                DECOMP_OtherFX_Play(2, 1);
                 menu->rowSelected = 0xffff;
             }
             uVar5 = cancel;
             if (((confirm & 2) != 0) && ((tap & 0x50) != 0))
             {
-                OtherFX_Play(1, 1);
+                DECOMP_OtherFX_Play(1, 1);
                 uVar5 = 1;
             }
         }
 
-        RECTMENU_ClearInput();
+        DECOMP_RECTMENU_ClearInput();
     }
     return uVar5;
 }

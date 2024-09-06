@@ -86,7 +86,7 @@ void DECOMP_BOTS_MaskGrab(struct Thread *botThread)
     bot->posCurr.y = bot->ai_posBackup[2];
     bot->posCurr.z = bot->bot->ai_posBackup[1] + 0x10000;
 
-    mask = VehPickupItem_MaskUseWeapon(bot, 1);
+    mask = DECOMP_VehPickupItem_MaskUseWeapon(bot, 1);
 
     // Mask Object (620?)
     bot->maskObj = mask;

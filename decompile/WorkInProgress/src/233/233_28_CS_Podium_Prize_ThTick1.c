@@ -23,7 +23,7 @@ void DECOMP_CS_Podium_Prize_ThTick1(struct Thread *th)
             // Make visible
             inst->flags &= ~(HIDE_MODEL);
         }
-		
+
         interp = DECOMP_VehCalc_InterpBySpeed(prize[0x12], 0x14, 0);
         prize[0x12] = interp;
         interp = DECOMP_VehCalc_InterpBySpeed(prize[0x11], 1, 0);
@@ -31,14 +31,14 @@ void DECOMP_CS_Podium_Prize_ThTick1(struct Thread *th)
     }
 
     // Sine(angle)
-    angular = MATH_Sin(prize[5]);
+    angular = DECOMP_MATH_Sin(prize[5]);
 
     // posX and posY
     inst->matrix.t[0] = prize[0] + ((prize[0x11] * angular) >> 12);
     inst->matrix.t[1] = prize[1] + prize[0x12];
 
     // Cosine(angle)
-    angular = MATH_Cos(prize[5]);
+    angular = DECOMP_MATH_Cos(prize[5]);
 
     // posZ
     inst->matrix.t[2] = prize[2] + ((prize[0x11] * angular) >> 12);
@@ -71,12 +71,12 @@ void DECOMP_CS_Podium_Prize_ThTick1(struct Thread *th)
 
         // Play Sound
         // 0x9A - "Boing boing" -- when adding to trophy counter
-        OtherFX_Play(0x9a, 1);
+        DECOMP_OtherFX_Play(0x9a, 1);
 
 		void CS_Podium_Prize_ThTick2();
         ThTick_SetAndExec(th, CS_Podium_Prize_ThTick2);
 		return;
     }
-    
+
 	CS_Podium_Prize_Spin(inst, prize);
 }

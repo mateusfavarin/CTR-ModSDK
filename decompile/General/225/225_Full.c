@@ -106,7 +106,7 @@ void DECOMP_VB_EndEvent_DrawMenu(void)
   // Disable drawing lines between multiplayer screens
   gGT->renderFlags &= ~(0x8000);
 
-  RaceFlag_SetFullyOnScreen();
+  DECOMP_RaceFlag_SetFullyOnScreen();
 
   if (sdata->framesSinceRaceEnded <= FPS_DOUBLE(25))
   {
@@ -130,13 +130,13 @@ void DECOMP_VB_EndEvent_DrawMenu(void)
   iVar14 = uVar13 + 0x28;
 
   // "Versus" or "Battle"
-  DecalFont_DrawLine(
+  DECOMP_DecalFont_DrawLine(
 	sdata->lngStrings[iVar10],
 	pos[0], pos[1],
 	1, 0xffff8000);
 
   // STANDINGS
-  DecalFont_DrawLine(
+  DECOMP_DecalFont_DrawLine(
 	sdata->lngStrings[0xCA],
 	pos[0], (pos[1] + 0x11),
 	1, 0xffff8000);
@@ -180,7 +180,7 @@ void DECOMP_VB_EndEvent_DrawMenu(void)
         uStack112 = VsPosY_Config[VsPosY_NUM*VsConfigIndex + uStack88];
 
         // Draw character icon
-        DecalHUD_DrawPolyFT4(
+        DECOMP_DecalHUD_DrawPolyFT4(
 			gGT->ptrIcons[data.MetaDataCharacters[data.characterIDs[gGT->drivers[gGT->battleSetup.unk1dc8[iVar11]]->driverID]].iconID],
 
             // Position X and Position Y
@@ -210,7 +210,7 @@ void DECOMP_VB_EndEvent_DrawMenu(void)
             iVar6 = sVar9;
             sVar9 = sVar9 + 1;
 
-            DecalHUD_DrawPolyFT4(
+            DECOMP_DecalHUD_DrawPolyFT4(
 			gGT->ptrIcons[data.MetaDataCharacters[data.characterIDs[gGT->drivers[iVar10]->driverID]].iconID],
               pos[0], sVar5 + iVar6 * 0x1b,
 
@@ -268,7 +268,7 @@ void DECOMP_VB_EndEvent_DrawMenu(void)
                   (gGT->standingsPoints[gGT->battleSetup.unk1dc8[iVar11] * 3 + iVar10]));
 
           // Draw string
-          DecalFont_DrawLine(acStack160, (pos[0] + 0x79), ((uStack112 - (iVar6 * 4 + -0xd)) + iVar10 * 8), 2, uVar7);
+          DECOMP_DecalFont_DrawLine(acStack160, (pos[0] + 0x79), ((uStack112 - (iVar6 * 4 + -0xd)) + iVar10 * 8), 2, uVar7);
         }
       }
 
@@ -294,7 +294,7 @@ void DECOMP_VB_EndEvent_DrawMenu(void)
       sprintf(acStack160, "%d%s", sVar1 + 1, sdata->lngStrings[((short *)0x800a0200)[sVar1]]);
 
       // Draw String
-      DecalFont_DrawLine(acStack160, (pos[0] - 0x24), (uStack112 + 5), 1, 0xffff8000);
+      DECOMP_DecalFont_DrawLine(acStack160, (pos[0] - 0x24), (uStack112 + 5), 1, 0xffff8000);
     }
   }
 
@@ -405,7 +405,7 @@ void DECOMP_VB_EndEvent_DrawMenu(void)
     endMenu = ((gGT->gameMode1 & 0x20) == 0) ? &menuVS : &menuBattle;
 
     // Make Menu Box appear based on the game mode
-    RECTMENU_Show(endMenu);
+    DECOMP_RECTMENU_Show(endMenu);
 
     sdata->menuReadyToPass |= 1;
   }

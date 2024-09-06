@@ -105,8 +105,8 @@ void DECOMP_UI_RaceStart_IntroText1P(void) {
          transition = 0x1e - gGT -> cameraDC -> unk8E;
       }
 
-   // RaceFlag_IsFullyOnScreen
-   iVar2 = RaceFlag_IsFullyOnScreen();
+   // DECOMP_RaceFlag_IsFullyOnScreen
+   iVar2 = DECOMP_RaceFlag_IsFullyOnScreen();
 
    // if not
    if (iVar2 == 0) {

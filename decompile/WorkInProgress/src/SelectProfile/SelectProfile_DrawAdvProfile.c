@@ -30,20 +30,20 @@ void DECOMP_SelectProfile_DrawAdvProfile(struct AdvProgress *adv, int posX, int 
         percentColor = LIGHT_GREEN;
     }
 
-    GAMEPROG_AdvPercent(adv);
+    DECOMP_GAMEPROG_AdvPercent(adv);
 
     // If Adventure Profile is empty
     if (adv->characterID < 0)
     {
         // EMPTY (slot)
-        DecalFont_DrawLine(sdata->lngStrings[0xb5], posX + 0x6c, posY + 23, 1, emptySlotColor | JUSTIFY_CENTER);
+        DECOMP_DecalFont_DrawLine(sdata->lngStrings[0xb5], posX + 0x6c, posY + 23, 1, emptySlotColor | JUSTIFY_CENTER);
     }
     else
     {
         iconColor = (isGreenLoadMenu) ? sdata->greenColor : sdata->greyColor;
 
         // Character Icon
-        RECTMENU_DrawPolyGT4(gGT->ptrIcons[data.MetaDataCharacters[adv->characterID].iconID],
+        DECOMP_RECTMENU_DrawPolyGT4(gGT->ptrIcons[data.MetaDataCharacters[adv->characterID].iconID],
                             posX + 10, posY + 6,
                             &gGT->backBuffer->primMem,
                             gGT->pushBuffer_UI.ptrOT,
@@ -51,7 +51,7 @@ void DECOMP_SelectProfile_DrawAdvProfile(struct AdvProgress *adv, int posX, int 
                             1, 0x1000);
 
         // Draw Name of profile
-        DecalFont_DrawLine(adv->name, posX + 0x6c, posY + 0x29, 1, nameColor | JUSTIFY_CENTER);
+        DECOMP_DecalFont_DrawLine(adv->name, posX + 0x6c, posY + 0x29, 1, nameColor | JUSTIFY_CENTER);
 
         // Print the numbers
         SelectProfile_PrintInteger(gGT->currAdvProfile.completionPercent, posX + 0x6a, posY + 23, 0, integerColor);
@@ -60,7 +60,7 @@ void DECOMP_SelectProfile_DrawAdvProfile(struct AdvProgress *adv, int posX, int 
         SelectProfile_PrintInteger(gGT->currAdvProfile.numRelics, posX + 0xb5, posY + 23, 0, integerColor);
 
         // "%"
-        DecalFont_DrawLine(&sdata->s_percent_sign, posX + 0x70, posY + 23, 1, percentColor);
+        DECOMP_DecalFont_DrawLine(&sdata->s_percent_sign, posX + 0x70, posY + 23, 1, percentColor);
 
         // Draw instances of Trophy, Key and Relics
         for (int i = 0; i < 3; i++)
@@ -91,5 +91,5 @@ void DECOMP_SelectProfile_DrawAdvProfile(struct AdvProgress *adv, int posX, int 
     box.y = posY;
     box.w = 220;
     box.h = 61;
-    RECTMENU_DrawInnerRect(&box, menuFlag, gGT->backBuffer->otMem.startPlusFour[0xC]);
+    DECOMP_RECTMENU_DrawInnerRect(&box, menuFlag, gGT->backBuffer->otMem.startPlusFour[0xC]);
 }

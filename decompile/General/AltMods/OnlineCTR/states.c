@@ -107,7 +107,7 @@ void StatePS1_Launch_PickRoom()
 	text[15] = '0' + ((serverTotal / 10) % 10);
 	text[16] = '0' + (serverTotal % 10);
 
-	DecalFont_DrawLine(text, menu.posX_curr, 0xb8, FONT_SMALL,JUSTIFY_CENTER|PAPU_YELLOW);
+	DECOMP_DecalFont_DrawLine(text, menu.posX_curr, 0xb8, FONT_SMALL,JUSTIFY_CENTER|PAPU_YELLOW);
 }
 
 void StatePS1_Launch_Error()
@@ -238,7 +238,7 @@ void StatePS1_Lobby_Loading()
 	// stop music,
 	// stop "most FX", let menu FX ring
 	Music_Stop();
-	howl_StopAudio(1,1,0);
+	DECOMP_howl_StopAudio(1,1,0);
 	sdata->unkAudioState = 0;
 
 	struct GameTracker* gGT = sdata->gGT;
@@ -395,8 +395,8 @@ void StatePS1_Game_Race()
 		int color = RED;
 		if (octr->dnfTimer < 6) { color = frameCounter++ & FPS_DOUBLE(1) ? RED : WHITE; }
 		sprintf(s_dnfNumber, "%u", octr->dnfTimer);
-		DecalFont_DrawLine(s_dnfNumber, 192, 10, FONT_BIG, JUSTIFY_CENTER | color);
-		DecalFont_DrawLine(s_dnf, 192, 10 + data.font_charPixHeight[FONT_BIG], FONT_SMALL, JUSTIFY_CENTER | color);
+		DECOMP_DecalFont_DrawLine(s_dnfNumber, 192, 10, FONT_BIG, JUSTIFY_CENTER | color);
+		DECOMP_DecalFont_DrawLine(s_dnf, 192, 10 + data.font_charPixHeight[FONT_BIG], FONT_SMALL, JUSTIFY_CENTER | color);
 	}
 	else { msCount = 0; }
 }

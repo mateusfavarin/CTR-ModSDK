@@ -8,7 +8,7 @@ void CS_Thread_ThTick(struct Thread *t)
 
     struct CutsceneObj* cs = t->object; // Cutscene obj
     struct GameTracker* gGT = sdata->gGT;
-    
+
     // if cutscene thread needs to die
     if ((CS_Thread_UseOpcode(t->inst, cs) != NULL) &&
 
@@ -72,7 +72,7 @@ void CS_Thread_ThTick(struct Thread *t)
             CS_Instance_GetFrameData(inst, inst->animIndex, inst->animFrame, &box, 0, 0);
 
             OVR_233.VertSplitLine = box.y;
-            
+
             if (inst == NULL)
                 goto DRAW_SUBTITLES;
         }
@@ -101,7 +101,7 @@ DRAW_SUBTITLES:
         box.y = cs->Subtitles.textPos[1] - 4;
 
         // Draw 2D Menu rectangle background
-        RECTMENU_DrawInnerRect(&box, 4, gGT->backBuffer->otMem.startPlusFour);
+        DECOMP_RECTMENU_DrawInnerRect(&box, 4, gGT->backBuffer->otMem.startPlusFour);
     }
 
     // if cutscene is over

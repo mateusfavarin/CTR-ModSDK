@@ -23,7 +23,7 @@ uint8_t MEMCARD_Load(int slotIdx, char *name, uint8_t *ptrMemcard, int memcardFi
 
     if (sdata->memcard_fd == -1)
     {
-        MEMCARD_CloseFile();
+        DECOMP_MEMCARD_CloseFile();
         return 6;
     }
     else

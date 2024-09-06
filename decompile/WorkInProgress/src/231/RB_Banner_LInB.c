@@ -18,7 +18,7 @@ void RB_Banner_LInB(struct Instance* inst)
   // If this instance has no thread
   if (inst->thread == 0)
   {
-    t = PROC_BirthWithObject(
+    t = DECOMP_PROC_BirthWithObject(
         SIZE_RELATIVE_POOL_BUCKET(
             0x4,
             NONE,
@@ -73,7 +73,7 @@ void RB_Banner_LInB(struct Instance* inst)
           {
             angle = (i << 0x10) >> 9;
 
-            approx = (char)(MATH_Sin(angle) >> 6) - 0x80;
+            approx = (char)(DECOMP_MATH_Sin(angle) >> 6) - 0x80;
 
             // if more than 3 screens
             if (3 < gGT->numPlyrCurrGame)

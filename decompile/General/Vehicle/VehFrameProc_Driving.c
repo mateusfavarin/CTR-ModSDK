@@ -39,7 +39,7 @@ void DECOMP_VehFrameProc_Driving(struct Thread *t, struct Driver *d)
 
     currAnimIndex = inst->animIndex;
 
-    numFrames = VehFrameInst_GetNumAnimFrames(inst, currAnimIndex);
+    numFrames = DECOMP_VehFrameInst_GetNumAnimFrames(inst, currAnimIndex);
 
     if (numFrames <= 0) return;
 
@@ -50,12 +50,12 @@ void DECOMP_VehFrameProc_Driving(struct Thread *t, struct Driver *d)
         if (currAnimIndex == 2)
         {
             // start on the last frame
-            startFrame = VehFrameInst_GetNumAnimFrames(inst,2) - 1;
+            startFrame = DECOMP_VehFrameInst_GetNumAnimFrames(inst,2) - 1;
         }
         else
         {
             // starting frame
-            startFrame = VehFrameInst_GetStartFrame(currAnimIndex, numFrames);
+            startFrame = DECOMP_VehFrameInst_GetStartFrame(currAnimIndex, numFrames);
         }
 
         // frame not aligned
@@ -76,7 +76,7 @@ void DECOMP_VehFrameProc_Driving(struct Thread *t, struct Driver *d)
             }
 
             // curr frame, animation moving speed per frame, starting frame
-            interp = VehCalc_InterpBySpeed(inst->animFrame, animSpeed, startFrame);
+            interp = DECOMP_VehCalc_InterpBySpeed(inst->animFrame, animSpeed, startFrame);
             inst->animFrame = (short)interp;
 
             if ((unsigned int)(currAnimIndex - 2) > 1) return;
@@ -92,14 +92,14 @@ void DECOMP_VehFrameProc_Driving(struct Thread *t, struct Driver *d)
             return;
         }
 
-        numFrames = VehFrameInst_GetNumAnimFrames(inst, animType);
+        numFrames = DECOMP_VehFrameInst_GetNumAnimFrames(inst, animType);
 
         if (numFrames <= 0) return;
 
         // set animation
         inst->animIndex = (char)animType;
         // starting frame
-        inst->animFrame = VehFrameInst_GetStartFrame(animType, numFrames);
+        inst->animFrame = DECOMP_VehFrameInst_GetStartFrame(animType, numFrames);
         // init kart anim
         d->matrixArray = 0;
         d->matrixIndex = 0;
@@ -157,7 +157,7 @@ void DECOMP_VehFrameProc_Driving(struct Thread *t, struct Driver *d)
         // jump animation
         if (animType == 3)
         {
-            interp = VehCalc_InterpBySpeed(inst->animFrame, 1, numFrames - 1);
+            interp = DECOMP_VehCalc_InterpBySpeed(inst->animFrame, 1, numFrames - 1);
             inst->animFrame = interp;
 
             if (d->kartState == KS_MASK_GRABBED) return;
@@ -190,6 +190,6 @@ void DECOMP_VehFrameProc_Driving(struct Thread *t, struct Driver *d)
         // last frame
         iVar9 = numFrames - 1;
     }
-    interp = VehCalc_InterpBySpeed(inst->animFrame, 1, iVar9);
+    interp = DECOMP_VehCalc_InterpBySpeed(inst->animFrame, 1, iVar9);
     inst->animFrame = interp;
 }

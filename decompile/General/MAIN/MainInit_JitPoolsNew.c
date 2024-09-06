@@ -105,7 +105,7 @@ void DECOMP_MainInit_JitPoolsNew(struct GameTracker *gGT)
   // WarpPad is the largest struct that uses MedStackPool
   DECOMP_JitPool_Init(
 	&gGT->JitPools.mediumStack, numMedium,
-	sizeof(struct Item) + sizeof(struct WarpPad), 
+	sizeof(struct Item) + sizeof(struct WarpPad),
 	/*"MediumStackPool"*/0);
 
 // original ps1 with fragmented memory
@@ -135,7 +135,7 @@ void DECOMP_MainInit_JitPoolsNew(struct GameTracker *gGT)
   // UiElement3D is the largest struct that uses SmallStackPool
   DECOMP_JitPool_Init(
 	&gGT->JitPools.smallStack, numSmall,
-	sizeof(struct Item) + sizeof(struct UiElement3D),  
+	sizeof(struct Item) + sizeof(struct UiElement3D),
 	/*"SmallStackPool"*/0);
 
 
@@ -182,7 +182,7 @@ void DECOMP_MainInit_JitPoolsNew(struct GameTracker *gGT)
   // save 0x400 - 0x1000 bytes
   // when compiling with OG game's RDATA
   // then expand PrimMem in 60fps,
-  // add 148 bytes cause of MATH_Sin relocated
+  // add 148 bytes cause of DECOMP_MATH_Sin relocated
   gGT->ptrRenderBucketInstance = (int)148 + (int)&rdata.s_STATIC_GNORMALZ[0];
 #endif
 

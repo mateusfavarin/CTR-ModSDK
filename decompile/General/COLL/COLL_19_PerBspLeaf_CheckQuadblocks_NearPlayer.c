@@ -22,6 +22,6 @@ void DECOMP_COLL_PerBspLeaf_CheckQuadblocks_NearPlayer(struct BSP *node, struct 
 
     if ((sps->Union.QuadBlockColl.searchFlags & 1) != 0)
     {
-        COLL_PerBspLeaf_CheckInstances(node, sps);
+        DECOMP_COLL_PerBspLeaf_CheckInstances(node, sps);
     }
 }

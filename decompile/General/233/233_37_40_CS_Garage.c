@@ -11,8 +11,8 @@ void DECOMP_CS_Garage_ZoomOut(char zoomState)
 
 #ifndef REBUILD_PS1
 		// both howl
-        Garage_Init();
-        Garage_Enter(sdata->advCharSelectIndex_curr);
+        DECOMP_Garage_Init();
+        DECOMP_Garage_Enter(sdata->advCharSelectIndex_curr);
 #endif
 
         DECOMP_Audio_SetState_Safe(8);
@@ -376,7 +376,7 @@ void DECOMP_CS_Garage_MenuProc(void)
 	#if 0
 	// Original game uses array at 800b85d8,
 	// we remove the usage cause it's just 0,1,2,3,4,5,6,7,
-	// this array is used in Oxide Fix (Garage_Init+0x80),
+	// this array is used in Oxide Fix (DECOMP_Garage_Init+0x80),
 	// so we can adjust the mod to fit the new code
 
 	// otherwise would be
@@ -473,7 +473,7 @@ void DECOMP_CS_Garage_MenuProc(void)
                     sdata->mainMenuState = 0;
 
 #ifndef REBUILD_PS1
-                    Garage_Leave();
+                    DECOMP_Garage_Leave();
 #endif
 
                     // load main menu LEV
@@ -566,7 +566,7 @@ void DECOMP_CS_Garage_MenuProc(void)
             sdata->advCharSelectIndex_curr = uVar21;
 
 #ifndef REBUILD_PS1
-            Garage_MoveLR(uVar21);
+            DECOMP_Garage_MoveLR(uVar21);
 #endif
         }
 

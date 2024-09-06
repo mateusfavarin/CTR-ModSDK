@@ -10,7 +10,7 @@ void DECOMP_MM_HighScore_MenuProc(struct RectMenu* menu_unused)
   int iVar6;
   int iVar7;
   RECT local_20;
-  
+
   bVar1 = false;
   if (D230.highScore_transitionState != IN_MENU)
   {
@@ -117,13 +117,13 @@ void DECOMP_MM_HighScore_MenuProc(struct RectMenu* menu_unused)
   }
 
 LAB_OVR_230__800b3c78:
-  
+
   iVar4 = 0;
   if ((((bVar1) || (D230.highScore_transitionFrames[1] != 0)) || (D230.highScore_transitionFrames[2] != 0)) || (D230.highScore_transitionState == 2))
   {
     iVar4 = 1;
   }
-  
+
   DECOMP_MM_TrackSelect_Video_State(iVar4);
   sVar2 = D230.highScore_transitionFrames[1] + -1;
   if (D230.highScore_transitionFrames[1] == 0)
@@ -164,22 +164,22 @@ LAB_OVR_230__800b3c78:
       D230.highScore_trackCurr = D230.highScore_trackDesired;
     }
   }
-  
+
   DECOMP_RECTMENU_DrawSelf(&D230.menuHighScore,D230.transitionMeta_HighScores[10].currX,D230.transitionMeta_HighScores[10].currY,0xa4);
-  
+
   iVar4 = 0;
   iVar7 = 0;
-  
+
   if (D230.highScore_transitionFrames[1] == 0)
   {
     iVar4 = (FPS_DOUBLE(8) - D230.highScore_transitionFrames[2]) * D230.highScore_verticalMove[0] * 0x1b;
   }
-  
+
   else
   {
     iVar7 = (FPS_DOUBLE(8) - D230.highScore_transitionFrames[1]) * D230.highScore_horizontalMove[0] * 0x40;
   }
-  
+
   if (((iVar7 != -0x200) && (iVar7 != 0x200)) && ((iVar4 != -0xd8 && (iVar4 != 0xd8))))
   {
     DECOMP_MM_HighScore_Draw(D230.highScore_trackCurr,(int)D230.highScore_rowCurr,(int)(short)iVar7,(int)(short)iVar4);
@@ -207,13 +207,13 @@ LAB_OVR_230__800b3c78:
   {
     DECOMP_MM_HighScore_Draw(D230.highScore_trackDesired,(int)D230.highScore_rowDesired,(int)(short)iVar5,(int)(short)iVar6);
   }
-  
+
   // draw rectangle
   local_20.w = 0x228;
   local_20.h = 0x19;
   local_20.x = D230.transitionMeta_HighScores[0].currX + -0x14;
   local_20.y = D230.transitionMeta_HighScores[0].currY + (short)iVar6 + 9;
   DECOMP_RECTMENU_DrawInnerRect(&local_20,0,(u_long *)(sdata->gGT->backBuffer->otMem).startPlusFour);
-  
+
   return;
 }

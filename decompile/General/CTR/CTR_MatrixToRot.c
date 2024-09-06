@@ -5,7 +5,7 @@
 /// @param rot - resulting rotation vector
 /// @param matrix - instance matrix
 /// @param flags - 3 bits boots + 2 bits some offset value (b0 - switch XZ, b1 - ?, b2 - negate the result)
-void CTR_MatrixToRot(SVECTOR *rot, MATRIX *matrix, u_int flags)
+void DECOMP_CTR_MatrixToRot(SVECTOR *rot, MATRIX *matrix, u_int flags)
 {
     int iVar2;
     int iVar3;
@@ -16,7 +16,7 @@ void CTR_MatrixToRot(SVECTOR *rot, MATRIX *matrix, u_int flags)
     u_int uVar7 = flags >> 2 & 1;
 
     // TODO: update global table def and use that instead of local
-    // TODO: figure out better names for whatever indices these are    
+    // TODO: figure out better names for whatever indices these are
     // my guess these are axes
     // there are 2 char[] tables
     // 0 1 2 0 0 0 0 0
@@ -42,14 +42,14 @@ void CTR_MatrixToRot(SVECTOR *rot, MATRIX *matrix, u_int flags)
 
         psVar5 = matrix->m[t1value] + t2value1;
         iVar2 = (int)*psVar5;
-        
+
         psVar11 = matrix->m[t1value] + t2value2;
         iVar3 = (int)*psVar11;
 
         iVar2 = MATH_FastSqrt(iVar2 * iVar2 + iVar3 * iVar3, 0x18) >> FRACTIONAL_BITS;
 
         // based on sqrt result, calculate vector
-        if (iVar2 < 0x11) 
+        if (iVar2 < 0x11)
         {
             rot->vx = (short)ratan2(-(int)matrix->m[t2value1][t2value2], (int)*(short *)((int)matrix->m + t2value1 * 8));
             rot->vy = (short)ratan2(iVar2, (long)*(short *)((int)matrix->m + t1value * 8));
@@ -76,8 +76,8 @@ void CTR_MatrixToRot(SVECTOR *rot, MATRIX *matrix, u_int flags)
         iVar2 = MATH_FastSqrt(iVar2 * iVar2 + iVar3 * iVar3, 0x18) >> FRACTIONAL_BITS;
 
         // based on sqrt result, calculate vector
-        if (iVar2 < 0x11) 
-        {      
+        if (iVar2 < 0x11)
+        {
             rot->vx = (short)ratan2(-(int)matrix->m[t2value1][t2value2], (int)*(short *)((int)matrix->m + t2value1 * 8));
             rot->vy = (short)ratan2(-(int)matrix->m[t2value2][t1value], iVar2);
             rot->vz = (short)0;

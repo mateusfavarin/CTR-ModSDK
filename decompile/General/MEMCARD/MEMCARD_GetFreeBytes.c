@@ -9,7 +9,7 @@ void DECOMP_MEMCARD_GetFreeBytes(int slotIdx)
   struct DIRENTRY *firstEntry;
   struct DIRENTRY entry;
 
-  MEMCARD_StringSet(sdata->s_bu00_BASCUS_94426_slots, slotIdx, sdata->s_AnyFile);
+  DECOMP_MEMCARD_StringSet(sdata->s_bu00_BASCUS_94426_slots, slotIdx, sdata->s_AnyFile);
 
   int bytesUsedMemCard = 0;
 

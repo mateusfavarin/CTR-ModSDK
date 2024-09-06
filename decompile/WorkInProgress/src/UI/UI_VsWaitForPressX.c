@@ -92,7 +92,7 @@ void DECOMP_UI_VsWaitForPressX(void)
 
           // ivar9 0x157: YOU HIT
           // ivar9 0x158: HIT YOU
-          DecalFont_DrawLine(sdata->lngStrings[string],
+          DECOMP_DecalFont_DrawLine(sdata->lngStrings[string],
 
                              // Midpoint between pushBuffer Start X and End X
                              viewport->x + (viewport->w >> 1),
@@ -160,7 +160,7 @@ void DECOMP_UI_VsWaitForPressX(void)
 
               local_78 = (sVar4 + 0x18U | 0x8000);
 
-              DecalFont_DrawLine(acStack88,
+              DECOMP_DecalFont_DrawLine(acStack88,
 
                                  // midpoint between Start X and Size X
                                  (viewport->x + shortArr[j*2+0]),

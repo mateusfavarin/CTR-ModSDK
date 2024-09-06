@@ -9,7 +9,7 @@ void DECOMP_DecalHUD_DrawPolyFT4(struct Icon* icon, short posX, short posY, stru
 	ui16BY9_DrawPolyFT4(icon, posX, posY, primMem, ot, transparency, scale);
 	return;
 	#endif
-	
+
 	if (!icon) return;
 
 	POLY_FT4* p = (POLY_FT4*)primMem->curr;
@@ -19,7 +19,7 @@ void DECOMP_DecalHUD_DrawPolyFT4(struct Icon* icon, short posX, short posY, stru
 	unsigned int height = icon->texLayout.v2 - icon->texLayout.v0;
 	unsigned int bottomY = posY + FP_Mult(height, scale);
 	unsigned int rightX = posX + FP_Mult(width, scale);
-	
+
 	#if EDUCATIONAL_BUG_IF
 		// using custom-made macro that resembles the compiler optimization used in the original code
 		// the X and Y fields of the primitive will be dereferenced as combined 32-bit integers for each vertex

@@ -8,19 +8,19 @@ struct Instance* DECOMP_INSTANCE_BirthWithThread(
 	struct Model* m;
 	struct Thread* t;
 	struct Instance* inst;
-	
+
 	gGT = sdata->gGT;
-	
+
 	m = gGT->modelPtr[modelID];
-	
+
 	if(m == 0)
 	{
 		// June 1999
-		// printf("INSTANCE_BirthWithThread: object type %d not found!\n",param_1);
-		
+		// printf("DECOMP_INSTANCE_BirthWithThread: object type %d not found!\n",param_1);
+
 		return 0;
 	}
-	
+
 	// talkingMask is unaligned
 	if((objSize & 3) != 0)
 	{
@@ -28,27 +28,27 @@ struct Instance* DECOMP_INSTANCE_BirthWithThread(
 		// no object will exceed 0x670 bytes
 		objSize = (objSize & 0xffc) + 4;
 	}
-	
+
 	t = DECOMP_PROC_BirthWithObject
 		(
 			// creation flags
 			SIZE_RELATIVE_POOL_BUCKET
 			(
-				objSize, 
-				
+				objSize,
+
 				// relation not given directly
 				NONE,
-				
+
 				// relation included in one of these
-				poolType, 
+				poolType,
 				bucket
-			), 
-			
+			),
+
 			funcThTick,	// behavior
 			name,		// debug name
 			parent		// thread relative
 		);
-		
+
 	/*
 
 	June 1999
@@ -60,10 +60,10 @@ struct Instance* DECOMP_INSTANCE_BirthWithThread(
     }
 
 	*/
-	
+
 	t->modelIndex = modelID;
 	inst = DECOMP_INSTANCE_Birth3D(m, name, t);
-	
+
 	/*
 
     if (iVar3 == 0) {
@@ -74,8 +74,8 @@ struct Instance* DECOMP_INSTANCE_BirthWithThread(
     }
 
 	*/
-	
+
 	t->inst = inst;
-	
+
 	return inst;
 }

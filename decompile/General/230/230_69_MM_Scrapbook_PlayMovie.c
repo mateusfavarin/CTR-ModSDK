@@ -6,7 +6,7 @@ int ScrapBookPlayMovie_DecodeFrame()
 {
 	struct GameTracker* gGT = sdata->gGT;
 	DRAWENV* ptrDrawEnv = &gGT->db[1 - gGT->swapchainIndex].drawEnv;
-            
+
 	return MM_Video_DecodeFrame(
 		ptrDrawEnv->ofs[0],
 		ptrDrawEnv->ofs[1] + 4) == 0;
@@ -88,7 +88,7 @@ void DECOMP_MM_Scrapbook_PlayMovie(struct RectMenu* menu)
 
     // Actually play the movie
     case 2:
-	
+
 #ifndef REBUILD_PS1
         // infinite loop (cause this is scrapbook),
         // keep doing DecodeFrame and VSync until done
@@ -96,7 +96,7 @@ void DECOMP_MM_Scrapbook_PlayMovie(struct RectMenu* menu)
         {
             VSync(0);
         }
-		
+
 		// If you press Start, Cross, Circle, Triangle, or Square
 		getButtonPress = (sdata->buttonTapPerPlayer[0] & 0x41070);
 
@@ -157,7 +157,7 @@ void DECOMP_MM_Scrapbook_PlayMovie(struct RectMenu* menu)
             if ((gGT->gameMode1 & ADVENTURE_MODE) == 0)
             {
                 lev = MAIN_MENU_LEVEL;
-				
+
                 DECOMP_MM_JumpTo_Title_Returning();
 
                 // return to main menu (adv, tt, arcade, vs, battle)
@@ -165,7 +165,7 @@ void DECOMP_MM_Scrapbook_PlayMovie(struct RectMenu* menu)
             }
 
             DECOMP_MainRaceTrack_RequestLoad(lev);
-			
+
             DECOMP_RECTMENU_Hide(menu);
         }
         break;

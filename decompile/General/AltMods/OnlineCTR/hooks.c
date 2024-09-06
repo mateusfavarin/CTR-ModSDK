@@ -46,7 +46,7 @@ void octr_initHook()
 	void ThreadFunc();
 
 	// small stack pool, pause thread (those threads can't pause)
-	PROC_BirthWithObject(0x30f, ThreadFunc, 0, 0);
+	DECOMP_PROC_BirthWithObject(0x30f, ThreadFunc, 0, 0);
 
 	struct GameTracker* gGT = sdata->gGT;
 	gGT->gameMode2 &= ~(CHEAT_ADV | CHEAT_BOMBS | CHEAT_ENGINE | CHEAT_ICY | CHEAT_INVISIBLE | CHEAT_MASK | CHEAT_ONELAP | CHEAT_SUPERHARD | CHEAT_TURBO | CHEAT_TURBOCOUNT | CHEAT_TURBOPAD | CHEAT_WUMPA);
@@ -189,7 +189,7 @@ void OnlineEndOfRace()
 	int color = frameCounter++ & FPS_DOUBLE(1) ? RED : WHITE;
 	if (octr->raceOver)
 	{
-		DecalFont_DrawLine("RACE COMPLETE", 256, 108, FONT_BIG, JUSTIFY_CENTER | color);
+		DECOMP_DecalFont_DrawLine("RACE COMPLETE", 256, 108, FONT_BIG, JUSTIFY_CENTER | color);
 	}
 }
 
@@ -220,7 +220,7 @@ void Online_OtherFX_RecycleNew(
         ((local & 0xffff) != newSoundID)
 	   )
     {
-        OtherFX_Stop1(local);
+        DECOMP_OtherFX_Stop1(local);
 
 		*soundID_Count = 0;
 		local = 0;
@@ -232,13 +232,13 @@ void Online_OtherFX_RecycleNew(
         if (local == 0)
         {
             *soundID_Count =
-				OtherFX_Play_LowLevel(newSoundID & 0xffff, 0, modifyFlags);
+				DECOMP_OtherFX_Play_LowLevel(newSoundID & 0xffff, 0, modifyFlags);
         }
         // if not a new sound,
         // modification of old sound
         else
         {
-            OtherFX_Modify(local, modifyFlags);
+            DECOMP_OtherFX_Modify(local, modifyFlags);
         }
     }
 }

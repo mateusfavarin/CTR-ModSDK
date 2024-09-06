@@ -13,7 +13,7 @@ int FUN_8003ddac(void)
 
     case 1:
 
-        event = MEMCARD_GetNextSwEvent();
+        event = DECOMP_MEMCARD_GetNextSwEvent();
 
         if (event == 0)
         {
@@ -25,7 +25,7 @@ int FUN_8003ddac(void)
                 sdata->unk_card_8008D404 = 2;
 
                 // do something wtih both memcards if they're present,
-                MEMCARD_SkipEvents();
+                DECOMP_MEMCARD_SkipEvents();
 
                 // ?? spam read until it works?
                 while (_card_load(sdata->memcardSlot) != 1)
@@ -55,14 +55,14 @@ int FUN_8003ddac(void)
                 }
                 return 7;
             }
-            MEMCARD_SkipEvents();
+            DECOMP_MEMCARD_SkipEvents();
             while (_card_clear(sdata->memcardSlot) != 1)
                 ;
             event = MEMCARD_WaitForHwEvent();
             if (event == 0)
             {
                 sdata->unk_card_8008D404 = 2;
-                MEMCARD_SkipEvents();
+                DECOMP_MEMCARD_SkipEvents();
                 while (_card_load(sdata->memcardSlot) != 1)
                     ;
                 return 7;
@@ -73,14 +73,14 @@ int FUN_8003ddac(void)
 
     case 2:
 
-        event = MEMCARD_GetNextSwEvent();
+        event = DECOMP_MEMCARD_GetNextSwEvent();
 
         if (event == 0)
         {
             sdata->unk_card_8008D404 = 0;
             sdata->memcardStatusFlags = sdata->memcardStatusFlags & 0xfffffffe | 2;
 
-            MEMCARD_GetFreeBytes(sdata->memcardSlot);
+            DECOMP_MEMCARD_GetFreeBytes(sdata->memcardSlot);
 
             return 3;
         }
@@ -100,7 +100,7 @@ int FUN_8003ddac(void)
 
     case 3:
 
-        event = MEMCARD_GetNextSwEvent();
+        event = DECOMP_MEMCARD_GetNextSwEvent();
 
         if (event == 0)
         {
@@ -143,7 +143,7 @@ int FUN_8003ddac(void)
     case 4:
     case 6:
 
-        event = MEMCARD_GetNextSwEvent();
+        event = DECOMP_MEMCARD_GetNextSwEvent();
 
         if (event == 0)
         {
@@ -206,7 +206,7 @@ int FUN_8003ddac(void)
             }
         }
     CLOSEFILE_JUMP:
-        MEMCARD_CloseFile();
+        DECOMP_MEMCARD_CloseFile();
         break;
     default:
         event = 1;
@@ -215,15 +215,15 @@ int FUN_8003ddac(void)
     case 10:
     case 11:
 
-        event = MEMCARD_GetNextSwEvent();
+        event = DECOMP_MEMCARD_GetNextSwEvent();
 
         if (event == 0)
         {
             if ((sdata->unk_card_8008D404 != 9) && ((10 < sdata->unk_card_8008D404 || ((sdata->memcardStatusFlags & 4) != 0))))
             {
-                MEMCARD_CloseFile();
+                DECOMP_MEMCARD_CloseFile();
 
-                MEMCARD_GetFreeBytes(sdata->memcardSlot);
+                DECOMP_MEMCARD_GetFreeBytes(sdata->memcardSlot);
 
                 return 0;
             }

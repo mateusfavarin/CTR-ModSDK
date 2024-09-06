@@ -4,7 +4,7 @@ int DECOMP_MEMCARD_IsFile(int slotIdx, char *save_name)
 {
     char name[64];
 
-    MEMCARD_StringSet(name, slotIdx, save_name);
+    DECOMP_MEMCARD_StringSet(name, slotIdx, save_name);
 
     // 0x8002, in sys/fcntl.h
     // 0x8000 = FASYNC, for asynchronous I/O

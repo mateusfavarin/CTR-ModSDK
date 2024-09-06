@@ -40,7 +40,7 @@ void DECOMP_UI_DrawLimitClock(short posX, short posY, short fontType)
 #ifndef REBUILD_PC
 			MainGameEnd_Initialize();
 #endif
-			
+
 		}
 	}
 

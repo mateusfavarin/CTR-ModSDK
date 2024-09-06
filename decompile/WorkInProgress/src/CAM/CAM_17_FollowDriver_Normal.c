@@ -697,7 +697,7 @@ LAB_8001ab04:
                     }
 
                     // Sine(angle)
-                    x = MATH_Sin(0x400 - (iVar12 << 10) / x);
+                    x = DECOMP_MATH_Sin(0x400 - (iVar12 << 10) / x);
 
                     cDC->unk8C = (short)(x / 2) + 0x800;
                 }
@@ -715,7 +715,7 @@ LAB_8001ab04:
                     }
 
                     // Cosine(angle)
-                    x = MATH_Cos(iVar14 / x);
+                    x = DECOMP_MATH_Cos(iVar14 / x);
 
                     *(short *)(cDC + 0x8c) = 0x800 - (short)(x / 2);
                 }

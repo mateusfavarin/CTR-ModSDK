@@ -6,7 +6,7 @@ void OVR_Region3();
 void DECOMP_LOAD_OvrThreads(unsigned int param_1)
 {
 	struct GameTracker* gGT = sdata->gGT;
-  
+
 	// if new Threads overlay needs to load
     if (gGT->overlayIndex_Threads != param_1)
     {
@@ -16,7 +16,7 @@ void DECOMP_LOAD_OvrThreads(unsigned int param_1)
 		// gets overwritten in overlay callback,
 		// commented out or this function wont fit,
 		// dont erase this, need more research
-		
+
         // gGT->overlayIndex_Threads = 0xff;
 
 		// Threads overlay 230-233

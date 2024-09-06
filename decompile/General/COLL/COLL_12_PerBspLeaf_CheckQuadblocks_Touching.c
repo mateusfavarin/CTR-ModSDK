@@ -22,6 +22,6 @@ void DECOMP_COLL_PerBspLeaf_CheckQuadblocks_Touching(struct BSP *node, struct Sc
 
     if ((sps->Union.QuadBlockColl.searchFlags & 1) != 0)
     {
-        COLL_PerBspLeaf_CheckInstances(node, sps);
+        DECOMP_COLL_PerBspLeaf_CheckInstances(node, sps);
     }
 }

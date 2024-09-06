@@ -228,7 +228,7 @@ void UpdateMenu()
 		menu.rowSelected = 0;
 	}
 
-	RECTMENU_Show(&menu);
+	DECOMP_RECTMENU_Show(&menu);
 
 	int buttons = sdata->gGamepads->gamepad[0].buttonsTapped;
 
@@ -245,7 +245,7 @@ void UpdateMenu()
 
 	DECOMP_MainFreeze_ConfigDrawArrows(menu.posX_curr, 0x48, &string);
 
-	DecalFont_DrawLine(&string,menu.posX_curr,0x48,FONT_BIG,JUSTIFY_CENTER|WHITE);
+	DECOMP_DecalFont_DrawLine(&string,menu.posX_curr,0x48,FONT_BIG,JUSTIFY_CENTER|WHITE);
 }
 
 void RECTMENU_OnPressX(struct RectMenu* b)
@@ -261,7 +261,7 @@ void RECTMENU_OnPressX(struct RectMenu* b)
 	octr->PageNumber = 0;
 	pressedX = 1;
 
-	RECTMENU_ClearInput();
+	DECOMP_RECTMENU_ClearInput();
 }
 
 void PrintTimeStamp()
@@ -284,14 +284,14 @@ void PrintCharacterStats()
 	menu.posX_curr = 0x70;
 	menu.posY_curr = 0x84;
 
-	DecalFont_DrawLine(
+	DECOMP_DecalFont_DrawLine(
 		countryNames[octr->serverId],
 		0x10, 0x10, FONT_SMALL, 0);
 
 	char* roomName = "ROOM x";
 	roomName[5] = GetRoomChar(octr->serverRoom+1);
 
-	DecalFont_DrawLine(
+	DECOMP_DecalFont_DrawLine(
 		roomName,
 		0x10, 0x18, FONT_SMALL, 0);
 
@@ -305,7 +305,7 @@ void PrintCharacterStats()
 
 	posX = 0x130 - 0x20*boolEndOfRace;
 	sprintf(message, "Players: %d/8", (octr->NumDrivers-numDead));
-	DecalFont_DrawLine(message,posX,0x58,FONT_SMALL,0);
+	DECOMP_DecalFont_DrawLine(message,posX,0x58,FONT_SMALL,0);
 
 	int h = 0;
 
@@ -337,7 +337,7 @@ void PrintCharacterStats()
 
 		posX = 0x130 - 0x20*boolEndOfRace;
 		sprintf(message, "%s:", str);
-		DecalFont_DrawLine(message,posX,posY,FONT_SMALL,color);
+		DECOMP_DecalFont_DrawLine(message,posX,posY,FONT_SMALL,color);
 
 		if(octr->CurrState < LOBBY_CHARACTER_PICK)
 			continue;
@@ -349,14 +349,14 @@ void PrintCharacterStats()
 				].name_LNG_short];
 
 		posX = 0x1AC - 0x20*boolEndOfRace;
-		DecalFont_DrawLine(characterName,posX,posY,FONT_SMALL,color);
+		DECOMP_DecalFont_DrawLine(characterName,posX,posY,FONT_SMALL,color);
 	}
 
 	posX = 0x138 - 0x20*boolEndOfRace;
 	int posY = 0xb8 - 0xC*boolEndOfRace;
-	DecalFont_DrawLine("Return to main menu",posX,posY,FONT_SMALL,0);
-	DecalFont_DrawLine("During Race or Lobby",posX-0x8,posY+0x8,FONT_SMALL,0);
-	DecalFont_DrawLine("With the Select Button",posX-0x18,posY+0x10,FONT_SMALL,RED);
+	DECOMP_DecalFont_DrawLine("Return to main menu",posX,posY,FONT_SMALL,0);
+	DECOMP_DecalFont_DrawLine("During Race or Lobby",posX-0x8,posY+0x8,FONT_SMALL,0);
+	DECOMP_DecalFont_DrawLine("With the Select Button",posX-0x18,posY+0x10,FONT_SMALL,RED);
 }
 
 char* onlineLapString = "Laps: 000\0";
@@ -383,6 +383,6 @@ void PrintRecvTrack()
 	onlineLapString[7] = '0' + ((numLaps / 10) % 10);
 	onlineLapString[8] = '0' + (numLaps % 10);
 
-	DecalFont_DrawLine(message,posX,0x38,FONT_SMALL,PAPU_YELLOW);
-	DecalFont_DrawLine(onlineLapString,posX+2,0x40,FONT_SMALL,PAPU_YELLOW);
+	DECOMP_DecalFont_DrawLine(message,posX,0x38,FONT_SMALL,PAPU_YELLOW);
+	DECOMP_DecalFont_DrawLine(onlineLapString,posX+2,0x40,FONT_SMALL,PAPU_YELLOW);
 }

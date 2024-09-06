@@ -9,11 +9,11 @@ struct Instance* DECOMP_VehTalkMask_Init()
 			0x39, 0, SMALL, AKUAKU,
 			DECOMP_VehTalkMask_ThTick,
 			sizeof(struct MaskHint), 0);
-			
+
 	struct Thread* mhTh = mhInst->thread;
 	mhTh->funcThDestroy = DECOMP_PROC_DestroyInstance;
-	
+
 	((struct MaskHint*)mhTh->object)->scale = 0;
-	
+
 	return mhInst;
 }

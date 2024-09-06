@@ -10,14 +10,14 @@ void OtherFX_DriverCrashing(u_int boolEcho, u_int volume)
     if (volume < 221) {
 
         crashID = (volume > 160) ? 12 : 11;
-        
+
     } else {
         crashID = 10;
     }
 
     // three different crashing FXs
 
-    OtherFX_Play_LowLevel
+    DECOMP_OtherFX_Play_LowLevel
     (
         // sound ID
         crashID, 0,

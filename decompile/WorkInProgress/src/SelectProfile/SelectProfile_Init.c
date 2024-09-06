@@ -14,7 +14,7 @@ void SelectProfile_Init(u_int flags)
   // if loadsave object does not exist
   if (sdata->ptrLoadSaveObj == NULL)
   {
-    t = PROC_BirthWithObject(
+    t = DECOMP_PROC_BirthWithObject(
         SIZE_RELATIVE_POOL_BUCKET(
             0x90,
             NONE,
@@ -32,8 +32,8 @@ void SelectProfile_Init(u_int flags)
     sdata->ptrLoadSaveObj = load;
     // store thread in object
     load->thread = t;
-  
-    // init instance... 
+
+    // init instance...
     load->inst = &sdata.LoadSaveData[0].inst;
 
     memset(sdata.LoadSaveData[0].inst, 0, 0x90);
@@ -49,9 +49,9 @@ void SelectProfile_Init(u_int flags)
         struct Model * m = gGT->modelPtr[data.MetaDataLoadSave[n]->modelID];
         if (m != NULL)
         {
-          inst = INSTANCE_Birth3D(m, "loadsave", t);
+          inst = DECOMP_INSTANCE_Birth3D(m, "loadsave", t);
           load->i[n] = inst;
-          
+
           // if instance exists
           if (inst != NULL)
           {
@@ -92,7 +92,7 @@ void SelectProfile_Init(u_int flags)
             load->rot[0] = 0;
             load->rot[1] = 0;
             load->rot[2] = sdata->spinOffset_LoadSave[(n % 3) >> 1]; // ??
-            
+
             // set rotation (5 direction vectors)
             *(int *)&inst->matrix.m[0][0] = 0x1000;
             *(int *)&inst->matrix.m[0][2] = 0;

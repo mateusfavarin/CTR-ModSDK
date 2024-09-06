@@ -6,7 +6,7 @@ void OVR_Region1();
 void DECOMP_LOAD_OvrEndRace(unsigned int param_1)
 {
   struct GameTracker* gGT = sdata->gGT;
-  
+
   // if new EndOfRace overlay needs to load
   if (gGT->overlayIndex_EndOfRace != param_1)
   {

@@ -278,7 +278,7 @@ void DECOMP_UI_RenderFrame_Racing()
 						}
 
 
-						// OtherFX_Play to get wumpa fruit
+						// DECOMP_OtherFX_Play to get wumpa fruit
 						DECOMP_OtherFX_Play(0x42, 1);
 
 						// initial timer value

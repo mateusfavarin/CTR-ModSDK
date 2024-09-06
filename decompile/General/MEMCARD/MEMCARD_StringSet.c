@@ -3,7 +3,7 @@
 void DECOMP_MEMCARD_StringSet(char *dstString, int slotIdx, char *srcString)
 
 {
-  MEMCARD_StringInit(slotIdx, dstString);
+  DECOMP_MEMCARD_StringInit(slotIdx, dstString);
 
   int i;
   for (i = 0; dstString[i] != '\0'; i++)

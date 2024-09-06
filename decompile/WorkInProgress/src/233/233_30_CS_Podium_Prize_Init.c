@@ -29,7 +29,7 @@ void CS_Podium_Prize_Init(int prizeModel, char* prizeName, short *posOnScreen)
     // create thread, get instance
     // 0x200 flag = MediumStackPool
     // 0xd = "other" thread bucket
-    struct Instance *inst = INSTANCE_BirthWithThread(prizeModel, prizeName, MEDIUM, OTHER, CS_Podium_Prize_ThTick1, 0x2c, 0);
+    struct Instance *inst = DECOMP_INSTANCE_BirthWithThread(prizeModel, prizeName, MEDIUM, OTHER, CS_Podium_Prize_ThTick1, 0x2c, 0);
 
     if (inst == NULL)
     {

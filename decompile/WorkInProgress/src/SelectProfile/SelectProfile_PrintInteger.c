@@ -4,7 +4,7 @@ void SelectProfile_PrintInteger(int integer,short posX,short posY,short fmt,u_sh
 {
   char *format;
   char string [64];
-  
+
   if (fmt == 1) {
     format = sdata.stringFormat1[0];
   }
@@ -12,6 +12,6 @@ void SelectProfile_PrintInteger(int integer,short posX,short posY,short fmt,u_sh
     format = sdata.stringFormat2[0];
   }
   sprintf(string,format,integer);
-  DecalFont_DrawLine(string,posX,posY,1,flags);
+  DECOMP_DecalFont_DrawLine(string,posX,posY,1,flags);
 }
 

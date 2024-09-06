@@ -25,7 +25,7 @@ void DECOMP_AH_Door_LInB(struct Instance *inst)
   if (inst->thread != NULL)
     return;
 
-  t = 
+  t =
 	DECOMP_PROC_BirthWithObject
 	(
       SIZE_RELATIVE_POOL_BUCKET
@@ -61,10 +61,10 @@ void DECOMP_AH_Door_LInB(struct Instance *inst)
   for (i = 0; i < 5; i++)
   {
       instPtrArr[i] = NULL;
-  } 
+  }
 
   woodDoor->doorID = inst->name[5] - '0';
-  
+
   woodDoor->camFlags = 0;
   woodDoor->frameCount_doorOpenAnim = 0;
   woodDoor->keyShrinkFrame = 0;
@@ -79,7 +79,7 @@ void DECOMP_AH_Door_LInB(struct Instance *inst)
     // door with two key holes
     m = gGT->modelPtr[0xb5];
   }
-  
+
   // Level ID is not Glacier Park
   else if (
         // Level ID is N Sanity Beach
@@ -91,7 +91,7 @@ void DECOMP_AH_Door_LInB(struct Instance *inst)
     // door with no key holes
     m = gGT->modelPtr[0xa7];
   }
-  
+
   // if not that door
   else
   {
@@ -103,7 +103,7 @@ void DECOMP_AH_Door_LInB(struct Instance *inst)
   // DAT_800abaa4
   // "door"
 
-  // INSTANCE_Birth3D -- ptrModel, name, thread
+  // DECOMP_INSTANCE_Birth3D -- ptrModel, name, thread
   otherDoorInst = DECOMP_INSTANCE_Birth3D(m, 0, 0);
 
   // spawn instance of right-hand door,

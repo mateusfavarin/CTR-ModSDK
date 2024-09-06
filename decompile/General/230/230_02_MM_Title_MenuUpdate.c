@@ -46,7 +46,7 @@ void DECOMP_MM_Title_MenuUpdate(void)
       goto END_FUNCTION;
     }
 
-    D230.menuMainMenu.state &= ~(DISABLE_INPUT_ALLOW_FUNCPTRS); 
+    D230.menuMainMenu.state &= ~(DISABLE_INPUT_ALLOW_FUNCPTRS);
 	D230.menuMainMenu.state |= EXECUTE_FUNCPTR;
 
 	DECOMP_MM_TransitionInOut(&D230.transitionMeta_Menu[0], D230.countMeta0xD, D230.title_numTransition);
@@ -123,10 +123,10 @@ void DECOMP_MM_Title_MenuUpdate(void)
 
   // adventure character selection
   case 0:
-  
+
     DECOMP_MM_Title_KillThread();
     DECOMP_GAMEPROG_NewProfile_InsideAdv(&sdata->advProgress.rewards);
-	
+
     sdata->advProfileIndex = 0xffff;
 
     // go to adventure character select screen
@@ -189,10 +189,10 @@ void DECOMP_MM_Title_MenuUpdate(void)
     {
       // enable Demo Mode
       gGT->boolDemoMode = 1;
-	  
+
       // set number of players to 1
       gGT->numPlyrCurrGame = 1;
-	  
+
 	  // 60 seconds
       gGT->demoCountdownTimer = FPS_DOUBLE(1800);
 
@@ -277,7 +277,7 @@ void DECOMP_MM_Title_KillThread(void)
       DECOMP_INSTANCE_Death(title->i[n]);
       title->i[n] = NULL;
     }
-	
+
 	// kill thread
     title->t->flags |= 0x800;
     D230.titleObj = NULL;

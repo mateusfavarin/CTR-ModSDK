@@ -51,7 +51,7 @@ uint8_t MEMCARD_Save(int slotIdx, char *name,
     // 0x200 is FCREAT, create if it does not exist,
     // DAT_800857a3 handles read or write
 
-    sdata->memcard_fd = open(sdata->s_bu00_BASCUS_94426_slots, 
+    sdata->memcard_fd = open(sdata->s_bu00_BASCUS_94426_slots,
     (unsigned int)*((uint8_t *)(data.memcardIcon_PsyqHand) + 3) << 0x10 | 0x200);
 
     if (sdata->memcard_fd != -1)
@@ -72,6 +72,6 @@ uint8_t MEMCARD_Save(int slotIdx, char *name,
         return MEMCARD_WriteFile(0, data.memcardIcon_PsyqHand, sdata->memcardIconSize);
     }
 
-    MEMCARD_CloseFile(0);
+    DECOMP_MEMCARD_CloseFile(0);
     return 4;
 }

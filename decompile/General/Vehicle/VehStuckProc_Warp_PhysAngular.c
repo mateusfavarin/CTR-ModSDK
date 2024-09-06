@@ -47,7 +47,7 @@ void DECOMP_VehStuckProc_Warp_PhysAngular(struct Thread *th, struct Driver *d)
 
 		for (char i = 0 ; i < 3;i++)
 			inst->scale[i] =
-				VehCalc_InterpBySpeed(
+				DECOMP_VehCalc_InterpBySpeed(
 					inst->scale[i],
 					FPS_HALF(120),
 					4800 >> (i & 1));
@@ -67,7 +67,7 @@ void DECOMP_VehStuckProc_Warp_PhysAngular(struct Thread *th, struct Driver *d)
 
 		for (char i = 0 ; i < 3;i++)
 			inst->scale[i] =
-				VehCalc_InterpBySpeed(
+				DECOMP_VehCalc_InterpBySpeed(
 					inst->scale[i],
 					(i == 1) ? FPS_HALF(3200) : FPS_HALF(600),
 					24000 * (i & 1));

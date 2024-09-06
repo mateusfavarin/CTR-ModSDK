@@ -53,8 +53,8 @@ void DECOMP_VehPickupItem_ShootNow(struct Driver* d, int weaponID, int flags)
 			d->numTimesMissileLaunched++;
 
 			#ifndef REBUILD_PS1
-			GAMEPAD_ShockFreq(d, 8, 0);
-			GAMEPAD_ShockForce1(d, 8, 0x7f);
+			DECOMP_GAMEPAD_ShockFreq(d, 8, 0);
+			DECOMP_GAMEPAD_ShockForce1(d, 8, 0x7f);
 
 			struct Driver* victim =
 				VehPickupItem_MissileGetTargetDriver(d);
@@ -176,7 +176,7 @@ void DECOMP_VehPickupItem_ShootNow(struct Driver* d, int weaponID, int flags)
 
 				// Original Code
 				short rot[3];
-				CTR_MatrixToRot(&rot[0], &weaponInst->matrix, 0x11);
+				DECOMP_CTR_MatrixToRot(&rot[0], &weaponInst->matrix, 0x11);
 
 				// not a typo, required like this
 				tw->dir[0] = rot[1];
@@ -507,10 +507,10 @@ RunMineCOLL:
 				modelID = 0x56;
 
 			struct Instance* instColor =
-				INSTANCE_Birth3D(gGT->modelPtr[modelID], 0, 0);
+				DECOMP_INSTANCE_Birth3D(gGT->modelPtr[modelID], 0, 0);
 
 			struct Instance* instHighlight =
-				INSTANCE_Birth3D(gGT->modelPtr[0x5D], 0, weaponTh);
+				DECOMP_INSTANCE_Birth3D(gGT->modelPtr[0x5D], 0, weaponTh);
 
 			weaponInst->alphaScale = 0x400;
 
@@ -545,7 +545,7 @@ RunMineCOLL:
 
 		// Mask
 		case 7:
-			VehPickupItem_MaskUseWeapon(d, 1);
+			DECOMP_VehPickupItem_MaskUseWeapon(d, 1);
 			break;
 
 		// Clock
@@ -594,8 +594,8 @@ RunMineCOLL:
 		case 9:
 
 			dInst = d->instSelf;
-			GAMEPAD_ShockFreq(d, 8, 0);
-			GAMEPAD_ShockForce1(d, 8, 0x7f);
+			DECOMP_GAMEPAD_ShockFreq(d, 8, 0);
+			DECOMP_GAMEPAD_ShockForce1(d, 8, 0x7f);
 
 			// MEDIUM
 			weaponInst =

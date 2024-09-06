@@ -109,7 +109,7 @@ void DECOMP_VehFire_Increment(struct Driver* driver, int reserves, u_int type, i
 		#endif
 
 #ifndef REBUILD_PS1
-		turboInst1 = INSTANCE_BirthWithThread(
+		turboInst1 = DECOMP_INSTANCE_BirthWithThread(
 			0x2c, 0, SMALL, TURBO,
 			DECOMP_VehTurbo_ThTick,
 			sizeof(struct Turbo), 0
@@ -125,7 +125,7 @@ void DECOMP_VehFire_Increment(struct Driver* driver, int reserves, u_int type, i
 			turboThread->funcThDestroy = DECOMP_VehTurbo_ThDestroy;
 
 			// turbo #2
-			turboInst2 = INSTANCE_Birth3D(
+			turboInst2 = DECOMP_INSTANCE_Birth3D(
 				gGT->modelPtr[0x2C], 	// model
 				&sdata->s_turbo2[0], 		// name
 				turboThread					// parent thread

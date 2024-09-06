@@ -124,7 +124,7 @@ void DECOMP_MM_Battle_MenuProc(struct RectMenu* unused)
     }
 
 	// optimization, dont do this here, it's duplicated in the OG game
-	// in MainStats_RestartRaceCountLoss, which happens at the start of
+	// in DECOMP_MainStats_RestartRaceCountLoss, which happens at the start of
 	// battle, not just when you restart a race
 	#if 0
 	// Reset team points
@@ -349,7 +349,7 @@ void DECOMP_MM_Battle_MenuProc(struct RectMenu* unused)
                                             if (sdata->teamOfEachPlayer[i] != gGT->battleSetup.teamOfEachPlayer[i])
                                             {
 												#ifndef REBUILD_PS1
-                                                MainStats_ClearBattleVS();
+                                                DECOMP_MainStats_ClearBattleVS();
 												#endif
 											}
                                             gGT->battleSetup.teamOfEachPlayer[i] = gGT->battleSetup.teamOfEachPlayer[i];

@@ -1,4 +1,4 @@
-#include <common.h> 
+#include <common.h>
 
 void DECOMP_Cutscene_VolumeRestore(void)
 {
@@ -7,7 +7,7 @@ void DECOMP_Cutscene_VolumeRestore(void)
 
   // copy does not exist
   sdata->boolStoringVolume = 0;
-  
+
   // Set volume of FX
   DECOMP_howl_VolumeSet(0,sdata->storedVolume);
 

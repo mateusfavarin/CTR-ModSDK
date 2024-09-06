@@ -10,7 +10,7 @@ void DECOMP_MainKillGame_StopCTR(void)
   StopCallback();
 
   #ifndef REBUILD_PC
-  MEMCARD_CloseCard();
+  DECOMP_MEMCARD_CloseCard();
   #endif
 
   PadStopCom();

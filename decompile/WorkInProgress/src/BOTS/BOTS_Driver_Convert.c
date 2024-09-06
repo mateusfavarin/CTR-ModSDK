@@ -85,11 +85,11 @@ void DECOMP_BOTS_Driver_Convert(struct Driver *d)
     }
 
     // (free or taken?)
-    LIST_AddFront(&sdata->unk_NavRelated[i], (struct Item *)d->unk598);
+    DECOMP_LIST_AddFront(&sdata->unk_NavRelated[i], (struct Item *)d->unk598);
 
     BOTS_SetRotation(d, 0);
 
-    GAMEPAD_JogCon2(d, 0, 0);
+    DECOMP_GAMEPAD_JogCon2(d, 0, 0);
 
     actionFlag = d->actionsFlagSet;
 

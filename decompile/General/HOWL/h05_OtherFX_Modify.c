@@ -30,15 +30,15 @@ u_int DECOMP_OtherFX_Modify(u_int soundId, u_int flags)
         // volume of Voice
         modify = sdata->vol_Voice;
     }
-	
+
 	// no distortion
-    if (distort == 0x80) 
+    if (distort == 0x80)
 	{
         channelAttr.pitch = ptrOtherFX->pitch;
-    } 
-	
+    }
+
 	// distortion
-	else 
+	else
 	{
         channelAttr.pitch = ptrOtherFX->pitch * data.distortConst_OtherFX[distort] >> 0x10;
     }
@@ -52,7 +52,7 @@ u_int DECOMP_OtherFX_Modify(u_int soundId, u_int flags)
 	// soundID & 0xffffffff, search for specific instance
     channel = DECOMP_Channel_SearchFX_EditAttr(1, soundId, 0x70, &channelAttr);
 
-    if (channel != 0) 
+    if (channel != 0)
 	{
         channel->echo = echo;
         channel->vol = volume;
@@ -61,6 +61,6 @@ u_int DECOMP_OtherFX_Modify(u_int soundId, u_int flags)
     }
 
     DECOMP_Smart_ExitCriticalSection();
-	
+
     return 1;
 }

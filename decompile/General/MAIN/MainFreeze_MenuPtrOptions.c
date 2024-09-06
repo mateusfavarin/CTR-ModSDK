@@ -75,7 +75,7 @@ force_inline void PROCESSINPUTS_MainFreeze_MenuPtrOptions(struct RectMenu* menu,
 	if (sdata->AnyPlayerTap & (BTN_UP | BTN_DOWN))
 	{
 		// play sound for when you're moving around in the menu
-		OtherFX_Play(0, 1);
+		DECOMP_OtherFX_Play(0, 1);
 
 		// there are only 9 rows total
 		if (sdata->AnyPlayerTap & BTN_UP)
@@ -101,7 +101,7 @@ force_inline void PROCESSINPUTS_MainFreeze_MenuPtrOptions(struct RectMenu* menu,
 			OptionsMenu_TestSound(menu->rowSelected, 1);
 			if (sdata->AnyPlayerHold & (BTN_LEFT | BTN_RIGHT))
 			{
-				int volume = howl_VolumeGet(menu->rowSelected);
+				int volume = DECOMP_howl_VolumeGet(menu->rowSelected);
 
 				if (sdata->AnyPlayerHold & BTN_LEFT)  volume -= FPS_HALF(4);
 				if (sdata->AnyPlayerHold & BTN_RIGHT) volume += FPS_HALF(4);
@@ -120,7 +120,7 @@ force_inline void PROCESSINPUTS_MainFreeze_MenuPtrOptions(struct RectMenu* menu,
 
 			if (sdata->AnyPlayerTap & (BTN_CIRCLE | BTN_CROSS_one))
 			{
-				OtherFX_Play(1, 1);
+				DECOMP_OtherFX_Play(1, 1);
 				int mode = howl_ModeGet();
 				howl_ModeSet(mode == 0);
 			}
@@ -136,7 +136,7 @@ force_inline void PROCESSINPUTS_MainFreeze_MenuPtrOptions(struct RectMenu* menu,
 
 			if (sdata->AnyPlayerTap & (BTN_CIRCLE | BTN_CROSS_one))
 			{
-				OtherFX_Play(1, 1);
+				DECOMP_OtherFX_Play(1, 1);
 
 				int gamepadRow = menu->rowSelected - 4;
 
@@ -164,7 +164,7 @@ force_inline void PROCESSINPUTS_MainFreeze_MenuPtrOptions(struct RectMenu* menu,
 
 			if (sdata->AnyPlayerTap & (BTN_CIRCLE | BTN_CROSS_one))
 			{
-				OtherFX_Play(1, 1);
+				DECOMP_OtherFX_Play(1, 1);
 				exitMenu = true;
 			}
 			break;
@@ -172,9 +172,9 @@ force_inline void PROCESSINPUTS_MainFreeze_MenuPtrOptions(struct RectMenu* menu,
 
 	if (exitMenu || (sdata->AnyPlayerTap & (BTN_TRIANGLE | BTN_START | BTN_SQUARE_one)))
 	{
-		OtherFX_Play(1, 1);
+		DECOMP_OtherFX_Play(1, 1);
 		OptionsMenu_TestSound(0, 0);
-		RECTMENU_ClearInput();
+		DECOMP_RECTMENU_ClearInput();
 		sdata->ptrDesiredMenu = DECOMP_MainFreeze_GetMenuPtr();
 	}
 }
@@ -232,7 +232,7 @@ force_inline void DISPLAYRECTMENU_MainFreeze_MenuPtrOptions(struct RectMenu* men
 	}
 
 	// "OPTIONS"
-	DecalFont_DrawLine(
+	DECOMP_DecalFont_DrawLine(
 		sdata->lngStrings[324],
 		256,
 		26 + (menuRowsNegativePadding / 2),
@@ -246,7 +246,7 @@ force_inline void DISPLAYRECTMENU_MainFreeze_MenuPtrOptions(struct RectMenu* men
 	// draw volume sliders
 	for(int i = 0; i <3; i++)
 	{
-		int volume = howl_VolumeGet(i) & 0xff;
+		int volume = DECOMP_howl_VolumeGet(i) & 0xff;
 		int volumeSliderValue = volume * (volumeSliderWidth - 5);
 
 		short volumeSliderPosY = (menuRowsNegativePadding / 2) + (i * 10);
@@ -307,7 +307,7 @@ force_inline void DISPLAYRECTMENU_MainFreeze_MenuPtrOptions(struct RectMenu* men
 			primMem);
 
 		// "FX:" "MUSIC:" "VOICE:"
-		DecalFont_DrawLine(
+		DECOMP_DecalFont_DrawLine(
 			sdata->lngStrings[data.Options_StringIDs_Audio[i]],
 			76,
 			50 + (menuRowsNegativePadding / 2) + (i * 10),
@@ -315,7 +315,7 @@ force_inline void DISPLAYRECTMENU_MainFreeze_MenuPtrOptions(struct RectMenu* men
 	}
 
 	// "MODE:"
-	DecalFont_DrawLine(
+	DECOMP_DecalFont_DrawLine(
 		sdata->lngStrings[332],
 		76,
 		80 + (menuRowsNegativePadding / 2),
@@ -326,7 +326,7 @@ force_inline void DISPLAYRECTMENU_MainFreeze_MenuPtrOptions(struct RectMenu* men
 	int mode = howl_ModeGet();
 
 	// "MONO", "STEREO"
-	DecalFont_DrawLine(
+	DECOMP_DecalFont_DrawLine(
 		sdata->lngStrings[333 + mode],
 		436,
 		80 + (menuRowsNegativePadding / 2),
@@ -335,7 +335,7 @@ force_inline void DISPLAYRECTMENU_MainFreeze_MenuPtrOptions(struct RectMenu* men
 	if (gamepad->numGamepads != 0)
 	{
 		// "DUAL SHOCK:"
-		DecalFont_DrawLine(
+		DECOMP_DecalFont_DrawLine(
 			sdata->lngStrings[330],
 			76,
 			90 + (menuRowsNegativePadding / 2),
@@ -373,7 +373,7 @@ force_inline void DISPLAYRECTMENU_MainFreeze_MenuPtrOptions(struct RectMenu* men
 			// "CONTROLLER 1", "CONTROLLER 2",
 			// "CONTROLLER 1A", "CONTROLLER 1B",
 			// "CONTROLLER 1C", "CONTROLLER 1D"
-			DecalFont_DrawLine
+			DECOMP_DecalFont_DrawLine
 			(
 				sdata->lngStrings[data.Options_StringIDs_Gamepads[currPad + isMultitap]],
 				lineWidth_vibrateOn,
@@ -397,7 +397,7 @@ force_inline void DISPLAYRECTMENU_MainFreeze_MenuPtrOptions(struct RectMenu* men
 			// 325: "VIBRATE ON"
 			// 326: "VIBRATE OFF"
 
-			DecalFont_DrawLine(
+			DECOMP_DecalFont_DrawLine(
 				sdata->lngStrings[325 + boolDisabled],
 				lineWidth_vibrateOn + lineWidth_controller1A + 10,
 				rowY,
@@ -408,7 +408,7 @@ force_inline void DISPLAYRECTMENU_MainFreeze_MenuPtrOptions(struct RectMenu* men
 	if (gamepad->numAnalogs != 0)
 	{
 		// "CONFIGURE ANALOG:"
-		DecalFont_DrawLine(
+		DECOMP_DecalFont_DrawLine(
 			sdata->lngStrings[336],
 			76,
 			90 + (menuRowsNegativePadding / 2) + analogRowPosY,
@@ -416,7 +416,7 @@ force_inline void DISPLAYRECTMENU_MainFreeze_MenuPtrOptions(struct RectMenu* men
 
 		for(int i = 0; i < gamepad->numAnalogs; i++)
 		{
-			DecalFont_DrawLine
+			DECOMP_DecalFont_DrawLine
 			(
 				sdata->lngStrings[
 					data.Options_StringIDs_Gamepads[
@@ -429,7 +429,7 @@ force_inline void DISPLAYRECTMENU_MainFreeze_MenuPtrOptions(struct RectMenu* men
 	}
 
 	// "EXIT"
-	DecalFont_DrawLine(
+	DECOMP_DecalFont_DrawLine(
 		sdata->lngStrings[331],
 		76,
 		140 - (menuRowsNegativePadding / 2),
@@ -471,7 +471,7 @@ force_inline void DISPLAYRECTMENU_MainFreeze_MenuPtrOptions(struct RectMenu* men
 		.h = 135 - menuRowsNegativePadding
 	};
 
-	RECTMENU_DrawInnerRect(
+	DECOMP_RECTMENU_DrawInnerRect(
 		&menuBG, 4, otMem->startPlusFour);
 }
 

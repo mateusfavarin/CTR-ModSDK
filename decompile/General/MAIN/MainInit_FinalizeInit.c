@@ -8,13 +8,13 @@ void DECOMP_MainInit_FinalizeInit(struct GameTracker *gGT)
     struct Driver *d;
     struct Level *lev1;
     struct Instance *inst;
-	
+
 	// === Naughty Dog Bug ===
 	// Quitting a race while heldItem is warpball,
 	// never resets this flag, and then the game
 	// can not give warpball again until you reboot
 	gGT->gameMode1 &= ~(WARPBALL_HELD);
-	
+
     // enable collisions with all temporary walls
     // (adv hub doors, tiger temple teeth, etc)
     sdata->doorAccessFlags = 0;
@@ -170,13 +170,13 @@ void DECOMP_MainInit_FinalizeInit(struct GameTracker *gGT)
     {
         gGT->DecalMP[i].inst = NULL;
         *(short *)&gGT->DecalMP[i].data[0] = 1000;
-        
+
 		gGT->DecalMP[i].ptrOT1 = 0;
 		gGT->DecalMP[i].ptrOT2 = 0;
     }
 
     DECOMP_MainInit_JitPoolsReset(gGT);
-	
+
     lev1 = gGT->level1;
 
 #ifndef REBUILD_PS1
@@ -210,10 +210,10 @@ void DECOMP_MainInit_FinalizeInit(struct GameTracker *gGT)
     DECOMP_PushBuffer_Init(&gGT->pushBuffer[3], 3, numPlyr);
 
     struct PushBuffer* pb;
-    
+
 	pb = &gGT->pushBuffer_UI;
     DECOMP_PushBuffer_Init(pb, 0, 1);
-	
+
     pb->rot[0] = 0x800;
     DECOMP_PushBuffer_SetPsyqGeom(pb);
 	DECOMP_PushBuffer_SetMatrixVP(pb);
@@ -232,7 +232,7 @@ void DECOMP_MainInit_FinalizeInit(struct GameTracker *gGT)
 
         // if pointer is not nullptr
         if (d == NULL) continue;
-        
+
         inst = d->instSelf;
         if (inst != 0)
         {
@@ -325,7 +325,7 @@ void DECOMP_MainInit_FinalizeInit(struct GameTracker *gGT)
 			DECOMP_LevInstDef_UnPack(lev1->ptr_mesh_info);
 
 #ifndef REBUILD_PS1
-    MainInit_VisMem(gGT);
+    DECOMP_MainInit_VisMem(gGT);
     MainInit_RainBuffer(gGT);
 
     // animates water, 1P mode
@@ -366,7 +366,7 @@ void DECOMP_MainInit_FinalizeInit(struct GameTracker *gGT)
 #ifdef USE_ONLINE
 	void octr_initHook();
 	octr_initHook();
-	
+
 	// quit, so confetti doesn't initialize
 	// when loading into Polar Credits LEV
 	return;
@@ -376,7 +376,7 @@ void DECOMP_MainInit_FinalizeInit(struct GameTracker *gGT)
     if ((gGT->gameMode1 & ADVENTURE_ARENA) != 0)
 		if (gGT->podiumRewardID != 0)
 			CS_Podium_FullScene_Init();
-    
+
     if ((gGT->gameMode1 & GAME_CUTSCENE) != 0)
     {
         // freecam mode

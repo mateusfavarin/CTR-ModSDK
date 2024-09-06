@@ -23,7 +23,7 @@ void Level_RandomFX(int *param_1, u_int soundID, int param_3, uint param_4, int 
         //
         // 1000000 = echo
         // 0008080 = no distortion, and balance L/R
-        OtherFX_Play_LowLevel(
+        DECOMP_OtherFX_Play_LowLevel(
 
             soundID & 0xffff, 0,
 

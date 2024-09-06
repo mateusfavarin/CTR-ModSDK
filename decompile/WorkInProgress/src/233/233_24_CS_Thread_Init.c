@@ -22,7 +22,7 @@ struct Thread* DECOMP_CS_Thread_Init(short modelID, char* name, short *param_3, 
     {
         inst = NULL;
 
-        t = PROC_BirthWithObject(
+        t = DECOMP_PROC_BirthWithObject(
                 SIZE_RELATIVE_POOL_BUCKET(
                     0x60,
                     NONE,
@@ -55,8 +55,8 @@ struct Thread* DECOMP_CS_Thread_Init(short modelID, char* name, short *param_3, 
         // create a thread, return instance,
         // this one is for a different pool than prev
 
-        inst = INSTANCE_BirthWithThread(
-            modelID,            
+        inst = DECOMP_INSTANCE_BirthWithThread(
+            modelID,
             name,               // debug name
             MEDIUM,             // stackpool
             bucket,             // threadbucket
@@ -72,7 +72,7 @@ struct Thread* DECOMP_CS_Thread_Init(short modelID, char* name, short *param_3, 
         t = inst->thread;
 
         // set funcThDestroy to remove instance from instance pool
-        t->funcThDestroy = PROC_DestroyInstance();
+        t->funcThDestroy = DECOMP_PROC_DestroyInstance();
     }
 
     // cutscene obj
@@ -272,7 +272,7 @@ LAB_800af5ec:
     }
 
     cs->unk44[0] = 0xff;
-    
+
     cs->unk28 = 0;
     cs->unk1e = 0;
     cs->flags = 0;

@@ -47,7 +47,7 @@ void RaceConfig_SaveGameOptions(void)
     {
         // store a backup of volume
         // volFX, volMusic, volVoice
-        ((short*)&options->volFx)[i] = howl_VolumeGet(i) & 0xff;
+        ((short*)&options->volFx)[i] = DECOMP_howl_VolumeGet(i) & 0xff;
     }
 
     // copy 24 bytes (4 structs) of RWD from data to sdata

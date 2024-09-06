@@ -52,8 +52,8 @@ u_int DECOMP_main()
 				DECOMP_ElimBG_Deactivate(gGT);
 
 #ifndef REBUILD_PS1
-				MainStats_RestartRaceCountLoss();
-				Voiceline_ClearTimeStamp();
+				DECOMP_MainStats_RestartRaceCountLoss();
+				DECOMP_Voiceline_ClearTimeStamp();
 #endif
 
 				// Disable End-Of-Race menu
@@ -556,15 +556,15 @@ FinishLoading:
 				// erase all data past the
 				// last 3 bookmarks, if there
 				// that many exist
-				MEMPACK_PopState();
-				MEMPACK_PopState();
-				MEMPACK_PopState();
+				DECOMP_MEMPACK_PopState();
+				DECOMP_MEMPACK_PopState();
+				DECOMP_MEMPACK_PopState();
 
 				CTR_ErrorScreen(0, 0, 0);
 				Music_Stop();
 
 				// clear backup, destroy music, destroy all fx
-				howl_StopAudio(1, 1, 1);
+				DECOMP_howl_StopAudio(1, 1, 1);
 				Bank_DestroyAll();
 				howl_Disable();
 

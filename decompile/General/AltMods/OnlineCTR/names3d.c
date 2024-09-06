@@ -93,19 +93,19 @@ void DrawOverheadCalibration()
 
 	m = &gGT->drivers[0]->instSelf->matrix;
 	sprintf(message, "%d", gGT->drivers[0]->posCurr[0] >> 8);
-	DecalFont_DrawLine(
+	DECOMP_DecalFont_DrawLine(
 		message,
 		0x100, 8*3,
 		FONT_SMALL, (JUSTIFY_CENTER | ORANGE));
 
 	sprintf(message, "%d", 0x19+(gGT->drivers[0]->posCurr[1] >> 8));
-	DecalFont_DrawLine(
+	DECOMP_DecalFont_DrawLine(
 		message,
 		0x100, 8*4,
 		FONT_SMALL, (JUSTIFY_CENTER | ORANGE));
 
 	sprintf(message, "%d", gGT->drivers[0]->posCurr[2] >> 8);
-	DecalFont_DrawLine(
+	DECOMP_DecalFont_DrawLine(
 		message,
 		0x100, 8*5,
 		FONT_SMALL, (JUSTIFY_CENTER | ORANGE));
@@ -120,7 +120,7 @@ void DrawOverheadCalibration()
 	gte_stsz(&ptrDest->Screen_posZ);
 
 	int leftX = ptrDest->Screen_posX;
-		DecalFont_DrawLine(
+		DECOMP_DecalFont_DrawLine(
 			"A",
 			ptrDest->Screen_posX,
 			ptrDest->Screen_posY-0x4,
@@ -136,14 +136,14 @@ void DrawOverheadCalibration()
 	gte_stsz(&ptrDest->Screen_posZ);
 
 	int rightX = ptrDest->Screen_posX;
-		DecalFont_DrawLine(
+		DECOMP_DecalFont_DrawLine(
 			"A",
 			ptrDest->Screen_posX,
 			ptrDest->Screen_posY-0x4,
 			FONT_SMALL, (JUSTIFY_CENTER | ORANGE));
 
 	sprintf(message, "%d", leftX - rightX);
-	DecalFont_DrawLine(
+	DECOMP_DecalFont_DrawLine(
 		message,
 		0x100, 8*8,
 		FONT_SMALL, (JUSTIFY_CENTER | ORANGE));
@@ -158,7 +158,7 @@ void DrawOverheadCalibration()
 	gte_stsz(&ptrDest->Screen_posZ);
 
 	sprintf(message, "%d", ptrDest->Screen_posZ);
-	DecalFont_DrawLine(
+	DECOMP_DecalFont_DrawLine(
 		message,
 		0x100, 8*9,
 		FONT_SMALL, (JUSTIFY_CENTER | ORANGE));

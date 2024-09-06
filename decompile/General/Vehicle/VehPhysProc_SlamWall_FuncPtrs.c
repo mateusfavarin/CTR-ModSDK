@@ -63,7 +63,7 @@ void DECOMP_VehPhysProc_SlamWall_Animate(struct Thread* t, struct Driver* d)
 
 		#if 0
 		// except for Oxide, who has zero frames
-		15 == VehFrameInst_GetNumAnimFrames(inst, inst->animIndex)
+		15 == DECOMP_VehFrameInst_GetNumAnimFrames(inst, inst->animIndex)
 		#endif
 	  )
 	{
@@ -79,11 +79,11 @@ void DECOMP_VehPhysProc_SlamWall_Animate(struct Thread* t, struct Driver* d)
 	// start halfway into steer animation
 	inst->animFrame = FPS_DOUBLE(10);
 	#if 0 // 10 =
-		VehFrameInst_GetStartFrame(
+		DECOMP_VehFrameInst_GetStartFrame(
 
 			0, // midpoint
 
-			VehFrameInst_GetNumAnimFrames(
+			DECOMP_VehFrameInst_GetNumAnimFrames(
 				inst, // driver instance
 				0	  // anim #0, steer
 			)

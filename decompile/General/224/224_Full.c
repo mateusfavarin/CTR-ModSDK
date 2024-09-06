@@ -28,7 +28,7 @@ void DECOMP_TT_EndEvent_DrawMenu(void)
     // If you just beat N Tropy && N Tropy was beaten on all tracks
     if (
 			((unknownFlags_1d44 & 0x10000000) != 0) &&
-			((GAMEPROG_CheckGhostsBeaten(1) & 0xffff) != 0)
+			((DECOMP_GAMEPROG_CheckGhostsBeaten(1) & 0xffff) != 0)
 		)
     {
         sdata->gameProgress.unlocks[0] |= 0x20; // Unlock N Tropy
@@ -119,7 +119,7 @@ AddStuff:
 				framesSinceRaceEnded, FPS_DOUBLE(0x14));
 
 			// "NEW HIGH SCORE!"
-			DecalFont_DrawLine(
+			DECOMP_DecalFont_DrawLine(
 				lngStrings[353],
 				(int)pos[0], (int)pos[1],
 				1, startX_also_strFlags);
@@ -145,7 +145,7 @@ AddStuff:
 				framesSinceRaceEnded, FPS_DOUBLE(0x14));
 
 			// NEW BEST LAP!
-			DecalFont_DrawLine(
+			DECOMP_DecalFont_DrawLine(
 				lngStrings[370],
 				(int)pos[0], (int)pos[1],
 				1, startX_also_strFlags);
@@ -181,14 +181,14 @@ AddStuff:
 				nTropyString = lngStrings[372];
 
 			// Draw the "N Tropy" related string
-			DecalFont_DrawLine(
+			DECOMP_DecalFont_DrawLine(
 				nTropyString,
 				(int)pos[0], (int)pos[1],
 				1, startX_also_strFlags);
 		}
 
 		// PRESS * TO CONTINUE
-		DecalFont_DrawLine(lngStrings[201], 0x100, 0xbe, 1, 0xffff8000);
+		DECOMP_DecalFont_DrawLine(lngStrings[201], 0x100, 0xbe, 1, 0xffff8000);
 
 		// If you press Cross or Circle
 		if ((sdata->AnyPlayerTap & 0x50) != 0)
@@ -267,7 +267,7 @@ AddStuff:
 				sdata->flags_timeTrialEndOfRace);
 
 			// PRESS * TO CONTINUE
-			DecalFont_DrawLine(
+			DECOMP_DecalFont_DrawLine(
 				lngStrings[201],
 				0x100, 0xbe,
 				1, 0xffff8000);
@@ -298,7 +298,7 @@ AddStuff:
 		if (sdata->boolGhostTooBigToSave)
 			menu224.rows = rowsNoSave;
 
-		RECTMENU_Show(&menu224);
+		DECOMP_RECTMENU_Show(&menu224);
 	}
 
     return;
@@ -329,7 +329,7 @@ void DECOMP_TT_EndEvent_DisplayTime(int paramX, short paramY, u_int UI_DrawRaceC
 		sdata->framesSinceRaceEnded, FPS_DOUBLE(0x14));
 
 	// "YOUR TIME"
-	DecalFont_DrawLine(sdata->lngStrings[197], paramX, ((u_int)pos[1] - 0x4c), FONT_BIG, (JUSTIFY_CENTER | ORANGE));
+	DECOMP_DecalFont_DrawLine(sdata->lngStrings[197], paramX, ((u_int)pos[1] - 0x4c), FONT_BIG, (JUSTIFY_CENTER | ORANGE));
 
 	DECOMP_UI_DrawRaceClock(pos[0], pos[1], UI_DrawRaceClockFlags, d);
 
@@ -340,7 +340,7 @@ void DECOMP_TT_EndEvent_DisplayTime(int paramX, short paramY, u_int UI_DrawRaceC
 	rectangle.h = 99;
 
 	// Draw 2D Menu rectangle background
-	RECTMENU_DrawInnerRect(&rectangle, 4, gGT->backBuffer->otMem.startPlusFour);
+	DECOMP_RECTMENU_DrawInnerRect(&rectangle, 4, gGT->backBuffer->otMem.startPlusFour);
 
 	return;
 }
@@ -381,7 +381,7 @@ void DECOMP_TT_EndEvent_DrawHighScore(short startX, int startY)
 		sdata->framesSinceRaceEnded, FPS_DOUBLE(0x14));
 
 	// "BEST TIMES"
-	DecalFont_DrawLine(
+	DECOMP_DecalFont_DrawLine(
 		sdata->lngStrings[0x171],
 		pos[0], pos[1],
 		1, 0xffff8000);
@@ -412,12 +412,12 @@ void DECOMP_TT_EndEvent_DrawHighScore(short startX, int startY)
 		str_number = (char)i + '1';
 
 		// Draw String for Rank ('1', '2', '3', '4', '5')
-		DecalFont_DrawLine(&str_number, startX - 0x32, timebox_Y - 1, 2, 4);
+		DECOMP_DecalFont_DrawLine(&str_number, startX - 0x32, timebox_Y - 1, 2, 4);
 
 		u_int iconColor = 0x808080;
 
 		// Draw Character Icon
-		RECTMENU_DrawPolyGT4(gGT->ptrIcons[data.MetaDataCharacters[scoreEntry[i+1].characterID].iconID],
+		DECOMP_RECTMENU_DrawPolyGT4(gGT->ptrIcons[data.MetaDataCharacters[scoreEntry[i+1].characterID].iconID],
 							startX - 0x52, timebox_Y,
 
 							// pointer to PrimMem struct
@@ -433,10 +433,10 @@ void DECOMP_TT_EndEvent_DrawHighScore(short startX, int startY)
 							1, 0x1000);
 
 		// Draw Name
-		DecalFont_DrawLine(scoreEntry[i+1].name, timebox_X, timebox_Y, 3, nameColor);
+		DECOMP_DecalFont_DrawLine(scoreEntry[i+1].name, timebox_X, timebox_Y, 3, nameColor);
 
 		// Draw time
-		DecalFont_DrawLine(RECTMENU_DrawTime(scoreEntry[i+1].time), timebox_X, timebox_Y + 0x11, 2, timeColor);
+		DECOMP_DecalFont_DrawLine(DECOMP_RECTMENU_DrawTime(scoreEntry[i+1].time), timebox_X, timebox_Y + 0x11, 2, timeColor);
 
 		// If this loop index is a new high score
 		if (gGT->newHighScoreIndex == i)
@@ -462,7 +462,7 @@ void DECOMP_TT_EndEvent_DrawHighScore(short startX, int startY)
 		timeColor = 0xffff8000;
 
 		// "BEST LAP"
-		DecalFont_DrawLine(sdata->lngStrings[0x170], startX, startY + 0x95, 1, timeColor);
+		DECOMP_DecalFont_DrawLine(sdata->lngStrings[0x170], startX, startY + 0x95, 1, timeColor);
 
 		// If you got a new best lap
 		if (((gGT->unknownFlags_1d44 & 0x4000000) != 0) &&
@@ -471,11 +471,11 @@ void DECOMP_TT_EndEvent_DrawHighScore(short startX, int startY)
 			timeColor = 0xffff8004;
 		}
 		// make a string for best lap
-		timeString = RECTMENU_DrawTime(scoreEntry[0].time);
+		timeString = DECOMP_RECTMENU_DrawTime(scoreEntry[0].time);
 	}
 
 	// Print amount of time, for whichever purpose
-	DecalFont_DrawLine(timeString, startX, startY + 0xa6, 2, timeColor);
+	DECOMP_DecalFont_DrawLine(timeString, startX, startY + 0xa6, 2, timeColor);
 
 	box.x = pos[0] - 0x60;
 	box.y = pos[1] - 4;
@@ -483,7 +483,7 @@ void DECOMP_TT_EndEvent_DrawHighScore(short startX, int startY)
 	box.h = 0xb4;
 
 	// Draw 2D Menu rectangle background
-	RECTMENU_DrawInnerRect(&box, 4, gGT->backBuffer->otMem.startPlusFour);
+	DECOMP_RECTMENU_DrawInnerRect(&box, 4, gGT->backBuffer->otMem.startPlusFour);
 }
 
 struct MenuRow rowsWithSave[6] =

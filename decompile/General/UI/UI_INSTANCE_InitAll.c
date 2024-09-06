@@ -40,7 +40,7 @@ void DECOMP_UI_INSTANCE_InitAll(void)
       DECOMP_UI_INSTANCE_BirthWithThread(0x62,	DECOMP_UI_ThTick_Reward,0x10,0,0,/*sdata->s_trophy1*/0);
 
 	  #ifndef REBUILD_PS1
-      GAMEPROG_AdvPercent(&sdata->advProgress);
+      DECOMP_GAMEPROG_AdvPercent(&sdata->advProgress);
       #endif
 
 	  return;

@@ -1,10 +1,10 @@
 #include <common.h>
 
 void FLARE_ThTick();
-void VehPickState_NewState();
+void DECOMP_VehPickState_NewState();
 void UI_VsQuipReadDriver();
-void GAMEPAD_JogCon1(struct Driver* driver, char param_2, u_short param_3);
-void howl_VolumeGet();
+void DECOMP_GAMEPAD_JogCon1(struct Driver* driver, char param_2, u_short param_3);
+int DECOMP_howl_VolumeGet(int);
 void Vector_SpecLightSpin2D();
 void StateZero(); // MainMain.c
 
@@ -46,16 +46,16 @@ void ModsMain()
 		(int)UI_VsQuipReadDriver - (int)Mods1_EndOfFile,
 
 		// GAMEPAD defrag Block1
-		(int)GAMEPAD_JogCon1 - (int)Mods2_EndOfFile,
+		(int)DECOMP_GAMEPAD_JogCon1 - (int)Mods2_EndOfFile,
 
 		// HOWL defrag Block1
-		(int)howl_VolumeGet - (int)Mods3_EndOfFile,
+		(int)DECOMP_howl_VolumeGet - (int)Mods3_EndOfFile,
 
 		// LOAD defrag Block1
-		(int)LOAD_AppendQueue - (int)Mods4_EndOfFile,
+		(int)DECOMP_LOAD_AppendQueue - (int)Mods4_EndOfFile,
 
 		// VehPtr defrag Block1
-		(int)VehPickState_NewState - (int)Mods5_EndOfFile,
+		(int)DECOMP_VehPickState_NewState - (int)Mods5_EndOfFile,
 
 		// ElimBG defrag Block1
 		(int)FLARE_ThTick - (int)Mods6_EndOfFile,

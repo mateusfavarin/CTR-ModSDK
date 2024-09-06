@@ -32,7 +32,7 @@ void DECOMP_LOAD_LangFile(int bigfilePtr, int lang)
 
 	lngFile =
 		DECOMP_LOAD_ReadFile(
-			bigfilePtr, 1, BI_LANGUAGEFILE + lang, 
+			bigfilePtr, 1, BI_LANGUAGEFILE + lang,
 			sdata->lngFile, &size, 0);
 
 	// This is not ReadFileAsync, this is ReadFile,

@@ -19,7 +19,7 @@ void PlaySound3D_Flags(u_int *soundID_count, u_int param_2, struct Instance *ins
 
     if ((*soundID_count != 0) && ((*soundID_count & 0xffff) != param_2))
     {
-        OtherFX_Stop1(*soundID_count);
+        DECOMP_OtherFX_Stop1(*soundID_count);
 
         *soundID_count = 0;
     }
@@ -123,7 +123,7 @@ PLAY_AUDIO:
     // if sound hasn't played
     if (*soundID_count == 0)
     {
-        *soundID_count = OtherFX_Play_LowLevel(param_2 & 0xffff, 0,
+        *soundID_count = DECOMP_OtherFX_Play_LowLevel(param_2 & 0xffff, 0,
 
                                        // if quadblock under camera is able to make an echo
                                        ((gGT->cameraDC[currIndex].ptrQuadBlock->quadFlags & 0x80) << 0x18)
@@ -140,7 +140,7 @@ PLAY_AUDIO:
     // modify sound already playing
     else
     {
-        OtherFX_Modify(*soundID_count,
+        DECOMP_OtherFX_Modify(*soundID_count,
 
                        // if quadblock under camera is able to make an echo
                        ((gGT->cameraDC[currIndex].ptrQuadBlock->quadFlags & 0x80) << 0x18)

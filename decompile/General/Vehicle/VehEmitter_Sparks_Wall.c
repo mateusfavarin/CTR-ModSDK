@@ -20,8 +20,8 @@ void DECOMP_VehEmitter_Sparks_Wall(struct Driver *d, struct ParticleEmitter *emS
 	  )
     {
         // both gamepad vibration
-        GAMEPAD_ShockFreq(d, 8, 0);
-        GAMEPAD_ShockForce1(d, 8, 0x7f);
+        DECOMP_GAMEPAD_ShockFreq(d, 8, 0);
+        DECOMP_GAMEPAD_ShockForce1(d, 8, 0x7f);
 
         d->frameAgainstWall++;
 		if (d->frameAgainstWall == 450)

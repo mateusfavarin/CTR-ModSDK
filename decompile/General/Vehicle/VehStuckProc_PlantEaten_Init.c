@@ -21,7 +21,7 @@ void DECOMP_VehStuckProc_PlantEaten_Init(struct Thread *t, struct Driver *d)
     d->reserves = 0;
 
     // drop bits for airborne (and another?)
-    d->actionsFlagSet &= ~(0x80000); 
+    d->actionsFlagSet &= ~(0x80000);
 	d->actionsFlagSet |= 0x40;
 
     // "cloud" is the raincloud after hitting red potion
@@ -51,7 +51,7 @@ void DECOMP_VehStuckProc_PlantEaten_Init(struct Thread *t, struct Driver *d)
 
     for (i = 0; i < 3; i++)
     {
-        OtherFX_Stop1(d->driverAudioPtrs[i]);
+        DECOMP_OtherFX_Stop1(d->driverAudioPtrs[i]);
         d->driverAudioPtrs[i] = NULL;
     }
 

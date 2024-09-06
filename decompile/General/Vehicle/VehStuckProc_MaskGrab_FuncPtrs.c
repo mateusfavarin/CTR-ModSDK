@@ -58,7 +58,7 @@ void DECOMP_VehStuckProc_MaskGrab_Update(struct Thread *t, struct Driver *d)
 
     VehBirth_TeleportSelf(d, 0, 0x80);
 
-    VehStuckProc_RevEngine_Init(t, d);
+    DECOMP_VehStuckProc_RevEngine_Init(t, d);
 }
 
 void DECOMP_VehStuckProc_MaskGrab_PhysLinear(struct Thread *t, struct Driver *d)
@@ -92,10 +92,10 @@ void DECOMP_VehStuckProc_MaskGrab_Animate(struct Thread *t, struct Driver *d)
         inst->animIndex = 0;
 
         // (instance, anim#0)
-        //numFrames = VehFrameInst_GetNumAnimFrames(inst, 0);
+        //numFrames = DECOMP_VehFrameInst_GetNumAnimFrames(inst, 0);
 
         // (midpoint, numFrames)
-        inst->animFrame = FPS_DOUBLE(10); //VehFrameInst_GetStartFrame(0, numFrames);
+        inst->animFrame = FPS_DOUBLE(10); //DECOMP_VehFrameInst_GetStartFrame(0, numFrames);
 
         d->AxisAngle2_normalVec[0] = d->KartStates.MaskGrab.AngleAxis_NormalVec[0];
         d->AxisAngle2_normalVec[1] = d->KartStates.MaskGrab.AngleAxis_NormalVec[1];
@@ -122,7 +122,7 @@ void DECOMP_VehStuckProc_MaskGrab_Animate(struct Thread *t, struct Driver *d)
 			#endif
 
 				// "falling" sound, like a whistle
-				OtherFX_Play(0x55, 1);
+				DECOMP_OtherFX_Play(0x55, 1);
 		}
 
 

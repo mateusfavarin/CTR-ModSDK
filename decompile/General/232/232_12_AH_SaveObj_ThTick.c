@@ -95,7 +95,7 @@ void DECOMP_AH_SaveObj_ThTick(struct Thread* t)
                 DECOMP_CAM_SetDesiredPosRot(gGT->cameraDC, &desiredPos, &desiredRot);
 
 #ifndef REBUILD_PS1
-                GAMEPAD_JogCon2(driver, 0, 0);
+                DECOMP_GAMEPAD_JogCon2(driver, 0, 0);
 #endif
 
                 save->flags |= 1;
@@ -187,7 +187,7 @@ LAB_800af72c:
 			#ifdef USE_60FPS
 			if(gGT->timer & 1)
 			#endif
-			
+
             // increment animation frame
             saveInst->animFrame += 1;
         }
@@ -210,11 +210,11 @@ LAB_800af72c:
             // if distance is large
             if (300 < iVar7)
             {
-                // Map the distance 
+                // Map the distance
 				//	[300, 6000] (close, far)
 				// to volume
 				//	[0xff, 0] (loud, soft)
-                uVar6 = DECOMP_VehCalc_MapToRange(iVar7, 300, 6000, 0xff, 0);	
+                uVar6 = DECOMP_VehCalc_MapToRange(iVar7, 300, 6000, 0xff, 0);
             }
 
             // Play save/load screen sound

@@ -5,7 +5,7 @@ uint8_t DECOMP_MEMCARD_GetInfo(int slotIdx)
 {
     if (sdata->unk_card_8008D404 == 0)
     {
-        MEMCARD_SkipEvents();
+        DECOMP_MEMCARD_SkipEvents();
         sdata->unk_card_8008D404 = 1;
         sdata->memcardSlot = slotIdx;
 

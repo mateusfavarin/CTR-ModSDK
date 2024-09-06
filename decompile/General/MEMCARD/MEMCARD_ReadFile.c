@@ -9,6 +9,6 @@ int DECOMP_MEMCARD_ReadFile(int start_offset, int end_offset)
         return 7;
     }
 
-    MEMCARD_CloseFile();
+    DECOMP_MEMCARD_CloseFile();
     return 1;
 }

@@ -18,7 +18,7 @@ void ParseOT(u_long* startOT)
   struct GameTracker* gGT = sdata->gGT;
 
   // if TitleFlag is drawn in background
-  if(RaceFlag_IsFullyOnScreen() == 1)
+  if(DECOMP_RaceFlag_IsFullyOnScreen() == 1)
   {
 	// dont flip TitleFlag
 	startOT-=4;

@@ -154,8 +154,8 @@ void DECOMP_PlayLevel_UpdateLapStats(void)
 				// if farthest-ahead human
 				if (currDriver == firstRank)
 				{
-					OtherFX_Play(0x66, 1);
-					Voiceline_ClearTimeStamp();
+					DECOMP_OtherFX_Play(0x66, 1);
+					DECOMP_Voiceline_ClearTimeStamp();
 				}
 
 				lapCounter = currDriver->lapIndex;
@@ -523,7 +523,7 @@ void DECOMP_PlayLevel_UpdateLapStats(void)
 			// === VS Mode ===
 
 			// Make the player Blasted
-			VehPickState_NewState(currDriver, 2, currDriver, 0);
+			DECOMP_VehPickState_NewState(currDriver, 2, currDriver, 0);
 
 			// Reduce counters for AttackingPlayer and AttackedByPlayer
 			currDriver->numTimesAttackedByPlayer[currDriver->driverID]--;

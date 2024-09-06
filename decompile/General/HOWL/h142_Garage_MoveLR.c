@@ -17,13 +17,13 @@ void DECOMP_Garage_MoveLR(int desiredId)
   for (i = 0; i < 8; i++)
   {
     garageSounds = &sdata->garageSoundPool[i];
-    
+
     // character in focus
-    if (i == desiredId) 
+    if (i == desiredId)
     {
       garageSounds->gsp_curr = GSP_CENTER;
     }
-    
+
     else if (i == charLeft)
     {
       if (garageSounds->gsp_curr == GSP_GONE)
@@ -31,10 +31,10 @@ void DECOMP_Garage_MoveLR(int desiredId)
     	  // 75% left, 25% right
         garageSounds->LR = 0x3c;
       }
-  	
+
       garageSounds->gsp_curr = GSP_LEFT;
     }
-    
+
     else if (i == charRight)
     {
       if (garageSounds->gsp_curr == GSP_GONE)
@@ -42,11 +42,11 @@ void DECOMP_Garage_MoveLR(int desiredId)
 		// 25% left, 75% right
         garageSounds->LR = 0xc3;
       }
-       
+
   	  garageSounds->gsp_curr = GSP_RIGHT;
     }
-        
-    else 
+
+    else
     {
       garageSounds->gsp_curr = GSP_GONE;
     }

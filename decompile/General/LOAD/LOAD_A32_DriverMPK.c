@@ -89,19 +89,19 @@ void DECOMP_LOAD_DriverMPK(unsigned int param_1,int levelLOD,unsigned int param_
 {
 	int i;
 	int gameMode1;
-		
+
 #ifdef USE_ONLINE
 	goto ForceOnlineLoad8;
 #endif
-		
+
 #ifdef USE_HIGHMP
 	highMp_DriverMPK(param_1, levelLOD, param_3);
 	return;
 #endif
-	
+
 	struct GameTracker* gGT = sdata->gGT;
 	gameMode1 = gGT->gameMode1;
-	
+
 	int lastFileIndexMPK;
 
 	// 3P/4P
@@ -122,10 +122,10 @@ void DECOMP_LOAD_DriverMPK(unsigned int param_1,int levelLOD,unsigned int param_
 // This fails ONLY on DuckStation for any MPK
 // other than BI_ADVENTUREPACK + data.characterIDs[0],
 // VehBirth_GetModelByString will return nullptr and
-// nullptr-dereference "somewhere" will explode, but 
+// nullptr-dereference "somewhere" will explode, but
 // PC port works fine, so how is model used?
 
-// Remember to change MM_SetMenuLayout and MM_GetModelByName 
+// Remember to change MM_SetMenuLayout and MM_GetModelByName
 // to reflect loading oxide in MPK (not lowLOD)
 #if 0
 	#ifdef USE_OXIDE
@@ -141,7 +141,7 @@ void DECOMP_LOAD_DriverMPK(unsigned int param_1,int levelLOD,unsigned int param_
 	{
 		lastFileIndexMPK = BI_ADVENTUREPACK + data.characterIDs[0];
 	}
-	
+
 	else if(
 		// adv mpk when we just need text from MPK
 		((gameMode1 & (GAME_CUTSCENE | MAIN_MENU)) != 0)
@@ -176,14 +176,14 @@ void DECOMP_LOAD_DriverMPK(unsigned int param_1,int levelLOD,unsigned int param_
 				BI_RACERMODELHI + 0xF,
 				&data.driverModel_lowLOD[0],0xfffffffe);
 		}
-		
+
 		// get rid of oxide cause MPK is too big
 		if(gGT->levelID == ADVENTURE_CHARACTER_SELECT)
 		{
 			data.characterIDs[0] = 0;
 		}
 		#endif
-		
+
 		lastFileIndexMPK = BI_ADVENTUREPACK + data.characterIDs[0];
 	}
 #endif
@@ -230,11 +230,11 @@ ForceOnlineLoad8:
 
 		// arcade mpk
 		lastFileIndexMPK = BI_1PARCADEPACK + data.characterIDs[0];
-		
+
 		#ifdef USE_RANDOM
 		ChRand_SetCharacters();
 		#endif
-		
+
 		#ifdef USE_HIGH1P
 		int i;
 		for(i = 0; i < 7; i++)
@@ -244,7 +244,7 @@ ForceOnlineLoad8:
 				BI_RACERMODELHI + data.characterIDs[i],
 				&data.driverModel_lowLOD[i],0xfffffffe);
 		}
-		
+
 		// time trial mpk
 		lastFileIndexMPK = BI_TIMETRIALPACK + data.characterIDs[7];
 		#endif

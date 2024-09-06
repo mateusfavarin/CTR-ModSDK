@@ -1,7 +1,7 @@
 #include <common.h>
 #include "math.h"
 
-int MATH_Sin(unsigned int angle)
+int DECOMP_MATH_Sin(unsigned int angle)
 {
     int sine = trigApprox[angle & 0x3FF];
 
@@ -16,7 +16,7 @@ int MATH_Sin(unsigned int angle)
     return sine;
 }
 
-int MATH_Cos(unsigned int angle) {
+int DECOMP_MATH_Cos(unsigned int angle) {
 
     int cos = trigApprox[angle & 0x3FF];
 

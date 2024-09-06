@@ -46,7 +46,7 @@ void DECOMP_Garage_LerpFX(void) {
 
     audioPtrRef = &garageSounds->audioPtr;
     if (sdata->garageSoundIDs[i] != 0) {
-      OtherFX_RecycleNew(audioPtrRef, sdata->garageSoundIDs[i],
+      DECOMP_OtherFX_RecycleNew(audioPtrRef, sdata->garageSoundIDs[i],
                          ((int)garageSounds->volume << 0x10) |
                              (int)garageSounds->LR | 0x8000U);
     }

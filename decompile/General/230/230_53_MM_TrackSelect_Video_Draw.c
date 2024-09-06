@@ -14,13 +14,13 @@ void DECOMP_MM_TrackSelect_Video_Draw(RECT *r, struct MainMenu_LevelRow *selectM
   videoID = selectMenu->videoID;
 
   if (
-		(entry[videoID].size == 0) || 
-		
+		(entry[videoID].size == 0) ||
+
 		// Video off-screen
-		(r->x < 0) || 
+		(r->x < 0) ||
 		(r->y < 0) ||
-		((r->x + r->w) > 0x200) || 
-		((r->y + r->h) > 0xd8) 
+		((r->x + r->w) > 0x200) ||
+		((r->y + r->h) > 0xd8)
     )
   {
     // draw icon
@@ -52,7 +52,7 @@ void DECOMP_MM_TrackSelect_Video_Draw(RECT *r, struct MainMenu_LevelRow *selectM
       MM_Video_StartStream(bh->cdpos + entry[videoID].offset, selectMenu->videoLength);
 #endif
 	}
-	
+
     if (((D230.trackSel_unk == 3) || (D230.trackSel_video_state == 3)) || (D230.trackSel_video_state == 2))
     {
       tpage = gGT->ptrIcons[0x3f]->texLayout.tpage;
@@ -114,7 +114,7 @@ void DECOMP_MM_TrackSelect_Video_Draw(RECT *r, struct MainMenu_LevelRow *selectM
     // disable video copy
     MainFrame_InitVideoSTR(0, 0, 0, 0);
   }
-  
+
   if ((param_4 == 1) && (D230.trackSel_video_boolAllocated == 1))
   {
     D230.trackSel_video_state = 1;
@@ -130,7 +130,7 @@ void DECOMP_MM_TrackSelect_Video_Draw(RECT *r, struct MainMenu_LevelRow *selectM
     D230.trackSel_video_boolAllocated = 0;
   }
 #endif
-  
+
   D230.trackSel_unk = D230.trackSel_video_state;
 
   // Draw 2D Menu rectangle background

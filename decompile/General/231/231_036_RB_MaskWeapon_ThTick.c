@@ -15,7 +15,7 @@ void DECOMP_RB_MaskWeapon_ThTick(struct Thread* maskTh)
 	struct Instance* maskBeamInst;
     struct Instance* driverInst;
     struct Driver* d;
-	
+
 	struct Instance* instCurr;
 
     gGT = sdata->gGT;
@@ -27,7 +27,7 @@ void DECOMP_RB_MaskWeapon_ThTick(struct Thread* maskTh)
 
     d = maskTh->parentThread->object;
     driverInst = maskTh->parentThread->inst;
-	
+
 	struct InstDrawPerPlayer* maskIdpp = INST_GETIDPP(maskInst);
 	struct InstDrawPerPlayer* beamIdpp = INST_GETIDPP(maskBeamInst);
 
@@ -40,14 +40,14 @@ void DECOMP_RB_MaskWeapon_ThTick(struct Thread* maskTh)
             beamIdpp[i].pushBuffer = pb;
         }
     }
-	
+
     else
     {
         for (i = 0; i < numPlyr; i++)
         {
             if (i == d->driverID)
 				continue;
-            
+
             maskIdpp[i].pushBuffer = NULL;
             beamIdpp[i].pushBuffer = NULL;
         }
@@ -74,37 +74,37 @@ void DECOMP_RB_MaskWeapon_ThTick(struct Thread* maskTh)
         // copy split line
         maskBeamInst->vertSplit = driverInst->vertSplit;
     }
-	
+
     maskInst->unk50 = driverInst->unk50;
     maskInst->unk51 = driverInst->unk51;
-	
+
 	struct MaskHeadScratch* mhs = 0x1f800108;
-	
+
 	// Set up the First pass (MaskInst)
 
 	rot = mask->rot[1];
 
-    mhs->posOffset[0] = (((MATH_Sin(rot) << 6) >> 0xc) * mask->scale) >> 0xc;
-    mhs->posOffset[2] = (((MATH_Cos(rot) << 6) >> 0xc) * mask->scale) >> 0xc;	
-    
-	mhs->posOffset[1] = 
+    mhs->posOffset[0] = (((DECOMP_MATH_Sin(rot) << 6) >> 0xc) * mask->scale) >> 0xc;
+    mhs->posOffset[2] = (((DECOMP_MATH_Cos(rot) << 6) >> 0xc) * mask->scale) >> 0xc;
+
+	mhs->posOffset[1] =
 		((short *)0x800b2cc4)[
 			(int)maskBeamInst->animFrame >> FPS_RIGHTSHIFT(0)
 		] + 0x40;
-	
+
     mhs->rot[0] = 0;
     mhs->rot[1] = rot;
     mhs->rot[2] = 0;
-	
+
 	instCurr = maskInst;
-	
+
 	// First time is MaskInst,
 	// Second time is BeamInst
 	for(int i = 0; i < 2; i++)
 	{
 		if ((mask->rot[2] & 1) == 0)
 		{
-			LHMatrix_Parent(instCurr, driverInst, &mhs->posOffset[0]);
+			DECOMP_LHMatrix_Parent(instCurr, driverInst, &mhs->posOffset[0]);
 			ConvertRotToMatrix(&mhs->m, &mhs->rot[0]);
 			MatrixRotate(&instCurr->matrix, &instCurr->matrix, &mhs->m);
 		}
@@ -115,20 +115,20 @@ void DECOMP_RB_MaskWeapon_ThTick(struct Thread* maskTh)
 			instCurr->matrix.t[2] = (int)mask->pos[2] + mhs->posOffset[2];
 			ConvertRotToMatrix(&instCurr->matrix, &mhs->rot[0]);
 		}
-		
+
 		// Set up the Second pass (BeamInst)
-		
+
 		mhs->posOffset[0] = 0;
 		mhs->posOffset[1] = 0x40;
 		mhs->posOffset[2] = 0;
-		
+
 		instCurr = maskBeamInst;
 	}
-	
+
 	// === Animation ===
 
     // get animFrame
-    sVar1 = INSTANCE_GetNumAnimFrames(maskBeamInst, 0);
+    sVar1 = DECOMP_INSTANCE_GetNumAnimFrames(maskBeamInst, 0);
 
     // if animation is not finished
     if ((int)maskBeamInst->animFrame < sVar1 - 1)
@@ -167,11 +167,11 @@ void DECOMP_RB_MaskWeapon_ThTick(struct Thread* maskTh)
 	{
 		// make visible
 		instCurr->flags &= 0xffffff7f;
-	
+
 		instCurr->scale[0] = mask->scale;
 		instCurr->scale[1] = mask->scale;
 		instCurr->scale[2] = mask->scale;
-		
+
 		// second pass
 		instCurr = maskInst;
 	}

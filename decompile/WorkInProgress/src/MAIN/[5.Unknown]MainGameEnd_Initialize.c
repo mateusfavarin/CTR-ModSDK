@@ -196,7 +196,7 @@ void MainGameEnd_Initialize(void)
                     }
                   }
                 }
-              } 
+              }
 
               sVar5 = (short)iVar12;
               if (((short)local_38 != -1) && (iVar12 = 0, 0 < (int)sVar5 + 1))
@@ -341,7 +341,7 @@ void MainGameEnd_Initialize(void)
                         uVar17 &= ~(1 << (puVar7[0] & 0x1fU));
                       }
                       puVar7 = (u_int *)((int)puVar7 + 2);
-                    } 
+                    }
                   }
 
                   // reset counter
@@ -370,7 +370,7 @@ void MainGameEnd_Initialize(void)
               }
             }
             local_38 = CONCAT22(local_38._2_2_, 0xffff);
-          } 
+          }
 
           for (i = 0; i < 4; i++)
           {
@@ -418,7 +418,7 @@ void MainGameEnd_Initialize(void)
             gGT->numParticles = 0xfa;
             gGT->confetti.unk2 = 0xfa;
 
-          } 
+          }
         }
       }
 
@@ -427,9 +427,9 @@ void MainGameEnd_Initialize(void)
         for (rank = 0; rank < 3; rank++)
         {
           iVar8 += gGT->standingsPoints[i * rank] * (3 - rank);
-        } 
+        }
         gGT->unk_afterTeams[i] = iVar8;
-      } 
+      }
 
       // no idea what this section is for
       for (i = 0; i < 4; i++)
@@ -458,7 +458,7 @@ void MainGameEnd_Initialize(void)
           }
         }
         gGT->unk1dc8[i] = uVar14;
-      } 
+      }
 
       // pointer to first Player thread
       t = gGT->threadBuckets[PLAYER]->thread;
@@ -508,6 +508,6 @@ void MainGameEnd_Initialize(void)
         }
       }
     }
-    Podium_InitModels(gGT);
+    DECOMP_Podium_InitModels(gGT);
   }
 }

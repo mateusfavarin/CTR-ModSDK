@@ -14,7 +14,7 @@ void DECOMP_MainFreeze_ConfigDrawNPC105(short startX, short startY, short param_
     {
         angle = (uVar6 + param_5) & 0xFFFF;
 
-        // pretty sure this is just MATH_SIN and MATH_Cos combined into one
+        // pretty sure this is just MATH_SIN and DECOMP_MATH_Cos combined into one
         #if 0
         sVar1 = (short)data.trigApprox[angle & 0x3FF];
         iVar4 = data.trigApprox[angle & 0x3FF] >> 0x10;
@@ -45,8 +45,8 @@ void DECOMP_MainFreeze_ConfigDrawNPC105(short startX, short startY, short param_
         }
         #endif
 
-        pos[4] = startX + (short)((param_3 << 3) * MATH_Cos(angle) >> 0xC) / 5;
-        pos[5] = startY + (short)(param_3 * MATH_Sin(angle) >> 0xC);
+        pos[4] = startX + (short)((param_3 << 3) * DECOMP_MATH_Cos(angle) >> 0xC) / 5;
+        pos[5] = startY + (short)(param_3 * DECOMP_MATH_Sin(angle) >> 0xC);
 
         if (uVar6 != 0)
         {

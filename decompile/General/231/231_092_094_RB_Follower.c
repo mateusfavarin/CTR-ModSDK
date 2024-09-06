@@ -99,7 +99,7 @@ void DECOMP_RB_Follower_Init(struct Driver* d, struct Thread* mineTh)
   if (((sdata->gGT->cameraDC[d->driverID].flags) & 0x10000) != 0) return;
 
   // create a thread and an Instance
-  iVar1 = INSTANCE_BirthWithThread(
+  iVar1 = DECOMP_INSTANCE_BirthWithThread(
   	mineTh->modelIndex, 0, SMALL, FOLLOWER,
   	DECOMP_RB_Follower_ThTick, sizeof(struct Follower), 0);
 
@@ -121,7 +121,7 @@ void DECOMP_RB_Follower_Init(struct Driver* d, struct Thread* mineTh)
   iVar1->matrix.m[2][2] = iVar3->matrix.m[2][2];
 
   t = iVar1->thread;
-  t->funcThDestroy = PROC_DestroyInstance;
+  t->funcThDestroy = DECOMP_PROC_DestroyInstance;
 
   fObj = t->object;
   fObj->frameCount = FPS_DOUBLE(7);

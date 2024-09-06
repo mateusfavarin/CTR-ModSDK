@@ -30,7 +30,7 @@ void RenderFMV();
 void RenderSubmit(struct GameTracker* gGT);
 
 // original CTR funcs
-void UI_CupStandings_InputAndDraw();
+void DECOMP_UI_CupStandings_InputAndDraw();
 void VB_EndEvent_DrawMenu();
 void RR_EndEvent_DrawMenu();
 void AA_EndEvent_DrawMenu();
@@ -356,7 +356,7 @@ void DECOMP_MainFrame_RenderFrame(struct GameTracker* gGT, struct GamepadSystem*
 				PickupBots_Update();
 			}
 
-			PlayLevel_UpdateLapStats();
+			DECOMP_PlayLevel_UpdateLapStats();
 		}
 #endif
 	}
@@ -573,9 +573,9 @@ void RainLogic(struct GameTracker* gGT)
 	for(i = 0; i < numPlyrCurrGame; i++)
 	{
 #ifndef REBUILD_PS1
-		PushBuffer_UpdateFrustum(&gGT->pushBuffer[i]);
+		DECOMP_PushBuffer_UpdateFrustum(&gGT->pushBuffer[i]);
 #else
-		// temporary until PushBuffer_UpdateFrustum is done
+		// temporary until DECOMP_PushBuffer_UpdateFrustum is done
 		DECOMP_PushBuffer_SetMatrixVP(&gGT->pushBuffer[i]);
 #endif
 
@@ -700,7 +700,7 @@ void RenderAllHUD(struct GameTracker* gGT)
 			// if standings
 			if((hudFlags & 4) != 0)
 			{
-				UI_CupStandings_InputAndDraw();
+				DECOMP_UI_CupStandings_InputAndDraw();
 			}
 			#endif
 		}
@@ -793,7 +793,7 @@ void RenderAllHUD(struct GameTracker* gGT)
 					#ifndef REBUILD_PS1
 					gGT->overlayTransition--;
 					if(gGT->overlayTransition == 1)
-						LOAD_OvrThreads(2);
+						DECOMP_LOAD_OvrThreads(2);
 					#endif
 				}
 
@@ -857,7 +857,7 @@ void RenderAllHUD(struct GameTracker* gGT)
 	else
 	{
 		#ifndef REBUILD_PS1
-		UI_RaceStart_IntroText1P();
+		DECOMP_UI_RaceStart_IntroText1P();
 		#endif
 	}
 }

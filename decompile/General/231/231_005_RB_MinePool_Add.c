@@ -7,7 +7,7 @@ extern struct LinkedList minePoolFree;
 void DECOMP_RB_MinePool_Add(struct MineWeapon* mw)
 {
 	struct WeaponSlot231* ws;
-	
+
     // if no more items on free list
 	if ( (&minePoolFree)->count == 0 )
 	{
@@ -16,7 +16,7 @@ void DECOMP_RB_MinePool_Add(struct MineWeapon* mw)
 			((struct WeaponSlot231*)(&minePoolTaken)->last)->mineWeapon
 		);
 	}
-	
+
 	// LIST_RemoveBack free list
 	ws = (struct WeaponSlot231*)DECOMP_LIST_RemoveBack(&minePoolFree);
 
@@ -24,6 +24,6 @@ void DECOMP_RB_MinePool_Add(struct MineWeapon* mw)
 	ws->mineWeapon = mw;
 	mw->weaponSlot231 = ws;
 
-	// LIST_AddFront to taken list
+	// DECOMP_LIST_AddFront to taken list
 	DECOMP_LIST_AddFront(&minePoolTaken, (struct Item*)ws);
 }

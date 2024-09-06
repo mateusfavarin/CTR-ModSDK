@@ -21,7 +21,7 @@ void DECOMP_VehStuckProc_RevEngine_Init(struct Thread *t, struct Driver *d)
     {
         // assume reason for revving is: mask grab
         d->KartStates.RevEngine.boolMaskGrab = true;
-        d->KartStates.RevEngine.maskObj = VehPickupItem_MaskUseWeapon(d, 0);
+        d->KartStates.RevEngine.maskObj = DECOMP_VehPickupItem_MaskUseWeapon(d, 0);
 
         // Driver flag
         d->actionsFlagSet &= ~(1);

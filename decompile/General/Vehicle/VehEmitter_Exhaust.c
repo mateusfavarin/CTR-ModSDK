@@ -79,8 +79,8 @@ struct Particle* DECOMP_VehEmitter_Exhaust(struct Driver *d, VECTOR *param_2, VE
 
     if (exhaustType == 7)
     {
-		void Particle_FuncPtr_ExhaustUnderwater(struct Particle *p);
-        p->funcPtr = Particle_FuncPtr_ExhaustUnderwater;
+		void DECOMP_Particle_FuncPtr_ExhaustUnderwater(struct Particle *p);
+        p->funcPtr = DECOMP_Particle_FuncPtr_ExhaustUnderwater;
     }
 
     // if engine revving

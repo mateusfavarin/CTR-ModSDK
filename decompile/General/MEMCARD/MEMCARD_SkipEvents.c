@@ -4,6 +4,6 @@ void DECOMP_MEMCARD_SkipEvents(void)
 
 {
     // Non infinite, bot functions have timeouts
-    while ((MEMCARD_GetNextSwEvent() != 7) && (MEMCARD_GetNextHwEvent() != 7))
+    while ((DECOMP_MEMCARD_GetNextSwEvent() != 7) && (DECOMP_MEMCARD_GetNextHwEvent() != 7))
         ;
 }

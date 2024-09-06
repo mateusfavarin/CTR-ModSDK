@@ -3,7 +3,7 @@
 void DECOMP_CAM_EndOfRace(struct CameraDC* cDC, struct Driver* d)
 {
 	struct GameTracker* gGT = sdata->gGT;
-	
+
 	#if BUILD > SepReview
 
 		// If not in Battle Mode and track path points exist and game is on 1P or 2P mode
@@ -20,7 +20,7 @@ void DECOMP_CAM_EndOfRace(struct CameraDC* cDC, struct Driver* d)
 		else
 		{
 			// Call function to initialize end-of-race cDC for Battle Mode
-			CAM_EndOfRace_Battle(cDC, d);
+			DECOMP_CAM_EndOfRace_Battle(cDC, d);
 		}
 		return;
 
@@ -28,9 +28,9 @@ void DECOMP_CAM_EndOfRace(struct CameraDC* cDC, struct Driver* d)
 	// this is SepReview's more error-prone version of the function
 
 		if (gGT->level1->ptrSpawnType1->count < 2 || gGT->numPlyrCurrGame > 2)
-			CAM_EndOfRace_Battle(cDC, d);
+			DECOMP_CAM_EndOfRace_Battle(cDC, d);
 		else
 			cDC->flags |= 0x20;
-    
+
   #endif
 }

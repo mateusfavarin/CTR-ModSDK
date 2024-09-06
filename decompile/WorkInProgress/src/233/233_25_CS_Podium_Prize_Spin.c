@@ -40,8 +40,8 @@ void CS_Podium_Prize_Spin(struct Instance *inst, short* prize)
 
     angle = prize[0xc] + ((prize[0xe] - prize[0xc]) * iVar3 >> 11);
 
-    short sine1 = (short)MATH_Sin(angle);
-    short cos = (short)MATH_Cos(angle);
+    short sine1 = (short)DECOMP_MATH_Sin(angle);
+    short cos = (short)DECOMP_MATH_Cos(angle);
 
     lightDir[1] = cos;
 
@@ -53,10 +53,10 @@ void CS_Podium_Prize_Spin(struct Instance *inst, short* prize)
 
     angle = (int)prize[0xD] + ((prize[0xF] - prize[0xD]) * iVar7 >> 0xb);
 
-    
-    short sine2 = (short)MATH_Sin(angle);
-    cos = (short)MATH_Cos(angle);
-    
+
+    short sine2 = (short)DECOMP_MATH_Sin(angle);
+    cos = (short)DECOMP_MATH_Cos(angle);
+
     lightDir[0] = (short)(sine1 * cos >> 12);
     lightDir[2] = (short)(sine1 * sine2 >> 12);
 

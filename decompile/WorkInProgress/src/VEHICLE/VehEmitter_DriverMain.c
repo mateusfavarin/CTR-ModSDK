@@ -108,7 +108,7 @@ void VehEmitter_DriverMain(struct Thread *t, struct Driver *d, undefined *param_
       distort |= 0x1000000;
     }
 
-    OtherFX_RecycleNew(&d->driverAudioPtrs[1],
+    DECOMP_OtherFX_RecycleNew(&d->driverAudioPtrs[1],
                        iVar18,
                        // volume
                        vol << 0x10 |
@@ -124,7 +124,7 @@ void VehEmitter_DriverMain(struct Thread *t, struct Driver *d, undefined *param_
       if (0x200 < approxSpeed)
       {
         // both gamepad vibration
-        GAMEPAD_ShockFreq(d, terrain->vibrationData[0], terrain->vibrationData[1]);
+        DECOMP_GAMEPAD_ShockFreq(d, terrain->vibrationData[0], terrain->vibrationData[1]);
         GAMEPAD_ShockForce2(d, terrain->vibrationData[2], terrain->vibrationData[3]);
       }
 
@@ -141,7 +141,7 @@ void VehEmitter_DriverMain(struct Thread *t, struct Driver *d, undefined *param_
         if (0x1600 < iVar18)
         {
           // gamepad vibration
-          GAMEPAD_ShockForce1(d, 3, 0xFF);
+          DECOMP_GAMEPAD_ShockForce1(d, 3, 0xFF);
         }
       }
     }
@@ -287,7 +287,7 @@ void VehEmitter_DriverMain(struct Thread *t, struct Driver *d, undefined *param_
       }
 
       // driver audio
-      OtherFX_RecycleNew(&d->driverAudioPtrs[2], distort);
+      DECOMP_OtherFX_RecycleNew(&d->driverAudioPtrs[2], distort);
     }
   }
 
@@ -319,7 +319,7 @@ void VehEmitter_DriverMain(struct Thread *t, struct Driver *d, undefined *param_
     // if driver sound exists
     if (d->driverAudioPtrs[0] != NULL)
     {
-      OtherFX_Stop1();
+      DECOMP_OtherFX_Stop1();
       // erase sound
       d->driverAudioPtrs[0] = NULL;
     }
@@ -383,7 +383,7 @@ void VehEmitter_DriverMain(struct Thread *t, struct Driver *d, undefined *param_
       }
 
       // driver audio
-      OtherFX_RecycleNew(
+      DECOMP_OtherFX_RecycleNew(
 
           // driver audio
           &d->driverAudioPtrs[0],
@@ -416,33 +416,33 @@ void VehEmitter_DriverMain(struct Thread *t, struct Driver *d, undefined *param_
     short angle = d->axisRotationX;
 
     // Cosine(angle)
-    MATH_Cos(angle);
+    DECOMP_MATH_Cos(angle);
 
     // Sine(angle)
-    iVar15 = MATH_Sin(angle);
+    iVar15 = DECOMP_MATH_Sin(angle);
     iVar15 *= 15;
 
     // Cosine(angle)
-    iVar23 = MATH_Cos(angle);
+    iVar23 = DECOMP_MATH_Cos(angle);
 
     // Sine(angle)
-    MATH_Sin(angle);
+    DECOMP_MATH_Sin(angle);
 
     // Cosine(angle)
-    iVar18 = MATH_Cos(angle);
+    iVar18 = DECOMP_MATH_Cos(angle);
 
     // Sine(angle)
-    MATH_Sin(angle);
+    DECOMP_MATH_Sin(angle);
     iVar23 = iVar23 * 0xf;
     iVar17 = iVar18 * 10 >> 0xc;
 
     // Cosine(angle)
-    MATH_Cos(angle);
+    DECOMP_MATH_Cos(angle);
     // puVar12 = (undefined *)angle;
     iVar24 = iVar23 >> 0xc;
 
     // Sine(angle)
-    iVar18 = MATH_Sin();
+    iVar18 = DECOMP_MATH_Sin();
     iVar20 = iVar15 >> 0xc;
     iVar16 = iVar18 * -10 >> 0xc;
 
@@ -455,7 +455,7 @@ void VehEmitter_DriverMain(struct Thread *t, struct Driver *d, undefined *param_
     sVar3 = (short)iVar16;
     sVar4 = (short)(iVar16 >> 1);
 
-  
+
 
     // back wheel skids
     if ((d->actionsFlagSet & 0x800) != 0)
@@ -695,24 +695,24 @@ void VehEmitter_DriverMain(struct Thread *t, struct Driver *d, undefined *param_
     if (d->unk381 != 0)
       goto LAB_8005a868;
   }
-  
+
   // else if "player"
   else
   {
 	// in a 1-player game, spawn 2 particles per frame on P1
 	// in a 2-player game, alternate players every 2 frames
 	// in a 4-player game, alternate players every 4 frames
-	  
+
     if ((d->revEngineState == 2) ||
         ((uVar13 = gGT->numPlyrCurrGame, 1 < uVar13 &&
-        (((uVar13 != 2 || 
+        (((uVar13 != 2 ||
         (uVar13 = d->driverID, (gGT->timer & 1) != uVar13)) &&
         (uVar13 = d->driverID, (gGT->timer & 3) != uVar13))))))
 	{
 	  // skip particles
       goto LAB_8005a9d8;
 	}
-	
+
 	if (d->unk381 == 0)
     {
       uVar13 = d->turbo_MeterRoomLeft;
@@ -793,7 +793,7 @@ LAB_8005a9d8:
   // if racer is being mask grabbed or repositioned, or is on the ground
   if ((d->kartState - 4 < 2) || ((d->actionsFlagSet & 1) != 0))
   {
-    GAMEPAD_JogCon2(d, 0x27, 0);
+    DECOMP_GAMEPAD_JogCon2(d, 0x27, 0);
 
     if (d->unk3D4 == 0)
     {
@@ -816,11 +816,11 @@ LAB_8005a9d8:
       uVar19 = 0x12;
       if ((d->simpTurnState < 0) || (uVar19 = 0x22, 0 < d->simpTurnState))
       {
-        GAMEPAD_JogCon1(d, uVar19, 0x20);
+        DECOMP_GAMEPAD_JogCon1(d, uVar19, 0x20);
       }
     }
     uVar19 = 0;
     uVar14 = uVar19;
   }
-  GAMEPAD_JogCon2(d, uVar19, uVar14);
+  DECOMP_GAMEPAD_JogCon2(d, uVar19, uVar14);
 }
