@@ -319,7 +319,10 @@ void StatePS1_Lobby_Loading()
 	  )
 	{
 		// for all other tracks
-		gGT->gameMode1 = LOADING | ARCADE_MODE;
+		if ((octr->onlineGameModifiers & MODIFIER_ITEMS))
+			gGT->gameMode1 = LOADING | ARCADE_MODE; //spawn boxes if items are on
+		else
+			gGT->gameMode1 = LOADING | TIME_TRIAL; //otherwise time trial mode (itemless)
 	}
 
 	// instant load
