@@ -41,11 +41,29 @@ struct OTMem
 	u_long* startPlusFour; // a0
 };
 
+typedef struct _NikoFakeDrEnv
+{
+	u_long* tag;
+	u_long unk[15];
+} NikoFakeDrEnv;
+
+typedef struct {
+	RECT		clip;		// Drawing area
+	int16_t		ofs[2];		// GPU draw offset (relative to draw area)
+	RECT		tw;			// Texture window
+	uint16_t	tpage;		// Initial tpage value
+	uint8_t		dtd;		// Dither processing flag (simply OR'ed to tpage)
+	uint8_t		dfe;		// Drawing to display area blocked/allowed (simply OR'ed to tpage)
+	uint8_t		isbg;		// Clear draw area if non-zero
+	uint8_t		r0, g0, b0;	// Draw area clear color (if isbg iz nonzero)
+	NikoFakeDrEnv		dr_env;		// GPU primitive cache area (used internally)
+} FAKE_DRAWENV;
+
 // 0xA4
 struct DB
 {
   // 0x00
-  DRAWENV drawEnv;
+  FAKE_DRAWENV drawEnv;
 
   // 0x5C
   DISPENV dispEnv;

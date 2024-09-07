@@ -120,10 +120,6 @@ static inline int FP_Mult(int x, int y)
 
 // misc //
 
-#ifndef REBUILD_PC
-int abs(int value);
-#endif
-
 int clamp(int n, int lo, int hi);
 int max(int a, int b);
 int min(int a, int b);
