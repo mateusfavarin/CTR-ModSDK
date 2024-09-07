@@ -6,11 +6,11 @@ void DECOMP_CDSYS_SpuEnableIRQ()
 	{
 		sdata->SpuDecodedData[i] = 0;
 	}
-	
+
 	SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
 	SpuSetTransferCallback(DECOMP_CDSYS_SpuCallbackTransfer);
 	SpuSetIRQCallback(DECOMP_CDSYS_SpuCallbackIRQ);
-	
+
 	sdata->irqAddr = 0x200;
 	SpuSetIRQAddr(0x200);
 	SpuSetIRQ(1);
