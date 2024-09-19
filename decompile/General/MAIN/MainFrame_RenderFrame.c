@@ -320,7 +320,7 @@ void DECOMP_MainFrame_RenderFrame(struct GameTracker* gGT, struct GamepadSystem*
 
 		RenderDispEnv_World(gGT); // == RenderDispEnv_World ==
 
-		// We just draw full wumpa geometry instead
+		// We just draw full wumpa geometry instead of what the OG game does
 		MultiplayerWumpaHUD(gGT);
 
 		#if 0
