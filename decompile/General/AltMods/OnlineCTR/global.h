@@ -1,7 +1,7 @@
 #ifndef ONLINE_GLOBAL_H
 #define ONLINE_GLOBAL_H
 
-#define OCTR_MENU_LEVEL INTRO_OXIDE
+#define OCTR_MENU_LEVEL 0x26 /*INTRO_OXIDE*/
 
 #define VERSION_GAME   1
 #define VERSION_CLIENT 1
@@ -65,10 +65,11 @@ enum ClientState
 /* Bit flags */
 enum OnlineGameModifiers
 {
-	MODIFIER_NONE  = 0,
-	MODIFIER_ITEMS = (1 << 0),
-	MODIFIER_ICY   = (1 << 1),
-	MODIFIER_STP   = (1 << 2),
+	MODIFIER_NONE   = 0,
+	MODIFIER_ITEMS  = (1 << 0),
+	MODIFIER_ICY    = (1 << 1),
+	MODIFIER_STP    = (1 << 2),
+	MODIFIER_MIRROR = (1 << 3),
 };
 
 enum OnlineGameModeList

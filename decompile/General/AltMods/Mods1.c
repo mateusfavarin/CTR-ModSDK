@@ -1,50 +1,15 @@
 // OnlineCTR (part 1)
 #ifndef REBUILD_PC
 #ifdef USE_ONLINE
-#include "OnlineCTR/hooks.c"
-#include "OnlineCTR/menu.c"
-#include "OnlineCTR/states.c"
-#include "OnlineCTR/thread.c"
+//#pragma GCC push_options
+//#pragma GCC optimize("-Oz") //unfortunately this seems to make the code slightly bigger instead.
+#include "OnlineCTR/hooks.c" //too big to move to mods7 :(
+#include "OnlineCTR/menu.c" //too big to move to mods7 :( (positively massive)
+#include "OnlineCTR/states.c" //too big to move to mods7 :( (positively massive)
+//#include "OnlineCTR/thread.c" //moved to mods7 (fits perfectly)
 #include "OnlineCTR/endOfRaceUI.c"
-
-void AssignMeterGrade(struct Driver * driver, int meterLeft)
-{
-	const int gradeTreshold[] = {SECONDS(1) * FP(0.50), SECONDS(1) * FP(0.65),
-						SECONDS(1) * FP(0.80), SECONDS(1) * FP(0.90),
-						SECONDS(1) * FP(0.95)};
-	const int gradeColors[] = {TROPY_LIGHT_BLUE, TINY_GREEN, PAPU_YELLOW, ROO_ORANGE, ORANGE_RED};
-
-	driver->meterGradeTimer = SECONDS(0.5);
-	driver->meterGrade[1] = '\0';
-
-	char grades[] = "FDCBA";
-	for (int i = 0; i < len(gradeTreshold); i++)
-	{
-		if (meterLeft > SECONDS(1) - FP_INT(gradeTreshold[i]))
-		{
-			driver->meterGrade[0] = grades[i];
-			driver->gradeColor = gradeColors[i];
-			return;
-		}
-	}
-	driver->meterGrade[0] = 'S';
-	driver->gradeColor = COCO_MAGENTA;
-}
-
-void StatsUpgrade()
-{
-	/*
-		Stat 9 is acceleration,
-		Stats 11 and 12 speed related
-	*/
-	for (int i = 9; i < 13; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			data.metaPhys[i].value[j] = data.metaPhys[i].value[4]; // copy MAX
-		}
-	}
-}
+//#include "OnlineCTR/zMirrorMode.c"
+//#pragma GCC pop_options
 #endif
 #endif
 
