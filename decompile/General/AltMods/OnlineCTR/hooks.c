@@ -175,7 +175,7 @@ void OnlineInit_Drivers(struct GameTracker* gGT)
 
 	gGT->drivers[0]->meterGradeTimer = 0;
 
-	if (gGT->levelID != 0x26) { octr->CurrState = GAME_WAIT_FOR_RACE; }
+	if (gGT->levelID != OCTR_MENU_LEVEL) { octr->CurrState = GAME_WAIT_FOR_RACE; }
 }
 
 void OnlineEndOfRace()

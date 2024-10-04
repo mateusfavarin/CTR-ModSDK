@@ -25,9 +25,6 @@ void DECOMP_UI_RaceStart_IntroText1P(void) {
 
    gameMode = gGT -> gameMode1;
 
-   //at time of writing, this function doesn't seem to be called.
-   //printf("alskjalskjfalskfja");
-
    // If you are not in a relic race
    if ((gameMode & 0x4000000) == 0) {
       // BONUS ROUND
@@ -97,8 +94,13 @@ void DECOMP_UI_RaceStart_IntroText1P(void) {
 
    // If you are in Relic Race
    else {
+#if defined(USE_ONLINE) //use "arcade"'s text ID for all online purposes. 
+	  // ARCADE
+	  textID = 0x4e;
+#else
       // RELIC RACE
       textID = 0xb8;
+#endif
    }
    LAB_80055930:
 
@@ -137,9 +139,6 @@ void DECOMP_UI_RaceStart_IntroText1P(void) {
 
          // string of top title bar
          pcVar6 = sdata -> lngStrings[textID];
-
-		 //need to know id difference between time trial and arcade so we can change text for saphi in both modes.
-		 printf("banana id: %d, str: %s", textID, sdata->lngStrings[textID]);
 
          // Y-value that transitions title text to off-screen
          sVar7 = gGT->pushBuffer[0].rect.y - (windowHeight + -7);

@@ -1,5 +1,9 @@
 #include <common.h>
 
+#if defined(USE_ONLINE)
+#include "../AltMods/OnlineCTR/global.h"
+#endif
+
 void StateZero();
 
 //#define FastBoot
@@ -722,7 +726,7 @@ void StateZero()
 	gGT->levelID = NAUGHTY_DOG_CRATE;
 
 	#ifdef USE_ONLINE
-	gGT->levelID = 0x26;
+	gGT->levelID = OCTR_MENU_LEVEL;
 	#endif
 
 	#ifdef FastBoot

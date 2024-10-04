@@ -34,10 +34,13 @@ void ThreadFunc(struct Thread* t)
 	int isIdle = 0;
 
 	struct GameTracker* gGT = sdata->gGT;
-	octr->boolPlanetLEV = gGT->levelID == 0x26;
+	octr->boolPlanetLEV = gGT->levelID == OCTR_MENU_LEVEL;
 
 	if(octr->boolPlanetLEV)
 	{
+		//based on some indirect testing, I think the body
+		//of this if statement has been the cause of the notorious
+		//LOAD screen crash (somehow).
 		*(int*)0x800ae54c = 0x3e00008;
 		*(int*)0x800ae550 = 0;
 
