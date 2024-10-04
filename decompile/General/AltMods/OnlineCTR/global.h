@@ -65,11 +65,12 @@ enum ClientState
 /* Bit flags */
 enum OnlineGameModifiers
 {
-	MODIFIER_NONE   = 0,
-	MODIFIER_ITEMS  = (1 << 0),
-	MODIFIER_ICY    = (1 << 1),
-	MODIFIER_STP    = (1 << 2),
-	MODIFIER_MIRROR = (1 << 3),
+	MODIFIER_NONE        = 0,
+	MODIFIER_ITEMS       = (1 << 0),
+	MODIFIER_ICY         = (1 << 1),
+	MODIFIER_STP         = (1 << 2),
+	MODIFIER_MIRROR      = (1 << 3), //nonfunctional currently due to byte budget.
+	MODIFIER_RETROFUELED = (1 << 4), //does not include STP by default
 };
 
 enum OnlineGameModeList
