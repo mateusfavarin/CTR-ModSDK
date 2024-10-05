@@ -432,6 +432,12 @@ void StatePS1_Game_Race()
 
 	if ((octr->onlineGameModifiers & MODIFIER_ITEMS) == 0)
 		Ghostify();
+	short* camMode = (short*)(0x80098028); //same address used in OnlineCTR, todo: change this to be the actual variable.
+	//afaik, this only needs to be done *once*, when the race starts, not every frame.
+	if ((octr->onlineGameModifiers & MODIFIER_DEMOCAM))
+		*camMode = 0x20; //0x20 = demo cam mode
+	else
+		*camMode = 0;
 
 	for(i = 1; i < ROOM_MAX_NUM_PLAYERS; i++)
 	{
