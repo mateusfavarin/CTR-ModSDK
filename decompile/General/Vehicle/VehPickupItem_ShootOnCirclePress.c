@@ -11,8 +11,8 @@ void DECOMP_VehPickupItem_ShootOnCirclePress(struct Driver *d)
 		#endif
 	}
 
-    // If you want to fire a weapon
-    if ((d->actionsFlagSet & 0x8000) == 0)
+    // If you want to fire a weapon, see VehPhysProc_Driving_PhysLinear.c for more details
+    if ((d->actionsFlagSet & 0x8000) == 0) //when this function is called, this flag is only set if you pressed circle & *you have a weapon*
         return;
 
     // Remove the request to fire a weapon, since we will fire it now

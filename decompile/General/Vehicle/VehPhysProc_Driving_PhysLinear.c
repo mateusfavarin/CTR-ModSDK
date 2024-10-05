@@ -545,13 +545,36 @@ void DECOMP_VehPhysProc_Driving_PhysLinear(struct Thread* thread, struct Driver*
 			goto CheckJumpButtons;
 		}
 
+		heldItemID = driver->heldItemID;
+
+		#if defined(USE_ONLINE)
+		// If you have no weapon (0xf)
+		// and if you did not have a weapon last frame
+		if
+		(
+			(heldItemID == 0xF) &&
+			(driver->noItemTimer == 0)
+		)
+		{
+			if ((octr->onlineGameModifiers & MODIFIER_ITEMS) && (driver->driverID == 0))
+			{
+				//printf("Local honk!\n");
+				//honk your horn! (only if yourself & in an item mode)
+				DECOMP_OtherFX_Play(88, 1); //fire rocket sound (temporary)
+				octr->Shoot[0].boolJuiced = 0;
+				octr->Shoot[0].Weapon = 14; //honk
+				octr->Shoot[0].flags = 0;
+				octr->Shoot[0].boolNow = 1;
+			}
+		}
+		#endif
+
 		// === Item Roll finished before PhysLinear ===
 
 		// If you dont have "roulette" weapon (0x10), and if you dont have "no weapon" (0xf)
 		// and if you did not have a weapon last frame (0x3c->0),
 		// and if (unknown driverRankItemValue related to 0x4a0),
 		// and if you are not being effected by Clock Weapon
-		heldItemID = driver->heldItemID;
 		if
 		(
 			(heldItemID != 0xF) &&

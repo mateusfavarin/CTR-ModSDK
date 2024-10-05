@@ -454,7 +454,13 @@ void StatePS1_Game_Race()
 			// Missiles and Bombs share code,
 			// Change Bomb1x, Bomb3x, Missile3x, to Missile1x
 			if ((weapon == 1) || (weapon == 10) || (weapon == 11)) { weapon = 2; }
-			DECOMP_VehPickupItem_ShootNow(d, weapon, octr->Shoot[i].flags);
+			if (weapon == 14)
+			{ //not a weapon, honk your horn
+				//printf("Weapon packet honk!\n");
+				DECOMP_OtherFX_Play(88, 1); //fire rocket sound (temporary)
+			}
+			else
+				DECOMP_VehPickupItem_ShootNow(d, weapon, octr->Shoot[i].flags); //shoot weapon
 		}
 	}
 
