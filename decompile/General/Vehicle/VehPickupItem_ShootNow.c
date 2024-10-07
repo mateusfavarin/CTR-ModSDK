@@ -36,11 +36,16 @@ void DECOMP_VehPickupItem_ShootNow(struct Driver* d, int weaponID, int flags)
 	{
 		// Turbo
 		case 0: {
-
 			int boost = 0x80;
 			if(d->numWumpas >= 10)
 				boost = 0x100;
-
+			#if defined(USE_ONLINE)
+			// less boost for first place, more boost for last place (*initial concept* courtesy of gasmoxian)
+			int rank = d->driverRank;
+			if (!(octr->onlineGameModifiers & MODIFIER_CATCHUP))
+				rank = 0; //0x80 / 0x100 if no modifier (vanilla values)
+			boost += rank * 5; // first place gets no benefit (0 * 5), last place gets +(rank * 5)
+			#endif
 			DECOMP_VehFire_Increment(d, 0x960, 9, boost);
 			} break;
 

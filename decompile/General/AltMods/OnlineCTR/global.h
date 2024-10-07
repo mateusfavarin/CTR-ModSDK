@@ -72,6 +72,7 @@ enum OnlineGameModifiers
 	MODIFIER_MIRROR      = (1 << 3), //nonfunctional currently due to byte budget.
 	MODIFIER_RETROFUELED = (1 << 4), //does not include STP by default
 	MODIFIER_DEMOCAM     = (1 << 5),
+	MODIFIER_CATCHUP     = (1 << 6), //wumpa and/or boost is more effective in last place vs first
 };
 
 enum OnlineGameModeList

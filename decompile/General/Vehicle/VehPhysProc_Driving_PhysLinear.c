@@ -1071,6 +1071,12 @@ SKIP_RESERVE_RESET:
 	}
 	*(u_short*)&driver->unknowndriverBaseSpeed = driverBaseSpeedUshort;
 	*(u_short*)&driver->baseSpeed = approximateSpeed2;
+	#if defined(USE_ONLINE)
+	//adding to driver->unknowndriverBaseSpeed seems to have no effect on the drivers speed (based on 5 minutes of testing)
+	//adding to driver->baseSpeed does seem to have an effect on the drivers speed.
+	if ((octr->onlineGameModifiers & MODIFIER_CATCHUP))
+		*(u_short*)&driver->baseSpeed += driver->driverRank * 75; //1st place gets no benefit, 8th place gets +525
+	#endif
 
 
 	// === Steering Section ===
