@@ -20,6 +20,10 @@ void uibb_entryHook()
 }
 #endif
 
+#if defined(USE_ONLINE)
+#include "OnlineCTR/misc_prints.c"
+#endif
+
 #ifndef REBUILD_PC
 
 #define JMP(dest) (((unsigned long)dest & 0x3FFFFFF) >> 2 | 0x8000000)

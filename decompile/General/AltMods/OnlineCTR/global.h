@@ -82,6 +82,13 @@ enum OnlineGameModeList
 	ONLINE_MODE_ICY_STP = 2,
 };
 
+enum MenuState
+{
+	MENUSTATE_NONE              = 0, //nothing substantial happened this frame.
+	MENUSTATE_PRESSED_CROSS     = (1 << 0),
+	MENUSTATE_PRESSED_TRIANGLE  = (1 << 1),
+};
+
 typedef struct RaceStats
 {
 	int32_t slot;
@@ -114,7 +121,7 @@ struct OnlineCTR
 	uint8_t boolJoiningServer;
 	uint8_t boolSelectedRoom;
 	uint8_t boolPlanetLEV;
-	uint8_t onlineGameModifiers;
+	uint8_t onlineGameModifiers; //this may need to be expanded to more than 8 flags
 	uint8_t windowsClientSync;
 	uint8_t lastWindowsClientSync;
 	uint8_t desiredFPS;
