@@ -5,11 +5,11 @@
 //#pragma GCC optimize("-Oz") //unfortunately this seems to make the code slightly bigger instead.
 #include "OnlineCTR/hooks.c" //too big to move to mods7 :(
 #if 0
-#include "OnlineCTR/menu.c" //too big to move to mods7 :( (positively massive)
-#include "OnlineCTR/states.c" //too big to move to mods7 :( (positively massive)
+#include "OnlineCTR/old_menu.c" //too big to move to mods7 :( (positively massive)
+#include "OnlineCTR/old_states.c" //too big to move to mods7 :( (positively massive)
 #else
-#include "OnlineCTR/new_menu.c"
-#include "OnlineCTR/new_states.c"
+#include "OnlineCTR/menu.c"
+#include "OnlineCTR/states.c"
 #endif
 //#include "OnlineCTR/thread.c" //moved to mods7 (fits perfectly)
 #include "OnlineCTR/endOfRaceUI.c"

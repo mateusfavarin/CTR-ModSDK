@@ -24,12 +24,12 @@ RECT drawTimeRECT =
 #pragma endregion
 
 #pragma region Function Forward Decls
-void PrintCharacterStats(); //currently in misc_prints.c
+void PrintCharacterStats(); //currently in misc_states1.c
 static void PrintRecvTrack();
 static void ResetPsxGlobals();
-static void Ghostify();
-static void OnRaceInit();
-static void OnRaceEnd();
+void Ghostify(); //currently in misc_states3.c
+void OnRaceEnd(); //currently in misc_states2.c
+void OnRaceInit(); //currently in misc_states3.c
 #pragma endregion
 
 #pragma region PS1 States
@@ -545,17 +545,6 @@ void StatePS1_Game_Spectate()
 #pragma endregion
 
 #pragma region Misc Util
-//this function is called elsewhere in the program, hence not static
-void PrintTimeStamp()
-{
-	int boolEndOfRace = !octr->boolPlanetLEV;
-
-	int posX = 56 + 0xC * boolEndOfRace;
-	int posY = 198 - 0xC * boolEndOfRace;
-	DECOMP_DecalFont_DrawLine(__TIME__, posX, posY, FONT_SMALL, DARK_RED);
-	DECOMP_DecalFont_DrawLine(__DATE__, posX, posY + 8, FONT_SMALL, DARK_RED);
-}
-
 static void PrintRecvTrack()
 {
 	static char* onlineLapString = "Laps: 000";
@@ -583,9 +572,9 @@ static void PrintRecvTrack()
 
 static void ResetPsxGlobals()
 {
-	//this function is called at the end of StatePS1_Launch_PickRoom, but most
-	//of the things this function does only needs to be done ONCE during the
-	//lifetime of the program.
+	//this function is called at the end of StatePS1_Launch_PickRoom,
+	//I think most of the things this function does only needs to be
+	//done ONCE during the lifetime of the program.
 
 	// unlock everything (0,1,2,3,4,5)
 	for (int i = 0; i < 6; i++)
@@ -606,56 +595,5 @@ static void ResetPsxGlobals()
 		data.characterIDs[i] = 0;
 		octr->boolClientSelectedCharacters[i] = 0;
 	}
-}
-
-static void Ghostify()
-{
-	struct Turbo* turboObj;
-	struct Thread* fireThread;
-	struct GameTracker* gGT = sdata->gGT;
-	struct Icon** ptrIconArray;
-	struct Instance* inst;
-
-	for (int driverID = 1; driverID < ROOM_MAX_NUM_PLAYERS; driverID++)
-	{
-		gGT->drivers[driverID]->wheelSprites = ICONGROUP_GETICONS(gGT->iconGroup[0xC]);
-		inst = gGT->drivers[driverID]->instSelf;
-		if (!inst) { continue; }
-		inst->flags |= 0x60000;
-		inst->alphaScale = 0xA00;
-	}
-}
-
-static void OnRaceEnd()
-{
-	struct Driver** drivers = sdata->gGT->drivers;
-	bool foundRacer = false;
-	for (int driverID = 1; driverID < ROOM_MAX_NUM_PLAYERS; driverID++)
-	{
-		/* Undo wheel ghostify */
-		drivers[driverID]->wheelSprites = ICONGROUP_GETICONS(sdata->gGT->iconGroup[0]);
-
-		if (!foundRacer && octr->nameBuffer[driverID][0] && !checkpointTracker[driverID].raceFinished)
-		{
-			sdata->gGT->cameraDC[0].driverToFollow = drivers[driverID];
-			foundRacer = true;
-		}
-	}
-}
-
-extern unsigned int checkpointTimes[(MAX_LAPS * CPS_PER_LAP) + 1];
-static void OnRaceInit()
-{
-	for (int i = 0; i < ROOM_MAX_NUM_PLAYERS; i++)
-	{
-		checkpointTracker[i].currCheckpoint = 0;
-		checkpointTracker[i].timer = 0;
-		checkpointTracker[i].raceFinished = 0;
-	}
-	for (int i = 0; i < MAX_LAPS * CPS_PER_LAP; i++)
-	{
-		checkpointTimes[i] = 0;
-	}
-	sdata->gGT->drivers[0]->bestLapTime = HOURS(10);
 }
 #pragma endregion

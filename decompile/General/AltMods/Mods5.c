@@ -21,7 +21,7 @@ void uibb_entryHook()
 #endif
 
 #if defined(USE_ONLINE)
-#include "OnlineCTR/misc_prints.c"
+#include "OnlineCTR/misc_states1.c"
 #endif
 
 #ifndef REBUILD_PC

@@ -133,7 +133,7 @@ void ThreadFunc(struct Thread* t)
 		//sdata->Loading.stage = 0;
 
 		// load with flag animation
-		DECOMP_MainRaceTrack_RequestLoad(0x26);
+		DECOMP_MainRaceTrack_RequestLoad(OCTR_MENU_LEVEL);
 
 		// kill thread,
 		// dont execute again until game loads
