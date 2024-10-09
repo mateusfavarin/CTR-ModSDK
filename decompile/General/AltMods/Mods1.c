@@ -8,7 +8,7 @@
 #include "OnlineCTR/states.c"
 //#include "OnlineCTR/thread.c" //moved to mods7 (fits perfectly)
 #include "OnlineCTR/endOfRaceUI.c"
-#include "OnlineCTR/zMirrorMode.c"
+//#include "OnlineCTR/zMirrorMode.c" //commented out due to lack of byte budget
 //#pragma GCC pop_options
 #endif
 #endif
