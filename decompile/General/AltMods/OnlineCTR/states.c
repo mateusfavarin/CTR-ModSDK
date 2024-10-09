@@ -14,6 +14,42 @@ char* countryNames[ELEMENTS_PER_PAGE] =
 	"Beta"
 };
 
+char* lapMenuEntries[ELEMENTS_PER_PAGE] =
+{
+	"3",
+	"5",
+	"7",
+	"CUSTOM",
+	"-",
+	"-",
+	"-",
+	"-"
+};
+
+char* customLapMenuEntries[ELEMENTS_PER_PAGE] =
+{
+	"+100",
+	"+10",
+	"+1",
+	"-1",
+	"-10",
+	"-100",
+	"CONFIRM",
+	"-"
+};
+
+char* roomMenuEntries[ELEMENTS_PER_PAGE] =
+{
+	"ROOM 1 - x/8",
+	"ROOM 2 - x/8",
+	"ROOM 3 - x/8",
+	"ROOM 4 - x/8",
+	"ROOM 5 - x/8",
+	"ROOM 6 - x/8",
+	"ROOM 7 - x/8",
+	"ROOM 8 - x/8"
+};
+
 RECT drawTimeRECT =
 {
 	.x = 0xffec,
@@ -149,39 +185,23 @@ void Draw_Launch_PickRoom(uint8_t pageNumber)
 	uint16_t x = 0x198, y = 0x84;
 	SetMenuPosition(&x, &y, NULL, NULL);
 	//set menu contents
-	char* roomNames[ELEMENTS_PER_PAGE];
-	roomNames[0] = "ROOM 1 - x/8";
-	roomNames[1] = "ROOM 2 - x/8";
-	roomNames[2] = "ROOM 3 - x/8";
-	roomNames[3] = "ROOM 4 - x/8";
-	roomNames[4] = "ROOM 5 - x/8";
-	roomNames[5] = "ROOM 6 - x/8";
-	roomNames[6] = "ROOM 7 - x/8";
-	roomNames[7] = "ROOM 8 - x/8";
-	SetRowString(0, roomNames[0]);
-	SetRowString(1, roomNames[1]);
-	SetRowString(2, roomNames[2]);
-	SetRowString(3, roomNames[3]);
-	SetRowString(4, roomNames[4]);
-	SetRowString(5, roomNames[5]);
-	SetRowString(6, roomNames[6]);
-	SetRowString(7, roomNames[7]);
 	for (int i = 0; i < ELEMENTS_PER_PAGE; i++)
 	{
+		SetRowString(i, roomMenuEntries[i]);
 		uint16_t roomNumber = i + (pageNumber * ELEMENTS_PER_PAGE);
 		//roomNumber = roomNumber <= 9
-		roomNames[i][5] = roomNumber + ((roomNumber <= 8) ? ('1') : ('A' - 9));
-		roomNames[i][9] = '0' + (octr->roomClientCount[(pageNumber * ELEMENTS_PER_PAGE) + i]);
+		roomMenuEntries[i][5] = roomNumber + ((roomNumber <= 8) ? ('1') : ('A' - 9));
+		roomMenuEntries[i][9] = '0' + (octr->roomClientCount[(pageNumber * ELEMENTS_PER_PAGE) + i]);
 		if (roomNumber >= SERVER_NUM_ROOMS)
 		{
-			roomNames[i][0] = '-';
-			roomNames[i][1] = '\0';
+			roomMenuEntries[i][0] = '-';
+			roomMenuEntries[i][1] = '\0';
 			SetRowSelectable(i, false);
 		}
 		else
 		{
-			roomNames[i][0] = 'R';
-			roomNames[i][1] = 'O';
+			roomMenuEntries[i][0] = 'R';
+			roomMenuEntries[i][1] = 'O';
 			SetRowSelectable(i, !octr->roomLocked[roomNumber]);
 		}
 	}
@@ -210,6 +230,10 @@ void StatePS1_Lobby_AssignRole()
 #pragma region Lobby_HostTrackPick
 void StatePS1_Lobby_HostTrackPick()
 {
+	//0 = choose track
+	//1 = choose laps
+	//2 = choose custom laps
+	static char step = 0;
 	//static bool otd_HostTrackPick = true;
 	//if (otd_HostTrackPick)
 	//{
@@ -220,9 +244,29 @@ void StatePS1_Lobby_HostTrackPick()
 
 	//show the menu
 	SetMenuShow(true);
-	//set the draw function
-	void Draw_Lobby_HostTrackPick(uint8_t);
-	SetMenuContents(Draw_Lobby_HostTrackPick, NUM_TRACK_PAGES, true);
+	switch (step)
+	{
+		case 0: //track
+		{
+			//set the draw function to track pick
+			void Draw_Lobby_HostTrackPick(uint8_t);
+			SetMenuContents(Draw_Lobby_HostTrackPick, NUM_TRACK_PAGES, true);
+		}
+		break;
+		case 1: //laps
+		{
+			//set the draw function to laps pick
+			void Draw_Lobby_HostTrackPick_Laps(uint8_t);
+			SetMenuContents(Draw_Lobby_HostTrackPick_Laps, 1, false);
+		}
+		break;
+		case 2: //custom laps
+		{
+			void Draw_Lobby_HostTrackPick_CustomLaps(uint8_t);
+			SetMenuContents(Draw_Lobby_HostTrackPick_CustomLaps, 1, false);
+		}
+		break;
+	}
 
 	PrintCharacterStats();
 
@@ -230,16 +274,79 @@ void StatePS1_Lobby_HostTrackPick()
 	MenuTick(&state, &row, &pageNumber);
 	if (state & MENUSTATE_PRESSED_CROSS)
 	{
-		//set otd to true for next time.
-		//otd_HostTrackPick = true;
-		//disable the menu.
-		//printf("Lobby_HostTrackPick hide menu\n");
-		SetMenuShow(false);
-		//graduate to next state
-		octr->levelID = row + (pageNumber * ELEMENTS_PER_PAGE);
-		octr->boolSelectedLevel = true;
-		octr->lapCount = 4; //TODO: implement the fakestate for this
-		octr->boolSelectedLap = true;
+		switch (step)
+		{
+			case 0: //track
+			{
+				octr->levelID = row + (pageNumber * ELEMENTS_PER_PAGE);
+				octr->boolSelectedLevel = true;
+				step = 1; //go to choose laps
+			}
+			break;
+			case 1: //laps
+			{
+				if (row <= 2) //3 5 7
+				{
+					int lapCount = (row * 2) + 3;
+					octr->lapCount = lapCount;
+					octr->boolSelectedLap = true;
+					SetMenuShow(false);
+					step = 0; //reset state for next time.
+				}
+				else //if row == 3
+				{
+					step = 2; //go to custom laps
+					strcpy(sdata->lngStrings[0x4e], "1"); //custom lap label (starts at 1 lap)
+				}
+			}
+			break;
+			case 2: //custom laps
+			{
+				static int16_t rolling = 1;
+				if (row == 6)
+				{
+					octr->lapCount = rolling;
+					octr->boolSelectedLap = true;
+					SetMenuShow(false);
+					rolling = 1;
+					step = 0; //reset state for next time.
+					strcpy(sdata->lngStrings[0x4e], "Saphi");
+				}
+				else
+				{
+					switch (row)
+					{
+						case 0:
+							rolling += 100;
+							break;
+						case 1:
+							rolling += 10;
+							break;
+						case 2:
+							rolling += 1;
+							break;
+						case 3:
+							rolling -= 1;
+							break;
+						case 4:
+							rolling -= 10;
+							break;
+						case 5:
+							rolling -= 100;
+							break;
+					}
+					rolling = ((rolling < 1) ? 1 : rolling);
+					rolling = ((rolling > 254) ? 254 : rolling);
+					//rolling = max(0, rolling);
+					//rolling = min(254, rolling);
+					char lapCountTitleBuf[5];//9999+nullterm (5 chars)
+					sprintf(lapCountTitleBuf, "%d", rolling);
+					lapCountTitleBuf[4] = '\0'; //no overrun pls.
+					strcpy(sdata->lngStrings[0x4e], lapCountTitleBuf); //set the title
+				}
+			}
+			break;
+		}
 	}
 }
 
@@ -263,6 +370,31 @@ void Draw_Lobby_HostTrackPick(uint8_t pageNumber)
 			SetRowInternalString(i, data.metaDataLEV[levelId].name_LNG);
 		}
 	}
+}
+
+void Draw_Lobby_HostTrackPick_Laps(uint8_t pageNumber)
+{
+	//set menu contents
+	for (int i = 0; i < ELEMENTS_PER_PAGE; i++)
+	{
+		SetRowString(i, lapMenuEntries[i]);
+		SetRowSelectable(i, true);
+	}
+	for (int i = 4; i < 8; i++)
+	{
+		SetRowSelectable(i, false);
+	}
+}
+
+void Draw_Lobby_HostTrackPick_CustomLaps(uint8_t pageNumber)
+{
+	//set menu contents
+	for (int i = 0; i < ELEMENTS_PER_PAGE; i++)
+	{
+		SetRowString(i, customLapMenuEntries[i]);
+		SetRowSelectable(i, true);
+	}
+	SetRowSelectable(7, false);
 }
 #pragma endregion
 
