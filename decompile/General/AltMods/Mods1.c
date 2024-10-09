@@ -4,13 +4,8 @@
 //#pragma GCC push_options
 //#pragma GCC optimize("-Oz") //unfortunately this seems to make the code slightly bigger instead.
 #include "OnlineCTR/hooks.c" //too big to move to mods7 :(
-#if 0
-#include "OnlineCTR/old_menu.c" //too big to move to mods7 :( (positively massive)
-#include "OnlineCTR/old_states.c" //too big to move to mods7 :( (positively massive)
-#else
 #include "OnlineCTR/menu.c"
 #include "OnlineCTR/states.c"
-#endif
 //#include "OnlineCTR/thread.c" //moved to mods7 (fits perfectly)
 #include "OnlineCTR/endOfRaceUI.c"
 #include "OnlineCTR/zMirrorMode.c"
