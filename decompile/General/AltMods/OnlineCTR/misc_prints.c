@@ -10,8 +10,8 @@ void PrintCharacterStats()
 	int i;
 	int color;
 
-	uint16_t x = 0x70, y = 0x84;
-	SetMenuPosition(&x, &y, NULL, NULL);
+	//uint16_t x = 0x70, y = 0x84;
+	//SetMenuPosition(&x, &y, NULL, NULL);
 
 	DecalFont_DrawLine(
 		countryNames[octr->serverId],

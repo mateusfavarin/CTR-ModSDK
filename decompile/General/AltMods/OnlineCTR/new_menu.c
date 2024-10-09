@@ -163,16 +163,19 @@ void SetMenuContents(void (*drawPage)(uint8_t), uint8_t maxPageCount, bool isDyn
 	//0 = call drawPage only once (upon calling SetMenuContents)
 	//1 = call drawPage only once every page change
 	//2 = call drawPage every frame
+	if (drawPage != menuDrawPage)
+		otd_menuDraw = true; //reassigning the same draw function shouldn't redraw
 	menuDrawPage = drawPage;
 	menuMaxPageCount = maxPageCount;
 	menuIsDynamic = isDynamic;
-	otd_menuDraw = true;
 	if (menuMaxPageCount <= menuPageNumber - 1)
 		menuPageNumber = menuMaxPageCount - 1;
 }
 
 void SetMenuShow(bool show)
 {
+	if (!menuShow && show) //wasn't being shown, now is
+		SetCursorPosition(0, 0); //zero the cursor pos
 	menuShow = show;
 	if (show)
 		sdata->ptrActiveMenu = &menu;

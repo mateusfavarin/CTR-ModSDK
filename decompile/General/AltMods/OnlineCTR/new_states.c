@@ -46,36 +46,27 @@ void StatePS1_Launch_Boot()
 #pragma region Launch_PickServer
 void StatePS1_Launch_PickServer()
 {
-	static bool otd_PickServer = true;
-	if (otd_PickServer)
-	{
-		otd_PickServer = false;
-		//set the menu title name
-		strcpy(sdata->lngStrings[0x4e], "Saphi");
-		//show the menu
-		SetMenuShow(true);
-		//set the menu position
-		uint16_t x = 0x198, y = 0x84;
-		SetMenuPosition(&x, &y, NULL, NULL);
-		//set the selectable rows
-		for (int i = 0; i < ELEMENTS_PER_PAGE; i++)
-		{
-			SetRowSelectable(i, !(i > 2 && i < ELEMENTS_PER_PAGE - 1));
-		}
-		//set the initial cursor position
-		SetCursorPosition(0, 0);
-		//set the draw function
-		void Draw_Launch_PickServer(uint8_t);
-		SetMenuContents(Draw_Launch_PickServer, 1, false);
-	}
+	//static bool otd_PickServer = true;
+	//if (otd_PickServer)
+	//{
+	//	otd_PickServer = false;
+	//	//set the menu title name
+	//}
 
+	strcpy(sdata->lngStrings[0x4e], "Saphi");
+	//show the menu
+	SetMenuShow(true);
+	//set the draw function
+	void Draw_Launch_PickServer(uint8_t);
+	SetMenuContents(Draw_Launch_PickServer, 1, false);
 	uint8_t state, row, pageNumber;
 	MenuTick(&state, &row, &pageNumber);
 	if (state & MENUSTATE_PRESSED_CROSS)
 	{
 		//set otd to true for next time.
-		otd_PickServer = true;
+		//otd_PickServer = true;
 		//disable the menu.
+		//printf("Launch_PickServer hide menu\n");
 		SetMenuShow(false);
 		//graduate to next state
 		octr->serverId = row + (pageNumber * ELEMENTS_PER_PAGE); //parens bit should always be 0 (currently)
@@ -85,6 +76,15 @@ void StatePS1_Launch_PickServer()
 
 void Draw_Launch_PickServer(uint8_t pageNumber)
 {
+	//set the menu position
+	uint16_t x = 0x198, y = 0x84;
+	SetMenuPosition(&x, &y, NULL, NULL);
+	//set the selectable rows
+	for (int i = 0; i < ELEMENTS_PER_PAGE; i++)
+	{
+		SetRowSelectable(i, !(i > 2 && i < ELEMENTS_PER_PAGE - 1));
+	}
+	//set menu contents
 	for (int i = 0; i < ELEMENTS_PER_PAGE; i++)
 		SetRowString(i, countryNames[i]);
 }
@@ -100,23 +100,20 @@ void StatePS1_Launch_WaitServer()
 #pragma region Launch_PickRoom
 void StatePS1_Launch_PickRoom()
 {
-	static bool otd_PickRoom = true;
-	if (otd_PickRoom)
-	{
-		otd_PickRoom = false;
-		//set the menu title name
-		//strcpy(sdata->lngStrings[0x4e], "Saphi");
-		//show the menu
-		SetMenuShow(true);
-		//set the menu position
-		uint16_t x = 0x198, y = 0x84;
-		SetMenuPosition(&x, &y, NULL, NULL);
-		//set the initial cursor position
-		SetCursorPosition(0, 0);
-		//set the draw function
-		void Draw_Launch_PickRoom(uint8_t);
-		SetMenuContents(Draw_Launch_PickRoom, NUM_SERVER_PAGES, true);
-	}
+	//static bool otd_PickRoom = true;
+	//if (otd_PickRoom)
+	//{
+	//	otd_PickRoom = false;
+	//	//set the menu title name
+	//	//strcpy(sdata->lngStrings[0x4e], "Saphi");
+	//}
+	
+	//show the menu
+	SetMenuShow(true);
+	//set the draw function
+	void Draw_Launch_PickRoom(uint8_t);
+	SetMenuContents(Draw_Launch_PickRoom, NUM_SERVER_PAGES, true);
+	//octr->onlineGameModifiers = MODIFIER_MIRROR;
 
 	int serverTotal = 0;
 	for (int i = 0; i < SERVER_NUM_ROOMS; i++) { serverTotal += octr->roomClientCount[i]; }
@@ -136,8 +133,9 @@ void StatePS1_Launch_PickRoom()
 		//after picking the room, need to ResetPsxGlobals()
 		ResetPsxGlobals();
 		//set otd to true for next time.
-		otd_PickRoom = true;
+		//otd_PickRoom = true;
 		//disable the menu.
+		//printf("Launch_PickRoom hide menu\n");
 		SetMenuShow(false);
 		//graduate to next state
 		octr->serverRoom = row + (pageNumber * ELEMENTS_PER_PAGE);
@@ -147,6 +145,10 @@ void StatePS1_Launch_PickRoom()
 
 void Draw_Launch_PickRoom(uint8_t pageNumber)
 {
+	//set the menu position
+	uint16_t x = 0x198, y = 0x84;
+	SetMenuPosition(&x, &y, NULL, NULL);
+	//set menu contents
 	char* roomNames[ELEMENTS_PER_PAGE];
 	roomNames[0] = "ROOM 1 - x/8";
 	roomNames[1] = "ROOM 2 - x/8";
@@ -193,6 +195,7 @@ void StatePS1_Launch_Error()
 	if (octr->ver_psx < expectedVer) { DECOMP_DecalFont_DrawLine("Please update your game.", 0x100, 0x98 - 2, FONT_SMALL, JUSTIFY_CENTER); }
 	if (octr->ver_pc < expectedVer) { DECOMP_DecalFont_DrawLine("Please update your launcher.", 0x100, 0xA0 - 2, FONT_SMALL, JUSTIFY_CENTER); }
 	if (octr->ver_server < expectedVer) { DECOMP_DecalFont_DrawLine("Server unavailable.", 0x100, 0xA8 - 2, FONT_SMALL, JUSTIFY_CENTER); }
+	//printf("Launch_Error hide menu\n");
 	SetMenuShow(false);
 }
 #pragma endregion
@@ -207,23 +210,19 @@ void StatePS1_Lobby_AssignRole()
 #pragma region Lobby_HostTrackPick
 void StatePS1_Lobby_HostTrackPick()
 {
-	static bool otd_HostTrackPick = true;
-	if (otd_HostTrackPick)
-	{
-		otd_HostTrackPick = false;
-		//set the menu title name
-		//strcpy(sdata->lngStrings[0x4e], "Saphi");
-		//show the menu
-		SetMenuShow(true);
-		//set the menu position
-		uint16_t x = 0x198, y = 0x84;
-		SetMenuPosition(&x, &y, NULL, NULL);
-		//set the initial cursor position
-		SetCursorPosition(0, 0);
-		//set the draw function
-		void Draw_Lobby_HostTrackPick(uint8_t);
-		SetMenuContents(Draw_Lobby_HostTrackPick, NUM_TRACK_PAGES, true);
-	}
+	//static bool otd_HostTrackPick = true;
+	//if (otd_HostTrackPick)
+	//{
+	//	otd_HostTrackPick = false;
+	//	//set the menu title name
+	//	//strcpy(sdata->lngStrings[0x4e], "Saphi");
+	//}
+
+	//show the menu
+	SetMenuShow(true);
+	//set the draw function
+	void Draw_Lobby_HostTrackPick(uint8_t);
+	SetMenuContents(Draw_Lobby_HostTrackPick, NUM_TRACK_PAGES, true);
 
 	PrintCharacterStats();
 
@@ -232,8 +231,9 @@ void StatePS1_Lobby_HostTrackPick()
 	if (state & MENUSTATE_PRESSED_CROSS)
 	{
 		//set otd to true for next time.
-		otd_HostTrackPick = true;
+		//otd_HostTrackPick = true;
 		//disable the menu.
+		//printf("Lobby_HostTrackPick hide menu\n");
 		SetMenuShow(false);
 		//graduate to next state
 		octr->levelID = row + (pageNumber * ELEMENTS_PER_PAGE);
@@ -245,6 +245,10 @@ void StatePS1_Lobby_HostTrackPick()
 
 void Draw_Lobby_HostTrackPick(uint8_t pageNumber)
 {
+	//set the menu position
+	uint16_t x = 0x70, y = 0x84;
+	SetMenuPosition(&x, &y, NULL, NULL);
+	//set menu contents
 	for (int i = 0; i < ELEMENTS_PER_PAGE; i++)
 	{
 		int levelId = i + (ELEMENTS_PER_PAGE * pageNumber);
@@ -267,6 +271,7 @@ void StatePS1_Lobby_GuestTrackWait()
 {
 	PrintCharacterStats();
 
+	//printf("Lobby_GuestTrackWait hide menu\n");
 	SetMenuShow(false);
 
 	DECOMP_DecalFont_DrawLine(
@@ -282,23 +287,20 @@ void StatePS1_Lobby_GuestTrackWait()
 #pragma region Lobby_CharacterPick
 void StatePS1_Lobby_CharacterPick()
 {
-	static bool otd_CharacterPick = true;
-	if (otd_CharacterPick)
-	{
-		otd_CharacterPick = false;
-		//set the menu title name
-		//strcpy(sdata->lngStrings[0x4e], "Saphi");
-		//show the menu
-		SetMenuShow(true);
-		//set the menu position
-		uint16_t x = 0x198, y = 0x84;
-		SetMenuPosition(&x, &y, NULL, NULL);
-		//set the initial cursor position
-		SetCursorPosition(0, 0);
-		//set the draw function
-		void Draw_Lobby_CharacterPick(uint8_t);
-		SetMenuContents(Draw_Lobby_CharacterPick, NUM_CHARACTER_PAGES, true);
-	}
+	//static bool otd_CharacterPick = true;
+	//if (otd_CharacterPick)
+	//{
+	//	otd_CharacterPick = false;
+	//	//set the menu title name
+	//	//strcpy(sdata->lngStrings[0x4e], "Saphi");
+	//}
+	
+	//show the menu
+	//printf("Lobby_CharacterPick show menu\n");
+	SetMenuShow(true);
+	//set the draw function
+	void Draw_Lobby_CharacterPick(uint8_t);
+	SetMenuContents(Draw_Lobby_CharacterPick, NUM_CHARACTER_PAGES, true);
 
 	PrintCharacterStats();
 	PrintRecvTrack();
@@ -308,8 +310,9 @@ void StatePS1_Lobby_CharacterPick()
 	if (state & MENUSTATE_PRESSED_CROSS)
 	{
 		//set otd to true for next time.
-		otd_CharacterPick = true;
+		//otd_CharacterPick = true;
 		//disable the menu.
+		//printf("Lobby_CharacterPick hide menu\n");
 		SetMenuShow(false);
 		//graduate to next state
 		data.characterIDs[0] = row + (pageNumber * ELEMENTS_PER_PAGE);
@@ -319,6 +322,10 @@ void StatePS1_Lobby_CharacterPick()
 
 void Draw_Lobby_CharacterPick(uint8_t pageNumber)
 {
+	//set the menu position
+	uint16_t x = 0x70, y = 0x84;
+	SetMenuPosition(&x, &y, NULL, NULL);
+	//set menu contents
 	for (int i = 0; i < ELEMENTS_PER_PAGE; i++)
 	{
 		if (i < NUM_CHARACTER_PAGES * ELEMENTS_PER_PAGE)
@@ -471,30 +478,31 @@ void StatePS1_Game_Race()
 	else
 		*camMode = 0;
 
-	for (i = 1; i < ROOM_MAX_NUM_PLAYERS; i++)
-	{
-		if (octr->Shoot[i].boolNow != 0)
+	if (octr->onlineGameModifiers & MODIFIER_ITEMS)
+		for (i = 1; i < ROOM_MAX_NUM_PLAYERS; i++)
 		{
-			int weapon;
-			struct Driver* d = sdata->gGT->drivers[i];
-			octr->Shoot[i].boolNow = 0;
-			if (octr->Shoot[i].boolJuiced) { d->numWumpas = 10; }
+			if (octr->Shoot[i].boolNow != 0)
+			{
+				int weapon;
+				struct Driver* d = sdata->gGT->drivers[i];
+				octr->Shoot[i].boolNow = 0;
+				if (octr->Shoot[i].boolJuiced) { d->numWumpas = 10; }
 
-			d->heldItemID = octr->Shoot[i].Weapon;
-			weapon = d->heldItemID;
+				d->heldItemID = octr->Shoot[i].Weapon;
+				weapon = d->heldItemID;
 
-			// Missiles and Bombs share code,
-			// Change Bomb1x, Bomb3x, Missile3x, to Missile1x
-			if ((weapon == 1) || (weapon == 10) || (weapon == 11)) { weapon = 2; }
-			if (weapon == 14)
-			{ //not a weapon, honk your horn
-				//printf("Weapon packet honk!\n");
-				DECOMP_OtherFX_Play(88, 1); //fire rocket sound (temporary)
+				// Missiles and Bombs share code,
+				// Change Bomb1x, Bomb3x, Missile3x, to Missile1x
+				if ((weapon == 1) || (weapon == 10) || (weapon == 11)) { weapon = 2; }
+				if (weapon == 14)
+				{ //not a weapon, honk your horn
+					//printf("Weapon packet honk!\n");
+					DECOMP_OtherFX_Play(88, 1); //fire rocket sound (temporary)
+				}
+				else
+					DECOMP_VehPickupItem_ShootNow(d, weapon, octr->Shoot[i].flags); //shoot weapon
 			}
-			else
-				DECOMP_VehPickupItem_ShootNow(d, weapon, octr->Shoot[i].flags); //shoot weapon
 		}
-	}
 
 	if (octr->dnfTimer > 0)
 	{

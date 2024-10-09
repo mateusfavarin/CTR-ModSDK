@@ -13,7 +13,7 @@
 #endif
 //#include "OnlineCTR/thread.c" //moved to mods7 (fits perfectly)
 #include "OnlineCTR/endOfRaceUI.c"
-//#include "OnlineCTR/zMirrorMode.c"
+#include "OnlineCTR/zMirrorMode.c"
 //#pragma GCC pop_options
 #endif
 #endif

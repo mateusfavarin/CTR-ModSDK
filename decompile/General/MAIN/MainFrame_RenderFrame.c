@@ -1832,8 +1832,8 @@ void RenderSubmit(struct GameTracker* gGT)
 
 	void* ot = &gGT->pushBuffer[0].ptrOT[0x3ff];
 
-#if defined(USE_ONLINE) && 0
-	if ((octr->onlineGameModifiers & MODIFIER_MIRROR))
+#if defined(USE_ONLINE)/* && 0*/
+	if (octr->onlineGameModifiers & MODIFIER_MIRROR)
 	{
 		void OnlineMirrorMode(u_long* ot);
 		OnlineMirrorMode(ot);
