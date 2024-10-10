@@ -50,9 +50,11 @@ void UpdateCheckpointTracker(int driverID)
 			}
 			else
 			{
+				//TODO: this code can print garbage instead of what it's supposed to print
 				ElapsedTimeToTotalTime(&tt, driver->timeElapsedInRace - checkpointTimes[cp]);
 				tt.minutes = min(tt.minutes, 9);
 				tt.miliseconds /= 10;
+				//I witnessed this printing "+-7:-9.-81" once.
 				sprintf(checkpointTracker[driverID].displayTime, "+%d:%02d.%02d", tt.minutes, tt.seconds, tt.miliseconds);
 				checkpointTracker[driverID].drawFlags = RED;
 			}

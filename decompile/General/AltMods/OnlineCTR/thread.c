@@ -34,10 +34,13 @@ void ThreadFunc(struct Thread* t)
 	int isIdle = 0;
 
 	struct GameTracker* gGT = sdata->gGT;
-	octr->boolPlanetLEV = gGT->levelID == 0x26;
+	octr->boolPlanetLEV = gGT->levelID == OCTR_MENU_LEVEL;
 
 	if(octr->boolPlanetLEV)
 	{
+		//based on some indirect testing, I think the body
+		//of this if statement has been the cause of the notorious
+		//LOAD screen crash (somehow).
 		*(int*)0x800ae54c = 0x3e00008;
 		*(int*)0x800ae550 = 0;
 
@@ -130,7 +133,7 @@ void ThreadFunc(struct Thread* t)
 		//sdata->Loading.stage = 0;
 
 		// load with flag animation
-		DECOMP_MainRaceTrack_RequestLoad(0x26);
+		DECOMP_MainRaceTrack_RequestLoad(OCTR_MENU_LEVEL);
 
 		// kill thread,
 		// dont execute again until game loads

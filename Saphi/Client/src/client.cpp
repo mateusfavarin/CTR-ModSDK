@@ -117,6 +117,9 @@ void Client::ChangeGameOptions()
   g_psx.Read<uint32_t>(ADDR_VOICE) = static_cast<uint32_t>(g_gameData.m_voice * 255.0f);
   g_psx.Read<uint32_t>(ADDR_STEREO) = g_gameData.m_stereo;
   g_psx.Read<uint32_t>(ADDR_gGT + 0x0) = g_gameData.m_vibration ? gameMode & ~(GameMode::VIBRATION_P1) : gameMode | GameMode::VIBRATION_P1;
+  //ADDR_gGT + 8 is where the cheats are.
+  const uint32_t cheats = g_psx.Read<uint32_t>(ADDR_gGT + 0x8);
+  g_psx.Read<uint32_t>(ADDR_gGT + 0x8) = g_gameData.m_boostCounter ? cheats | Cheats::CHEAT_TURBOCOUNT : cheats & ~(Cheats::CHEAT_TURBOCOUNT);
 }
 
 void Client::SpawnEmu()

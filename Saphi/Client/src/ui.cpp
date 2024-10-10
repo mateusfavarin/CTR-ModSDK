@@ -107,6 +107,7 @@ void UI::Render(int width, int height)
     ImGui::SameLine();
     if (ImGui::RadioButton("Mono", !g_gameData.m_stereo)) { g_gameData.m_stereo = false; }
     ImGui::Checkbox(g_lang["Vibration"].c_str(), &g_gameData.m_vibration);
+    ImGui::Checkbox("Boost Counter", &g_gameData.m_boostCounter);
     ImGui::TreePop();
   }
 

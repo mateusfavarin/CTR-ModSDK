@@ -1,6 +1,7 @@
 #include <common.h>
 
 #ifdef USE_ONLINE
+#include "../AltMods/OnlineCTR/global.h"
 void FixReservesIncrement(struct Driver * driver, int reserves);
 #endif
 
@@ -284,6 +285,9 @@ void DECOMP_VehFire_Increment(struct Driver* driver, int reserves, u_int type, i
 			// You are not on a super turbo pad
 			(int)driver->const_SacredFireSpeed < (int)driver->fireSpeedCap &&
 			((driver->stepFlagSet & 2) == 0)
+			#if defined (USE_ONLINE)
+			&& !(octr->onlineGameModifiers & MODIFIER_RETROFUELED) //is *not* retrofueled
+			#endif
 		)
 	)
 
