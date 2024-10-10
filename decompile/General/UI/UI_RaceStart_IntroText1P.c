@@ -47,8 +47,13 @@ void DECOMP_UI_RaceStart_IntroText1P(void) {
                   ((gameMode & 0x400000) != 0) ||
 
                   (
+					 #if defined(USE_ONLINE) //use arcade's text id for all online purposes.
+					 // ARCADE
+					 textID = 0x4e,
+					 #else
                      // TIME TRIAL
                      textID = 0x4d,
+					 #endif
 
                      // if you are in time trial mode
                      (gameMode & 0x20000) != 0
@@ -94,13 +99,8 @@ void DECOMP_UI_RaceStart_IntroText1P(void) {
 
    // If you are in Relic Race
    else {
-#if defined(USE_ONLINE) //use "arcade"'s text ID for all online purposes. 
-	  // ARCADE
-	  textID = 0x4e;
-#else
       // RELIC RACE
       textID = 0xb8;
-#endif
    }
    LAB_80055930:
 

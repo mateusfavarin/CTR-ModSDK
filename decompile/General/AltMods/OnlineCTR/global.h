@@ -62,30 +62,29 @@ enum ClientState
 	NUM_STATES_FUNCS
 };
 
-//NOTICE: currently "MODIFIER_MIRROR"'s functionality is disabled (i.e., enabling it doesn't do anything)
-//due to a lack of byte budget. Once we circumvent the byte budget issue (one way or another), to re-enable
-//it, uncomment the '#include "OnlineCTR/zMirrorMode.c"' at the top of Mods1.c, and remove the "&& 0" from
-//the "#if defined(USE_ONLINE) && 0" at the bottom of MainFrame_RenderFrame.c
+//NOTICE: currently "MODIFIER_MIRROR"'s functionality is enabled, but this is a substantial byte budget hit.
+//to disable it, comment the '#include "OnlineCTR/zMirrorMode.c"' at the top of Mods1.c, and comment the
+//"&& 0" from the "#if defined(USE_ONLINE) && 0" at the bottom of MainFrame_RenderFrame.c
 
 /* Bit flags */
 enum OnlineGameModifiers
 {
 	MODIFIER_NONE        = 0,
-	MODIFIER_ITEMS       = (1 << 0),
-	MODIFIER_ICY         = (1 << 1),
-	MODIFIER_STP         = (1 << 2),
-	MODIFIER_MIRROR      = (1 << 3),
+	MODIFIER_ITEMS       = (1 << 0), //items are enabled
+	MODIFIER_ICY         = (1 << 1), //all terrain is considered ice
+	MODIFIER_STP         = (1 << 2), //all turbo pads are stp
+	MODIFIER_MIRROR      = (1 << 3), //gameplay & visuals is mirrored horizontally (every left turn is now a right turn & vice versa)
 	MODIFIER_RETROFUELED = (1 << 4), //does not include STP by default
-	MODIFIER_DEMOCAM     = (1 << 5),
+	MODIFIER_DEMOCAM     = (1 << 5), //camera system is the same as the demo system
 	MODIFIER_CATCHUP     = (1 << 6), //wumpa and/or boost is more effective in last place vs first
-	MODIFIER_PRIVATE     = (1 << 7), //private room w/ passcode
+	//MODIFIER_PRIVATE     = (1 << 7), //private room w/ passcode
 };
 
 enum OnlineGameModeList
 {
 	ONLINE_MODE_ITEMS = 0,
 	ONLINE_MODE_ITEMLESS = 1,
-	ONLINE_MODE_ICY_STP = 2,
+	ONLINE_MODE_MASHUP = 2,
 };
 
 enum MenuState

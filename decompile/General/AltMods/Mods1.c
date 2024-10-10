@@ -1,15 +1,11 @@
 // OnlineCTR (part 1)
 #ifndef REBUILD_PC
 #ifdef USE_ONLINE
-//#pragma GCC push_options
-//#pragma GCC optimize("-Oz") //unfortunately this seems to make the code slightly bigger instead.
-#include "OnlineCTR/hooks.c" //too big to move to mods7 :(
+#include "OnlineCTR/hooks.c"
 #include "OnlineCTR/menu.c"
 #include "OnlineCTR/states.c"
-//#include "OnlineCTR/thread.c" //moved to mods7 (fits perfectly)
 #include "OnlineCTR/endOfRaceUI.c"
-//#include "OnlineCTR/zMirrorMode.c" //commented out due to lack of byte budget
-//#pragma GCC pop_options
+#include "OnlineCTR/zMirrorMode.c"
 #endif
 #endif
 
