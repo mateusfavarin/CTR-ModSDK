@@ -1,6 +1,6 @@
 #include <common.h>
 
-#ifdef USE_ONLINE
+#if defined(USE_SAPHI)
 
 // online can be fragmented
 #define HANDLE_NULL_DRIVER continue
@@ -42,7 +42,7 @@ void DECOMP_PlayLevel_UpdateLapStats(void)
 			break;
 	}
 
-	#ifdef USE_ONLINE
+	#if defined(USE_SAPHI)
 	firstRank = gGT->drivers[0];
 	#endif
 
@@ -102,7 +102,7 @@ void DECOMP_PlayLevel_UpdateLapStats(void)
 			// update checkpoint with distToFinish
 			currDriver->distanceToFinish_checkpoint = distToFinish_curr;
 
-			#ifdef USE_ONLINE
+			#if defined(USE_SAPHI)
 			if (iVar10 == 0)
 			{
 				int currLapSaveIndex = currDriver->lapIndex % 2;
@@ -123,7 +123,7 @@ void DECOMP_PlayLevel_UpdateLapStats(void)
 			// if this is not final lap
 			else
 			{
-				#ifndef USE_ONLINE
+				#if !defined(USE_SAPHI)
 				if (
 						// If you're in Arcade, or
 						// If you're in Adventure, or
@@ -160,7 +160,7 @@ void DECOMP_PlayLevel_UpdateLapStats(void)
 
 				lapCounter = currDriver->lapIndex;
 
-				#ifdef USE_ONLINE
+				#if defined(USE_SAPHI)
 				// If not first lap
 				if (lapCounter > (0))
 				{
@@ -221,7 +221,7 @@ void DECOMP_PlayLevel_UpdateLapStats(void)
 				// you have no weapon
 				currDriver->heldItemID = 0xf;
 
-				#ifdef USE_ONLINE
+				#if defined(USE_SAPHI)
 				if(currDriver->driverID == 0)
 				#endif
 
@@ -330,7 +330,7 @@ void DECOMP_PlayLevel_UpdateLapStats(void)
 		}
 	}
 
-	#ifdef USE_ONLINE
+	#if defined(USE_SAPHI)
 	int numDead1 = 0;
 	int numSpawn = 0;
 	#endif
@@ -338,7 +338,7 @@ void DECOMP_PlayLevel_UpdateLapStats(void)
 	// sort all drivers that have NOT finished race
 	for (currRank; currRank < 8; currRank++)
 	{
-		#ifdef USE_ONLINE
+		#if defined(USE_SAPHI)
 		if(gGT->drivers[currRank] == 0)
 			numDead1++;
 		#endif
@@ -410,7 +410,7 @@ void DECOMP_PlayLevel_UpdateLapStats(void)
 			{
 				gGT->drivers[iVar2]->driverRank = currRank;
 
-				#ifdef USE_ONLINE
+				#if defined(USE_SAPHI)
 				gGT->drivers[iVar2]->driverRank -= numDead1;
 				#endif
 			}
@@ -418,7 +418,7 @@ void DECOMP_PlayLevel_UpdateLapStats(void)
 			// if traffic lights >= 1
 			else
 			{
-				#ifdef USE_ONLINE
+				#if defined(USE_SAPHI)
 
 				// This is broken, sometimes a hole will appear between
 				// the icons at the startline, if someone disconnects,
@@ -483,7 +483,7 @@ void DECOMP_PlayLevel_UpdateLapStats(void)
 	if ((gGT->gameMode1 & END_OF_RACE) != 0)
 		return;
 
-	#ifdef USE_ONLINE
+	#if defined(USE_SAPHI)
 	if((gGT->drivers[0]->actionsFlagSet & 0x2000000) != 0)
 	{
 		MainGameEnd_Initialize();

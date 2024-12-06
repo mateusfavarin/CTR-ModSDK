@@ -1,7 +1,7 @@
 #include <common.h>
 
-#ifdef USE_ONLINE
-#include "../AltMods/OnlineCTR/global.h"
+#if defined(USE_SAPHI)
+#include "../AltMods/Saphi/global.h"
 void FixReservesIncrement(struct Driver * driver, int reserves);
 #endif
 
@@ -285,7 +285,7 @@ void DECOMP_VehFire_Increment(struct Driver* driver, int reserves, u_int type, i
 			// You are not on a super turbo pad
 			(int)driver->const_SacredFireSpeed < (int)driver->fireSpeedCap &&
 			((driver->stepFlagSet & 2) == 0)
-			#if defined (USE_ONLINE)
+			#if defined (USE_SAPHI)
 			&& !(octr->onlineGameModifiers & MODIFIER_RETROFUELED) //is *not* retrofueled
 			#endif
 		)
@@ -324,7 +324,7 @@ void DECOMP_VehFire_Increment(struct Driver* driver, int reserves, u_int type, i
 	else if (!(type & 1))
 	{
 		// increase reserves BY param2
-		#ifdef USE_ONLINE
+		#if defined(USE_SAPHI)
 		FixReservesIncrement(driver, reserves);
 		#else
 		driver->reserves += reserves;
@@ -342,7 +342,7 @@ void DECOMP_VehFire_Increment(struct Driver* driver, int reserves, u_int type, i
 
 		if (oldOTT < reserves)
 		{
-			#ifdef USE_ONLINE
+			#if defined(USE_SAPHI)
 			FixReservesIncrement(driver, reserves - oldOTT);
 			#else
 			driver->reserves += 			(reserves - oldOTT);
@@ -351,7 +351,7 @@ void DECOMP_VehFire_Increment(struct Driver* driver, int reserves, u_int type, i
 		}
 	}
 
-	#ifdef USE_ONLINE
+	#if defined(USE_SAPHI)
 	if(driver->driverID != 0)
 		return;
 	#endif

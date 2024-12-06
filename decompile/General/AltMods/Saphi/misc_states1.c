@@ -87,3 +87,41 @@ void PrintCharacterStats()
 	DecalFont_DrawLine("During Race or Lobby", posX - 0x8, posY + 0x8, FONT_SMALL, 0);
 	DecalFont_DrawLine("With the Select Button", posX - 0x18, posY + 0x10, FONT_SMALL, RED);
 }
+
+void OnRaceEnd()
+{
+	struct Driver** drivers = sdata->gGT->drivers;
+	//bool foundRacer = false;
+	for (int driverID = 1; driverID < ROOM_MAX_NUM_PLAYERS; driverID++)
+	{
+		/* Undo wheel ghostify */
+		drivers[driverID]->wheelSprites = ICONGROUP_GETICONS(sdata->gGT->iconGroup[0]);
+
+		//I think this code is trying to find a player who has not finished the race to spectate.
+		//it doesn't seem to always work. If you try to re-enable this functionality, keep in mind
+		//it relates to endOfRaceUI.c
+		//if (!foundRacer && octr->nameBuffer[driverID][0] && !checkpointTracker[driverID].raceFinished)
+		//{
+		//	sdata->gGT->cameraDC[0].driverToFollow = drivers[driverID];
+		//	foundRacer = true;
+		//}
+	}
+}
+
+void Ghostify()
+{
+	//struct Turbo* turboObj;
+	//struct Thread* fireThread;
+	//struct GameTracker* gGT = sdata->gGT;
+	//struct Icon** ptrIconArray;
+	//struct Instance* inst;
+
+	for (int driverID = 1; driverID < ROOM_MAX_NUM_PLAYERS; driverID++)
+	{
+		sdata->gGT->drivers[driverID]->wheelSprites = ICONGROUP_GETICONS(sdata->gGT->iconGroup[0xC]);
+		struct Instance* inst = sdata->gGT->drivers[driverID]->instSelf;
+		if (!inst) { continue; }
+		inst->flags |= 0x60000;
+		inst->alphaScale = 0xA00;
+	}
+}

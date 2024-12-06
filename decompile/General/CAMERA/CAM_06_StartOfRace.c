@@ -5,7 +5,7 @@ void DECOMP_CAM_StartOfRace(struct CameraDC* cDC)
   struct GameTracker* gGT = sdata->gGT;
   struct Level* level1 = gGT->level1;
   
-#ifdef USE_ONLINE
+#if defined(USE_SAPHI)
 	if(cDC != &gGT->cameraDC[0])
 		return;
 #endif
@@ -15,7 +15,7 @@ void DECOMP_CAM_StartOfRace(struct CameraDC* cDC)
 		(2 < level1->cnt_restart_points)
 		
 		// byte budget
-		#ifndef USE_ONLINE
+		#if !defined(USE_SAPHI)
 		&& (gGT->numPlyrCurrGame == 1)
 		#endif
 	  ) 

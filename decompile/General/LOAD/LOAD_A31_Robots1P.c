@@ -2,7 +2,7 @@
 
 void DECOMP_LOAD_Robots1P(int characterID)
 {
-	#ifdef USE_ONLINE
+	#if defined(USE_SAPHI)
 	return;
 	#endif
 	

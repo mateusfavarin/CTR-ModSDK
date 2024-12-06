@@ -186,7 +186,7 @@ void DECOMP_MainInit_FinalizeInit(struct GameTracker *gGT)
         gGT->numLaps * 8;
 #endif
 
-#ifndef USE_ONLINE
+#if !defined(USE_SAPHI)
 	// OG code
     DECOMP_MainInit_Drivers(gGT);
 #else
@@ -363,7 +363,7 @@ void DECOMP_MainInit_FinalizeInit(struct GameTracker *gGT)
     BOTS_EmptyFunc();
 #endif
 
-#ifdef USE_ONLINE
+#if defined(USE_SAPHI)
 	void octr_initHook();
 	octr_initHook();
 	

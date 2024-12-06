@@ -1,6 +1,6 @@
 #include <common.h>
 
-#ifdef USE_ONLINE
+#if defined(USE_SAPHI)
 #define SPEEDO_GREEN MakeColor(0, 0xb5, 0)
 #define SPEEDO_YELLOW MakeColor(0xdb, 0xb5, 0)
 #define SPEEDO_RED MakeColor(0xdb, 0, 0)
@@ -48,7 +48,7 @@ const Color DrawSpeedBG_Colors[7] =
 // speedometer background
 void DECOMP_UI_DrawSpeedBG(void)
 {
-  #ifdef USE_ONLINE
+  #if defined(USE_SAPHI)
   Point * vertexes = &speedometerData;
   Point * vertexesExtLine = &speedometerData;
   int pointCount = len(speedometerData);

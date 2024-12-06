@@ -47,7 +47,7 @@ void DECOMP_UI_RaceStart_IntroText1P(void) {
                   ((gameMode & 0x400000) != 0) ||
 
                   (
-					 #if defined(USE_ONLINE) //use arcade's text id for all online purposes.
+					 #if defined(USE_SAPHI) //use arcade's text id for all online purposes.
 					 // ARCADE
 					 textID = 0x4e,
 					 #else

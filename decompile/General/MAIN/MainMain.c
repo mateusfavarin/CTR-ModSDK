@@ -1,7 +1,7 @@
 #include <common.h>
 
-#if defined(USE_ONLINE)
-#include "../AltMods/OnlineCTR/global.h"
+#if defined(USE_SAPHI)
+#include "../AltMods/Saphi/global.h"
 #endif
 
 void StateZero();
@@ -618,10 +618,12 @@ void StateZero()
 	SetVideoMode(0);
 	ResetCallback();
 
-	#ifndef USE_RAMEX
+	#if !defined(USE_RAMEX)
 	#define MEMPACK_SIZE 0x200000 // 2mb
-	#else
-	#define MEMPACK_SIZE 0x800000 // 8mb
+	#elif defined(USE_RAMEX) && defined(USE_SAPHI)
+	#define MEMPACK_SIZE 0x700000 // 7mb, last 1mb for online code
+	#elif defined(USE_RAMEX) && !defined(USE_SAPHI)
+	#define MEMPACK_SIZE 0x800000 //no online code, so use it all
 	#endif
 
 	DECOMP_MEMPACK_Init(MEMPACK_SIZE);
@@ -630,6 +632,38 @@ void StateZero()
 
 	ResetGraph(0);
 	SetGraphDebug(0);
+
+	//CdlFILE cdlFile;
+	//printf("PRE-SEARCH\n");
+	//DECOMP_CDSYS_SetMode_StreamData();
+	//if (CdSearchFile(&cdlFile, "\\THINGY.BIN;1") != 0)
+	//{
+	//	printf("THINGY WAS FOUND!\n");
+	//	int thingySize;
+	//	DECOMP_LOAD_ReadFile_NoCallback("\\THINGY.BIN;1", (void*)0x80700000, &thingySize);
+	//	printf("THINGY WAS LOADED!\n");
+	//	void Thingy(void);
+	//	Thingy();
+	//}
+	//else
+	//	printf("THINGY WAS NOT FOUND!\n");
+
+#if defined(USE_SAPHI)
+	CdlFILE saphicdlFile;
+	printf("Saphi Search\n");
+	DECOMP_CDSYS_SetMode_StreamData();
+	if (CdSearchFile(&saphicdlFile, "\\SAPHIC.BIN;1") != 0)
+	{
+		printf("Saphi was found\n");
+		int thingySize;
+		DECOMP_LOAD_ReadFile_NoCallback("\\SAPHIC.BIN;1", (void*)0x80700000, &thingySize);
+		printf("Saphi LOADED!\n");
+		void octr_entryHook(); octr_entryHook();
+		void StatsUpgrade(); StatsUpgrade();
+	}
+	else
+		printf("SAPHI WAS NOT FOUND!\n");
+#endif
 
 #ifndef REBUILD_PS1
 	DECOMP_MainInit_VRAMClear();
@@ -725,7 +759,7 @@ void StateZero()
 
 	gGT->levelID = NAUGHTY_DOG_CRATE;
 
-	#ifdef USE_ONLINE
+	#if defined(USE_SAPHI)
 	gGT->levelID = OCTR_MENU_LEVEL;
 	#endif
 
@@ -768,7 +802,7 @@ void StateZero()
 
 	VSyncCallback(DECOMP_MainDrawCb_Vsync);
 
-	#if !defined(FastBoot) && !defined(USE_ONLINE)
+	#if !defined(FastBoot) && !defined(USE_SAPHI)
 	DECOMP_Music_SetIntro();
 	DECOMP_CseqMusic_StopAll();
 	DECOMP_CseqMusic_Start(0, 0, 0, 0, 0);

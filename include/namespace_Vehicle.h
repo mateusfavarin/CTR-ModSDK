@@ -1558,7 +1558,7 @@ struct Driver
 	short ghostBoolStarted;
 	short unk636;
 
-	#ifdef USE_ONLINE
+	#if defined(USE_SAPHI)
 	int uncappedReserves; // 0x638
 	int bestLapTime; // 0x63C
 	int currLapTime; // 0x640
@@ -1584,6 +1584,6 @@ _Static_assert(sizeof(struct MetaPhys) == 0x20);
 _Static_assert(sizeof(struct MetaPhys) == 0x1C);
 #endif
 
-#if BUILD == UsaRetail && !defined(USE_ONLINE)
+#if BUILD == UsaRetail && !defined(USE_SAPHI)
 _Static_assert(sizeof(struct Driver) == 0x638);
 #endif

@@ -1,6 +1,6 @@
 #include <common.h>
-#if defined(USE_ONLINE)
-#include "../AltMods/OnlineCTR/global.h"
+#if defined(USE_SAPHI)
+#include "../AltMods/Saphi/global.h"
 #endif
 
 // budget: 4624
@@ -87,7 +87,7 @@ void DECOMP_VehPhysProc_Driving_PhysLinear(struct Thread* thread, struct Driver*
 	for(i = 0; i < 14; i++)
 	{
 		short* val = (short*)((int)driver + (int)PhysLinear_DriverOffsets[i]);
-		#ifdef USE_ONLINE
+		#if defined(USE_SAPHI)
 		if (i == 0)
 		{
 			if (driver->reserves == 0) { driver->uncappedReserves = 0; }
@@ -547,7 +547,7 @@ void DECOMP_VehPhysProc_Driving_PhysLinear(struct Thread* thread, struct Driver*
 
 		heldItemID = driver->heldItemID;
 
-		#if defined(USE_ONLINE)
+		#if defined(USE_SAPHI)
 		// If you have no weapon (0xf)
 		// and if you did not have a weapon last frame
 		if
@@ -684,7 +684,7 @@ CheckJumpButtons:
 			actionsFlagSetCopy |= 4;
 		}
 	}
-#if defined(USE_ONLINE)
+#if defined(USE_SAPHI)
 	// Assume you're holding cross (X)
 	u_char assumeCross = 0x10;
 	// if you are holding square
@@ -772,7 +772,7 @@ SKIP_RESERVE_RESET:
 			square = 0;
 		}
 
-#if defined(USE_ONLINE)
+#if defined(USE_SAPHI)
 		cross = assumeCross;
 #else
 		// Assume you're holding Cross, because
@@ -1071,7 +1071,7 @@ SKIP_RESERVE_RESET:
 	}
 	*(u_short*)&driver->unknowndriverBaseSpeed = driverBaseSpeedUshort;
 	*(u_short*)&driver->baseSpeed = approximateSpeed2;
-	#if defined(USE_ONLINE)
+	#if defined(USE_SAPHI)
 	//adding to driver->unknowndriverBaseSpeed seems to have no effect on the drivers speed (based on 5 minutes of testing)
 	//adding to driver->baseSpeed does seem to have an effect on the drivers speed.
 	if ((octr->onlineGameModifiers & MODIFIER_CATCHUP))

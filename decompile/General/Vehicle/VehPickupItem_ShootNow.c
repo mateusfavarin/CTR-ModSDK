@@ -4,8 +4,8 @@ void RB_GenericMine_ThTick(struct Thread* t);
 void RB_ShieldDark_ThTick_Grow(struct Thread* t);
 void RB_Warpball_ThTick(struct Thread* t);
 
-#ifdef USE_ONLINE
-#include "../AltMods/OnlineCTR/global.h"
+#if defined(USE_SAPHI)
+#include "../AltMods/Saphi/global.h"
 #endif
 
 void DECOMP_VehPickupItem_ShootNow(struct Driver* d, int weaponID, int flags)
@@ -18,7 +18,7 @@ void DECOMP_VehPickupItem_ShootNow(struct Driver* d, int weaponID, int flags)
 	struct GameTracker* gGT = sdata->gGT;
 	int modelID;
 
-	#ifdef USE_ONLINE
+	#if defined(USE_SAPHI)
 	if ((octr->onlineGameModifiers & MODIFIER_ITEMS) && (d->driverID == 0))
 	{
 		octr->Shoot[0].boolJuiced = 0;
@@ -39,7 +39,7 @@ void DECOMP_VehPickupItem_ShootNow(struct Driver* d, int weaponID, int flags)
 			int boost = 0x80;
 			if(d->numWumpas >= 10)
 				boost = 0x100;
-			#if defined(USE_ONLINE)
+			#if defined(USE_SAPHI)
 			// less boost for first place, more boost for last place (*initial concept* courtesy of gasmoxian)
 			int rank = d->driverRank;
 			if (!(octr->onlineGameModifiers & MODIFIER_CATCHUP))

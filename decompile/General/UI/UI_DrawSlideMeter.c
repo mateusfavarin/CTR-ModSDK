@@ -3,7 +3,7 @@
 void DECOMP_UI_DrawSlideMeter(short posX, short posY, struct Driver* driver)
 {
 	const struct GameTracker * gGT = sdata->gGT;
-	#ifdef USE_ONLINE
+	#if defined(USE_SAPHI)
 	const int xOffset = 2;
 	const int barWidth = 39;
 	int barHeight = 10;
@@ -29,7 +29,7 @@ void DECOMP_UI_DrawSlideMeter(short posX, short posY, struct Driver* driver)
 	box.h = barHeight;
 	DECOMP_CTR_Box_DrawWireBox(&box, MakeColor(0, 0, 0), gGT->pushBuffer_UI.ptrOT);
 
-	#ifdef USE_ONLINE
+	#if defined(USE_SAPHI)
 	if (driver->driverID == 0 && driver->meterGradeTimer > 0)
 	{
 		driver->meterGradeTimer -= gGT->elapsedTimeMS;
@@ -69,7 +69,7 @@ void DECOMP_UI_DrawSlideMeter(short posX, short posY, struct Driver* driver)
 
 	#ifdef USE_BOOSTBAR
 	void DrawBoostBar(short posX, short posY, struct Driver* driver);
-	#ifdef USE_ONLINE
+	#if defined(USE_SAPHI)
 	DrawBoostBar(posX - xOffset, posY + 5, driver);
 	#else
 	DrawBoostBar(posX, posY + 5, driver);

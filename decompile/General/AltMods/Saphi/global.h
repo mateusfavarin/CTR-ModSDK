@@ -1,5 +1,5 @@
-#ifndef ONLINE_GLOBAL_H
-#define ONLINE_GLOBAL_H
+#ifndef SAPHI_GLOBAL_H
+#define SAPHI_GLOBAL_H
 
 #define OCTR_MENU_LEVEL 0x26 /*INTRO_OXIDE*/
 
@@ -63,8 +63,8 @@ enum ClientState
 };
 
 //NOTICE: currently "MODIFIER_MIRROR"'s functionality is enabled, but this is a substantial byte budget hit.
-//to disable it, comment the '#include "OnlineCTR/zMirrorMode.c"' at the top of Mods1.c, and comment the
-//"&& 0" from the "#if defined(USE_ONLINE) && 0" at the bottom of MainFrame_RenderFrame.c
+//to disable it, comment the '#include "Saphi/zMirrorMode.c"' at the top of Mods1.c, and comment the
+//"&& 0" from the "#if defined(USE_SAPHI) && 0" at the bottom of MainFrame_RenderFrame.c
 
 /* Bit flags */
 enum OnlineGameModifiers

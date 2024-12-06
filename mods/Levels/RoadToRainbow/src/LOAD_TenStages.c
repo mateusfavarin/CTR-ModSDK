@@ -84,7 +84,7 @@ int LOAD_TenStages(struct GameTracker* gGT, int loadingStage, struct BigHeader* 
 			{
 				sdata->boolFirstBoot = 0;
 
-				#if !defined(FastBoot) && !defined(USE_ONLINE)
+				#if !defined(FastBoot) && !defined(USE_SAPHI)
 				// Load Intro TIM for Copyright Page from VRAM file
 				LOAD_VramFile(bigfile, 0x1fe, 0, &vramSize, 0xffffffff);
 				MainInit_VRAMDisplay();

@@ -20,10 +20,6 @@ void uibb_entryHook()
 }
 #endif
 
-#if defined(USE_ONLINE)
-#include "OnlineCTR/misc_states1.c"
-#endif
-
 #ifndef REBUILD_PC
 
 #define JMP(dest) (((unsigned long)dest & 0x3FFFFFF) >> 2 | 0x8000000)
@@ -153,7 +149,7 @@ void ui60_entryHook()
 
 	// Gravity
 	{
-		#ifndef USE_ONLINE
+		#if !defined(USE_SAPHI)
 		// decrease from 900 to xxx,
 		// otherwise Hot Air Skyway C-T-R token is impossible,
 		// and some shortcuts are impossible (HAS USF jump to startline)

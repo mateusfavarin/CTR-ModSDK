@@ -9,7 +9,7 @@
 #include <functional>
 #include <chrono>
 
-#include <OnlineCTR/global.h>
+#include <Saphi/global.h>
 
 #define BIND_MSG(type, func) { type, std::bind(&Room::func, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3) }
 #define BIND_STATE(type, func) { type, std::bind(&Room::func, this, std::placeholders::_1) }

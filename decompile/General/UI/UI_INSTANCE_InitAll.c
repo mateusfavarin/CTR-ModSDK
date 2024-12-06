@@ -156,7 +156,7 @@ void DECOMP_UI_INSTANCE_InitAll(void)
 			((gameMode1 & BATTLE_MODE) == 0)
 		)
 	  {
-      #ifndef USE_ONLINE
+      #if !defined(USE_SAPHI)
       DECOMP_UI_INSTANCE_BirthWithThread(0x38,DECOMP_UI_ThTick_big1,2,0,0,/*sdata->s_big1*/0);
       #endif
     }
@@ -166,7 +166,7 @@ void DECOMP_UI_INSTANCE_InitAll(void)
       return;
     }
 
-	#ifndef USE_ONLINE
+	#if !defined(USE_SAPHI)
     sdata->ptrHudC = DECOMP_UI_INSTANCE_BirthWithThread(0x93,DECOMP_UI_ThTick_CtrLetters,0x12,0,0,/*sdata->s_hudc*/0);
     sdata->ptrHudT = DECOMP_UI_INSTANCE_BirthWithThread(0x94,DECOMP_UI_ThTick_CtrLetters,0x12,0,0,/*sdata->s_hudt*/0);
     sdata->ptrHudR = DECOMP_UI_INSTANCE_BirthWithThread(0x95,DECOMP_UI_ThTick_CtrLetters,0x12,0,0,/*sdata->s_hudr*/0);

@@ -1,6 +1,6 @@
 #include <common.h>
-#ifdef USE_ONLINE
-#include "../AltMods/OnlineCTR/global.h"
+#if defined(USE_SAPHI)
+#include "../AltMods/Saphi/global.h"
 #endif
 
 // all in this file
@@ -339,7 +339,7 @@ void DECOMP_MainFrame_RenderFrame(struct GameTracker* gGT, struct GamepadSystem*
 		{
 			DECOMP_DotLights(gGT);
 
-			#ifndef USE_ONLINE
+			#if !defined(USE_SAPHI)
 			if((gGT->renderFlags & 0x8000) != 0)
 			{
 				WindowBoxLines(gGT);
@@ -504,7 +504,7 @@ void DrawFinalLap(struct GameTracker* gGT)
 	{
 		// time remaining in animation
 		textTimer = sdata->finalLapTextTimer[i];
-		#ifdef USE_ONLINE
+		#if defined(USE_SAPHI)
 		//extract from sign bit
 		char isActuallyLastLap = (textTimer & 0x8000) != 0;
 		char isRaceComplete = (textTimer & 0x4000) != 0;
@@ -561,7 +561,7 @@ DrawFinalLapString:
 
 		// need to specify OT, or else "FINAL LAP" will draw on top of character icons,
 		// and by doing this, "FINAL LAP" draws under the character icons instead
-		#ifdef USE_ONLINE
+		#if defined(USE_SAPHI)
 		if (isActuallyLastLap)
 		{
 			DECOMP_DecalFont_DrawLineOT(
@@ -578,7 +578,7 @@ DrawFinalLapString:
 			pb->ptrOT);
 		#endif
 
-		#ifdef USE_ONLINE
+		#if defined(USE_SAPHI)
 		if (!isRaceComplete)
 		{
 			//display previous lap
@@ -607,7 +607,7 @@ DrawFinalLapString:
 
 		sdata->finalLapTextTimer[i]--;
 
-		#ifdef USE_ONLINE
+		#if defined(USE_SAPHI)
 		if ((sdata->finalLapTextTimer[i] & 0x3FFF) == 0)
 			sdata->finalLapTextTimer[i] = 0; //clear bit hack flags
 		#endif
@@ -782,7 +782,7 @@ void RenderAllHUD(struct GameTracker* gGT)
 					else
 					{
 						#ifndef REBUILD_PS1
-							#ifndef USE_ONLINE
+							#if !defined(USE_SAPHI)
 							DECOMP_UI_RenderFrame_CrystChall();
 							#endif
 						#endif
@@ -804,7 +804,7 @@ void RenderAllHUD(struct GameTracker* gGT)
 						return;
 					}
 
-					#ifdef USE_ONLINE
+					#if defined(USE_SAPHI)
 					void OnlineEndOfRace();
 					OnlineEndOfRace();
 					return;
@@ -855,7 +855,7 @@ void RenderAllHUD(struct GameTracker* gGT)
 					// if any transition is over
 					if(gGT->pushBuffer_UI.fadeFromBlack_currentValue > 0xfff)
 					{
-						#ifndef USE_ONLINE
+						#if !defined(USE_SAPHI)
 						DECOMP_UI_RenderFrame_AdvHub();
 						#endif
 					}
@@ -1558,7 +1558,7 @@ void MultiplayerWumpaHUD(struct GameTracker* gGT)
 	#endif
 }
 
-#ifndef USE_ONLINE
+#if !defined(USE_SAPHI)
 void WindowBoxLines(struct GameTracker* gGT)
 {
 	int i;
@@ -1736,8 +1736,8 @@ int ReadyToBreak(struct GameTracker* gGT)
 		gGT->vSync_between_drawSync > 6;
 }
 
-#ifdef USE_ONLINE
-#include "../AltMods/OnlineCTR/global.h"
+#if defined(USE_SAPHI)
+#include "../AltMods/Saphi/global.h"
 #endif
 
 void RenderVSYNC(struct GameTracker* gGT)
@@ -1748,7 +1748,7 @@ void RenderVSYNC(struct GameTracker* gGT)
 		VSync(0);
 	}
 
-	#ifdef USE_ONLINE
+	#if defined(USE_SAPHI)
 	int boolFirstFrame = 1;
 	#endif
 
@@ -1767,7 +1767,7 @@ void RenderVSYNC(struct GameTracker* gGT)
 			return;
 		}
 
-#ifdef USE_ONLINE
+#if defined(USE_SAPHI)
 		// gpu submission is not too late,
 		// we got to this while() loop before
 		// the flip was ready, so we're on-time
@@ -1832,7 +1832,7 @@ void RenderSubmit(struct GameTracker* gGT)
 
 	void* ot = &gGT->pushBuffer[0].ptrOT[0x3ff];
 
-#if defined(USE_ONLINE)/* && 0*/
+#if defined(USE_SAPHI)/* && 0*/
 	if (octr->onlineGameModifiers & MODIFIER_MIRROR)
 	{
 		void OnlineMirrorMode(u_long* ot);

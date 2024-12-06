@@ -4,7 +4,7 @@
 #include <filesystem>
 #include <iostream>
 #include <string_view>
-#include "../../General/AltMods/OnlineCTR/global.h"
+#include "../../General/AltMods/Saphi/global.h"
 
 namespace Logger
 {

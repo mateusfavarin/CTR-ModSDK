@@ -242,3 +242,8 @@ void Online_OtherFX_RecycleNew(
         }
     }
 }
+
+int OnlineGetNumDrivers()
+{
+	return octr->NumDrivers;
+}

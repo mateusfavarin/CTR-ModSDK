@@ -32,7 +32,7 @@ int DECOMP_GAMEPAD_GetNumConnected(struct GamepadSystem* gGamepads)
 	numPortsPerSlot = 4;
 #endif
 
-#ifdef USE_ONLINE
+#if defined(USE_SAPHI)
 	numSlots = 1;
 	numPortsPerSlot = 1;
 #endif

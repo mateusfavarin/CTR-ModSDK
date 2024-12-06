@@ -1,14 +1,3 @@
-// OnlineCTR (part 1)
-#ifndef REBUILD_PC
-#ifdef USE_ONLINE
-#include "OnlineCTR/hooks.c"
-#include "OnlineCTR/menu.c"
-#include "OnlineCTR/states.c"
-#include "OnlineCTR/endOfRaceUI.c"
-#include "OnlineCTR/zMirrorMode.c"
-#endif
-#endif
-
 // original ps1 with fragmented memory,
 // but also only if NOT using RAMEX, because
 // with RAMEX, we dont need to save 0x1b00 bytes

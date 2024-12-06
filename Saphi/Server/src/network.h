@@ -1,7 +1,7 @@
 #pragma once
 
 #include <enet/enet.h>
-#include <OnlineCTR/global.h>
+#include <Saphi/global.h>
 
 static constexpr enet_uint8 SERVER_COMM_CHANNEL = 0;
 

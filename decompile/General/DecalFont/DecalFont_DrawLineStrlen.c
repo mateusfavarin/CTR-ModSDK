@@ -15,7 +15,7 @@ void DECOMP_DecalFont_DrawLineStrlen(u_char* str, short len, int posX, short pos
 	}
 
 	// bug fix exclusive to versions after USA Retail
-	#if (BUILD >= JpnTrial) || defined(USE_ONLINE)
+	#if (BUILD >= JpnTrial) || defined(USE_SAPHI)
 
 		flags &= 0x7ff;
 

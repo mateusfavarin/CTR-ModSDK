@@ -2,8 +2,8 @@
 
 typedef void (*VehicleFuncPtr)(struct Thread* thread, struct Driver* driver);
 
-#ifdef USE_ONLINE
-#include "../AltMods/OnlineCTR/global.h"
+#if defined(USE_SAPHI)
+#include "../AltMods/Saphi/global.h"
 void RunVehicleThread(VehicleFuncPtr func, struct Thread* thread, struct Driver* driver);
 #endif
 
@@ -34,7 +34,7 @@ void DECOMP_MainFrame_GameLogic(struct GameTracker* gGT, struct GamepadSystem* g
 		{
 			psVar9 = (struct Driver*)psVar12->object;
 
-			#ifdef USE_ONLINE
+			#if defined(USE_SAPHI)
 			psVar9 = gGT->drivers[0];
 			#endif
 
@@ -77,7 +77,7 @@ void DECOMP_MainFrame_GameLogic(struct GameTracker* gGT, struct GamepadSystem* g
 LAB_80034e74:
 			pushBuffer = pushBuffer + 1;
 
-			#ifdef USE_ONLINE
+			#if defined(USE_SAPHI)
 			break;
 			#endif
 		}
@@ -205,7 +205,7 @@ LAB_80035098:
 			)
 			{
 
-#ifdef USE_ONLINE
+#if defined(USE_SAPHI)
 				// synchronize track hazards
 				if(
 					(iVar4 == STATIC) ||
@@ -243,7 +243,7 @@ LAB_80035098:
 
 							pcVar5 = psVar9->funcPtrs[iVar11];
 
-							#ifdef USE_ONLINE
+							#if defined(USE_SAPHI)
 							RunVehicleThread(pcVar5, psVar12, psVar9);
 							#else
 							if (pcVar5 != 0)
@@ -451,7 +451,7 @@ LAB_80035098:
 						(gGT->overlayIndex_Threads != -1)
 					)
 					{
-#ifndef USE_ONLINE
+#if !defined(USE_SAPHI)
 						gGT->unknownFlags_1d44 = (gGT->gameMode1 & 0x3e0020) | PAUSE_1;
 
 						DECOMP_MainFreeze_IfPressStart();

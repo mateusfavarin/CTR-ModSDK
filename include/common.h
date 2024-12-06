@@ -16,12 +16,12 @@
 //#define USE_BIGQUEUE	// Requires RAMEX: Extended loading queue
 //#define USE_HIGH1P	// Requires BIGQUEUE: All high model drivers
 //#define USE_RANDOM	// Requires HIGH1P: Character Randomizer
-#define USE_ONLINE	// Requires HIGH1P: Online Multiplayer
+#define USE_SAPHI	// Requires HIGH1P: Online Multiplayer
 //#define USE_HIGHMP	// Requires RAMEX: Multiplayer Maxed mod
 
 //#define USE_VR		// Virtual Reality
 
-#ifdef USE_ONLINE
+#if defined(USE_SAPHI)
 //#define USE_60FPS
 #define USE_BOOSTBAR
 #define USE_16BY9

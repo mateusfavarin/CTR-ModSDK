@@ -68,3 +68,18 @@ void UpdateCheckpointTracker(int driverID)
 		}
 	}
 }
+
+void OnRaceInit()
+{
+	for (int i = 0; i < ROOM_MAX_NUM_PLAYERS; i++)
+	{
+		checkpointTracker[i].currCheckpoint = 0;
+		checkpointTracker[i].timer = 0;
+		checkpointTracker[i].raceFinished = 0;
+	}
+	for (int i = 0; i < MAX_LAPS * CPS_PER_LAP; i++)
+	{
+		checkpointTimes[i] = 0;
+	}
+	sdata->gGT->drivers[0]->bestLapTime = HOURS(10);
+}
