@@ -59,7 +59,7 @@ void DECOMP_MainInit_JitPoolsNew(struct GameTracker *gGT)
 
   // assume RAMEX,
   // always have 8 drivers
-  #ifdef USE_ONLINE
+  #if defined(USE_SAPHI)
   uVar7 = 0x1000;
   uVar9 = 0x1000;
   #endif
@@ -146,7 +146,7 @@ void DECOMP_MainInit_JitPoolsNew(struct GameTracker *gGT)
   if (gGT->numPlyrCurrGame > 2) numDriver = 4;
   if ((gameMode & TIME_TRIAL) != 0) numDriver = 3;
 
-  #ifdef USE_ONLINE
+  #if defined(USE_SAPHI)
   numDriver = 8;
   #endif
 
@@ -162,7 +162,7 @@ void DECOMP_MainInit_JitPoolsNew(struct GameTracker *gGT)
   int numParticle = uVar7 >> 5;
   if(numParticle > 120) numParticle = 120;
 
-  #ifdef USE_ONLINE
+  #if defined(USE_SAPHI)
   // fix mystery caves with 8 players,
   // cause all drivers use P1 exhaust
   numParticle = 120*10;

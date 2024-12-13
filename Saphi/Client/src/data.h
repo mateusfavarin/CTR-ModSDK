@@ -66,6 +66,7 @@ struct GameData
 	float m_voice = 1.0f;
 	bool m_stereo = true;
 	bool m_vibration = false;
+	bool m_boostCounter = false;
 	bool m_reset = false;
 	std::string m_username;
 #if defined(_DEBUG)

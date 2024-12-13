@@ -1,7 +1,7 @@
-#ifndef ONLINE_GLOBAL_H
-#define ONLINE_GLOBAL_H
+#ifndef SAPHI_GLOBAL_H
+#define SAPHI_GLOBAL_H
 
-#define OCTR_MENU_LEVEL 0x26
+#define OCTR_MENU_LEVEL 0x26 /*INTRO_OXIDE*/
 
 #define VERSION_GAME   1
 #define VERSION_CLIENT 1
@@ -62,20 +62,36 @@ enum ClientState
 	NUM_STATES_FUNCS
 };
 
+//NOTICE: currently "MODIFIER_MIRROR"'s functionality is enabled, but this is a substantial byte budget hit.
+//to disable it, comment the '#include "Saphi/zMirrorMode.c"' at the top of Mods1.c, and comment the
+//"&& 0" from the "#if defined(USE_SAPHI) && 0" at the bottom of MainFrame_RenderFrame.c
+
 /* Bit flags */
 enum OnlineGameModifiers
 {
-	MODIFIER_NONE  = 0,
-	MODIFIER_ITEMS = (1 << 0),
-	MODIFIER_ICY   = (1 << 1),
-	MODIFIER_STP   = (1 << 2),
+	MODIFIER_NONE        = 0,
+	MODIFIER_ITEMS       = (1 << 0), //items are enabled
+	MODIFIER_ICY         = (1 << 1), //all terrain is considered ice
+	MODIFIER_STP         = (1 << 2), //all turbo pads are stp
+	MODIFIER_MIRROR      = (1 << 3), //gameplay & visuals is mirrored horizontally (every left turn is now a right turn & vice versa)
+	MODIFIER_RETROFUELED = (1 << 4), //does not include STP by default
+	MODIFIER_DEMOCAM     = (1 << 5), //camera system is the same as the demo system
+	MODIFIER_CATCHUP     = (1 << 6), //wumpa and/or boost is more effective in last place vs first
+	//MODIFIER_PRIVATE     = (1 << 7), //private room w/ passcode
 };
 
 enum OnlineGameModeList
 {
 	ONLINE_MODE_ITEMS = 0,
 	ONLINE_MODE_ITEMLESS = 1,
-	ONLINE_MODE_ICY_STP = 2,
+	ONLINE_MODE_MASHUP = 2,
+};
+
+enum MenuState
+{
+	MENUSTATE_NONE              = 0, //nothing substantial happened this frame.
+	MENUSTATE_PRESSED_CROSS     = (1 << 0),
+	MENUSTATE_PRESSED_TRIANGLE  = (1 << 1),
 };
 
 typedef struct RaceStats
@@ -93,7 +109,6 @@ struct OnlineCTR
 	int32_t ver_pc;
 	int32_t ver_server;
 	int32_t CurrState;
-	int8_t PageNumber; // allow negative
 	uint8_t CountPressX;
 	uint8_t NumDrivers;
 	uint8_t DriverID;
@@ -110,7 +125,7 @@ struct OnlineCTR
 	uint8_t boolJoiningServer;
 	uint8_t boolSelectedRoom;
 	uint8_t boolPlanetLEV;
-	uint8_t onlineGameModifiers;
+	uint8_t onlineGameModifiers; //this may need to be expanded to more than 8 flags
 	uint8_t windowsClientSync;
 	uint8_t lastWindowsClientSync;
 	uint8_t desiredFPS;

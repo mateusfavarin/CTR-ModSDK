@@ -354,7 +354,7 @@ void OnlineMirrorMode(u_long* startOT)
 	// do NOT set 2p3p4p, this is online only
 
 	SwapDirection(0);
-	return;
+	//return;
 
 	// no mirroring on this track
 	if (sdata->gGT->levelID >= INTRO_RACE_TODAY)

@@ -1,11 +1,6 @@
 #include <common.h>
 #include "global.h"
 
-int OnlineGetNumDrivers()
-{
-	return octr->NumDrivers;
-}
-
 void octr_entryHook()
 {
 	// Until VehBirth_TeleportSelf is rewritten
@@ -70,7 +65,12 @@ void OnlineInit_Drivers(struct GameTracker* gGT)
 	for(i = 0; i < 8; i++)
 	{
 		gGT->drivers[i] = 0;
-		sdata->kartSpawnOrderArray[i] = i;
+		//this does the same as below, just more hacky (bytebudget)
+		sdata->kartSpawnOrderArray[i] = i * (octr->onlineGameModifiers & MODIFIER_ITEMS);
+		//if (octr->onlineGameModifiers & MODIFIER_ITEMS)
+		//	sdata->kartSpawnOrderArray[i] = i;
+		//else
+		//	sdata->kartSpawnOrderArray[i] = 0;
 	}
 
 	// if first boot
@@ -172,7 +172,7 @@ void OnlineInit_Drivers(struct GameTracker* gGT)
 
 	gGT->drivers[0]->meterGradeTimer = 0;
 
-	if (gGT->levelID != 0x26) { octr->CurrState = GAME_WAIT_FOR_RACE; }
+	if (gGT->levelID != OCTR_MENU_LEVEL) { octr->CurrState = GAME_WAIT_FOR_RACE; }
 }
 
 void OnlineEndOfRace()
@@ -241,4 +241,9 @@ void Online_OtherFX_RecycleNew(
             OtherFX_Modify(local, modifyFlags);
         }
     }
+}
+
+int OnlineGetNumDrivers()
+{
+	return octr->NumDrivers;
 }

@@ -1,4 +1,7 @@
 #include <common.h>
+#if defined(USE_SAPHI)
+#include "../AltMods/Saphi/global.h"
+#endif
 
 // all in this file
 void DrawUnpluggedMsg(struct GameTracker* gGT, struct GamepadSystem* gGamepads);
@@ -317,7 +320,7 @@ void DECOMP_MainFrame_RenderFrame(struct GameTracker* gGT, struct GamepadSystem*
 
 		RenderDispEnv_World(gGT); // == RenderDispEnv_World ==
 
-		// We just draw full wumpa geometry instead
+		// We just draw full wumpa geometry instead of what the OG game does
 		MultiplayerWumpaHUD(gGT);
 
 		#if 0
@@ -336,7 +339,7 @@ void DECOMP_MainFrame_RenderFrame(struct GameTracker* gGT, struct GamepadSystem*
 		{
 			DECOMP_DotLights(gGT);
 
-			#ifndef USE_ONLINE
+			#if !defined(USE_SAPHI)
 			if((gGT->renderFlags & 0x8000) != 0)
 			{
 				WindowBoxLines(gGT);
@@ -501,6 +504,12 @@ void DrawFinalLap(struct GameTracker* gGT)
 	{
 		// time remaining in animation
 		textTimer = sdata->finalLapTextTimer[i];
+		#if defined(USE_SAPHI)
+		//extract from sign bit
+		char isActuallyLastLap = (textTimer & 0x8000) != 0;
+		char isRaceComplete = (textTimer & 0x4000) != 0;
+		textTimer &= 0x3FFF; //correct the timer
+		#endif
 
 		// skip if not drawing "FINAL LAP"
 		if(textTimer == 0)
@@ -552,13 +561,56 @@ DrawFinalLapString:
 
 		// need to specify OT, or else "FINAL LAP" will draw on top of character icons,
 		// and by doing this, "FINAL LAP" draws under the character icons instead
+		#if defined(USE_SAPHI)
+		if (isActuallyLastLap)
+		{
+			DECOMP_DecalFont_DrawLineOT(
+				sdata->lngStrings[0x8cc/4],
+				resultPos[0], resultPos[1] - 0xF, // - 0xF is not vanilla
+				FONT_BIG, (JUSTIFY_CENTER | ORANGE),
+				pb->ptrOT);
+		}
+		#else
 		DECOMP_DecalFont_DrawLineOT(
-			sdata->lngStrings[0x8cc/4],
+			sdata->lngStrings[0x8cc / 4],
 			resultPos[0], resultPos[1],
 			FONT_BIG, (JUSTIFY_CENTER | ORANGE),
 			pb->ptrOT);
+		#endif
+
+		#if defined(USE_SAPHI)
+		if (!isRaceComplete)
+		{
+			//display previous lap
+			TotalTime tt;
+			char displayTime[15];
+			int lapElapsed = gGT->drivers[0]->currLapTime;
+			int bestLap = gGT->drivers[0]->bestLapTime;
+			int drawColor = PERIWINKLE;
+			//if best lap or tied to it, colors the text green.
+			if (lapElapsed == bestLap)
+			{
+				drawColor = TINY_GREEN;
+			}
+
+			ElapsedTimeToTotalTime(&tt, lapElapsed);
+			tt.minutes = min(tt.minutes, 9);
+			sprintf(displayTime, "%d:%02d.%03d", tt.minutes, tt.seconds, tt.miliseconds);
+
+			DECOMP_DecalFont_DrawLineOT(
+				displayTime,
+				resultPos[0], resultPos[1],
+				FONT_SMALL, (JUSTIFY_CENTER | drawColor),
+				pb->ptrOT);
+		}
+		#endif
 
 		sdata->finalLapTextTimer[i]--;
+
+		#if defined(USE_SAPHI)
+		if ((sdata->finalLapTextTimer[i] & 0x3FFF) == 0)
+			sdata->finalLapTextTimer[i] = 0; //clear bit hack flags
+		#endif
 	}
 }
 
@@ -730,7 +782,7 @@ void RenderAllHUD(struct GameTracker* gGT)
 					else
 					{
 						#ifndef REBUILD_PS1
-							#ifndef USE_ONLINE
+							#if !defined(USE_SAPHI)
 							DECOMP_UI_RenderFrame_CrystChall();
 							#endif
 						#endif
@@ -752,7 +804,7 @@ void RenderAllHUD(struct GameTracker* gGT)
 						return;
 					}
 
-					#ifdef USE_ONLINE
+					#if defined(USE_SAPHI)
 					void OnlineEndOfRace();
 					OnlineEndOfRace();
 					return;
@@ -803,7 +855,7 @@ void RenderAllHUD(struct GameTracker* gGT)
 					// if any transition is over
 					if(gGT->pushBuffer_UI.fadeFromBlack_currentValue > 0xfff)
 					{
-						#ifndef USE_ONLINE
+						#if !defined(USE_SAPHI)
 						DECOMP_UI_RenderFrame_AdvHub();
 						#endif
 					}
@@ -1506,7 +1558,7 @@ void MultiplayerWumpaHUD(struct GameTracker* gGT)
 	#endif
 }
 
-#ifndef USE_ONLINE
+#if !defined(USE_SAPHI)
 void WindowBoxLines(struct GameTracker* gGT)
 {
 	int i;
@@ -1684,8 +1736,8 @@ int ReadyToBreak(struct GameTracker* gGT)
 		gGT->vSync_between_drawSync > 6;
 }
 
-#ifdef USE_ONLINE
-#include "../AltMods/OnlineCTR/global.h"
+#if defined(USE_SAPHI)
+#include "../AltMods/Saphi/global.h"
 #endif
 
 void RenderVSYNC(struct GameTracker* gGT)
@@ -1696,7 +1748,7 @@ void RenderVSYNC(struct GameTracker* gGT)
 		VSync(0);
 	}
 
-	#ifdef USE_ONLINE
+	#if defined(USE_SAPHI)
 	int boolFirstFrame = 1;
 	#endif
 
@@ -1715,7 +1767,7 @@ void RenderVSYNC(struct GameTracker* gGT)
 			return;
 		}
 
-#ifdef USE_ONLINE
+#if defined(USE_SAPHI)
 		// gpu submission is not too late,
 		// we got to this while() loop before
 		// the flip was ready, so we're on-time
@@ -1780,9 +1832,12 @@ void RenderSubmit(struct GameTracker* gGT)
 
 	void* ot = &gGT->pushBuffer[0].ptrOT[0x3ff];
 
-#if 0 && defined(USE_ONLINE)
-	void OnlineMirrorMode(u_long* ot);
-	OnlineMirrorMode(ot);
+#if defined(USE_SAPHI)/* && 0*/
+	if (octr->onlineGameModifiers & MODIFIER_MIRROR)
+	{
+		void OnlineMirrorMode(u_long* ot);
+		OnlineMirrorMode(ot);
+	}
 #endif
 
 	DrawOTag(ot);

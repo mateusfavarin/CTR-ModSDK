@@ -269,7 +269,7 @@ void DECOMP_RB_ShieldDark_ThTick_Grow(struct Thread *th)
   struct Thread* bombTh = bombInst->thread;
   bombTh->funcThDestroy = DECOMP_PROC_DestroyInstance;
 
-  #ifdef USE_ONLINE
+  #if defined(USE_SAPHI)
   if(player->driverID == 0)
   #else
   // if driver is not an AI (human)

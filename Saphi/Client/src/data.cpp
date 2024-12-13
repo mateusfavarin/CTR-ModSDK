@@ -122,6 +122,7 @@ GameData::GameData()
 {
 	g_dataManager.BindData(&m_stereo, DataType::BOOL, "Stereo");
 	g_dataManager.BindData(&m_vibration, DataType::BOOL, "Vibration");
+	g_dataManager.BindData(&m_boostCounter, DataType::BOOL, "BoostCounter");
 	g_dataManager.BindData(&m_fx, DataType::FLOAT, "FXVolume");
 	g_dataManager.BindData(&m_music, DataType::FLOAT, "MusicVolume");
 	g_dataManager.BindData(&m_voice, DataType::FLOAT, "VoiceVolume");

@@ -1,7 +1,7 @@
 #include <common.h>
 
-#ifdef USE_ONLINE
-#include "../AltMods/OnlineCTR/global.h"
+#if defined(USE_SAPHI)
+#include "../AltMods/Saphi/global.h"
 #endif
 
 enum ItemSet
@@ -53,7 +53,7 @@ void DECOMP_VehPhysGeneral_SetHeldItem(struct Driver* driver) {
 			// Choose Itemset based on number of Drivers
 			int mode = gGT->numPlyrCurrGame + gGT->numBotsNextGame;
 
-			#ifdef USE_ONLINE
+			#if defined(USE_SAPHI)
 			if (octr->onlineGameModifiers & MODIFIER_ITEMS)
 			{
 				mode = octr->NumDrivers;

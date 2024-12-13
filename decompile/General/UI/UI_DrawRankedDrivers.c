@@ -1,5 +1,5 @@
 #include <common.h>
-#include "../AltMods/OnlineCTR/global.h"
+#include "../AltMods/Saphi/global.h"
 
 // Draw player icons on left side of screen
 // in Arcade mode and Boss mode, and draws
@@ -126,7 +126,7 @@ void DECOMP_UI_DrawRankedDrivers(void)
         iVar14 = 2;
       }
 
-	  #ifdef USE_ONLINE
+	  #if defined(USE_SAPHI)
 	  int OnlineGetNumDrivers();
 	  int oNumDrivers = OnlineGetNumDrivers();
 	  if(oNumDrivers < 9) { iVar14 = oNumDrivers; }
@@ -138,7 +138,7 @@ void DECOMP_UI_DrawRankedDrivers(void)
 	  // height to draw rank (this bitshifts later)
 	  iVar12 = 0x380000;
 
-	  #ifndef USE_ONLINE
+	  #if !defined(USE_SAPHI)
 	  for (iVar15 = 0; iVar15 < iVar14; iVar15++)
 	  {
 		// make the text white by default
@@ -161,7 +161,7 @@ void DECOMP_UI_DrawRankedDrivers(void)
 
       for (iVar14 = 0; iVar14 < 8; iVar14++)
 	  {
-		#ifdef USE_ONLINE
+		#if defined(USE_SAPHI)
 		if (!octr->nameBuffer[iVar14][0]) { continue; }
 		#endif
 
@@ -194,7 +194,7 @@ void DECOMP_UI_DrawRankedDrivers(void)
 			{
               // if top positions
 
-			  #ifdef USE_ONLINE
+			  #if defined(USE_SAPHI)
 			  pos.x = 10;
 			  pos.y = 53 + iVar12 * 20;
 			  #else
@@ -208,7 +208,7 @@ void DECOMP_UI_DrawRankedDrivers(void)
             }
           }
 
-		  #ifdef USE_ONLINE
+		  #if defined(USE_SAPHI)
 		  short iconScale = FP(0.75);
 		  txtColor = 4;
 		  if (checkpointTracker[iVar15].raceFinished) { txtColor = 3; }
@@ -249,7 +249,7 @@ void DECOMP_UI_DrawRankedDrivers(void)
 
             1, iconScale, color);
 
-		  #ifdef USE_ONLINE
+		  #if defined(USE_SAPHI)
 		  if (checkpointTracker[iVar14].timer > 0)
 		  {
 			DECOMP_DecalFont_DrawLineStrlen(

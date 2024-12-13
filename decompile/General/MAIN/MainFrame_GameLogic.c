@@ -2,8 +2,8 @@
 
 typedef void (*VehicleFuncPtr)(struct Thread* thread, struct Driver* driver);
 
-#ifdef USE_ONLINE
-#include "../AltMods/OnlineCTR/global.h"
+#if defined(USE_SAPHI)
+#include "../AltMods/Saphi/global.h"
 void RunVehicleThread(VehicleFuncPtr func, struct Thread* thread, struct Driver* driver);
 #endif
 
@@ -34,7 +34,7 @@ void DECOMP_MainFrame_GameLogic(struct GameTracker* gGT, struct GamepadSystem* g
 		{
 			psVar9 = (struct Driver*)psVar12->object;
 
-			#ifdef USE_ONLINE
+			#if defined(USE_SAPHI)
 			psVar9 = gGT->drivers[0];
 			#endif
 
@@ -77,7 +77,7 @@ void DECOMP_MainFrame_GameLogic(struct GameTracker* gGT, struct GamepadSystem* g
 LAB_80034e74:
 			pushBuffer = pushBuffer + 1;
 
-			#ifdef USE_ONLINE
+			#if defined(USE_SAPHI)
 			break;
 			#endif
 		}
@@ -205,9 +205,7 @@ LAB_80035098:
 			)
 			{
 
-// online multiplayer
-#ifdef USE_ONLINE
-
+#if defined(USE_SAPHI)
 				// synchronize track hazards
 				if(
 					(iVar4 == STATIC) ||
@@ -217,33 +215,7 @@ LAB_80035098:
 					if(gGT->trafficLightsTimer > 3600)
 						continue;
 				}
-
-				if (iVar4 == 0)
-				{
-					struct Driver* dOnline = gGT->drivers[0];
-					if(dOnline != 0)
-					{
-						struct Thread* dThread = dOnline->instSelf->thread;
-
-						DECOMP_VehPickupItem_ShootOnCirclePress(dOnline);
-
-						RunVehicleSet13(dThread, dOnline);
-						octr->desiredFPS = FPS_DOUBLE(30);
-					}
-
-					for(int other = 1; other < 8; other++)
-					{
-						dOnline = gGT->drivers[other];
-						if(dOnline == 0) continue;
-
-						struct Thread* dThread = dOnline->instSelf->thread;
-
-						RunVehicleSet13(dThread, dOnline);
-					}
-				}
-
-// offline
-#else
+#endif
 				if (iVar4 == 0)
 				{
 
@@ -271,7 +243,7 @@ LAB_80035098:
 
 							pcVar5 = psVar9->funcPtrs[iVar11];
 
-							#ifdef USE_ONLINE
+							#if defined(USE_SAPHI)
 							RunVehicleThread(pcVar5, psVar12, psVar9);
 							#else
 							if (pcVar5 != 0)
@@ -313,7 +285,6 @@ LAB_80035098:
 					gGT->numPlyrCurrGame = backupPlyrCount;
 					#endif
 				}
-#endif
 
 
 #ifndef REBUILD_PS1
@@ -480,7 +451,7 @@ LAB_80035098:
 						(gGT->overlayIndex_Threads != -1)
 					)
 					{
-#ifndef USE_ONLINE
+#if !defined(USE_SAPHI)
 						gGT->unknownFlags_1d44 = (gGT->gameMode1 & 0x3e0020) | PAUSE_1;
 
 						DECOMP_MainFreeze_IfPressStart();

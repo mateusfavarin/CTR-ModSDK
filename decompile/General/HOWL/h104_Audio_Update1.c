@@ -50,7 +50,7 @@ void DECOMP_Audio_Update1(void)
     case 10:
         DECOMP_Audio_SetMaskSong(0);
 
-		#ifdef USE_ONLINE
+		#if defined(USE_SAPHI)
 		
 		d = gGT->drivers[0];
 		
@@ -99,7 +99,7 @@ void DECOMP_Audio_Update1(void)
     case 11:
         DECOMP_Audio_SetMaskSong(0);
 
-		#ifdef USE_ONLINE
+		#if defined(USE_SAPHI)
 		
 		d = gGT->drivers[0];
 		
@@ -176,7 +176,7 @@ void DECOMP_Audio_Update1(void)
     case 13:
         DECOMP_Audio_SetMaskSong(20);
 
-		#ifdef USE_ONLINE
+		#if defined(USE_SAPHI)
 		
 		d = gGT->drivers[0];
 		
@@ -221,7 +221,7 @@ void DECOMP_Audio_Update1(void)
         break;
     case 14:
 
-		#ifdef USE_ONLINE
+		#if defined(USE_SAPHI)
 		
 		d = gGT->drivers[0];
 		
@@ -271,6 +271,7 @@ void DECOMP_Audio_Update1(void)
             // if did not just open N Tropy
             if ((gGT->unknownFlags_1d44 & 0x8000) == 0)
             {
+				#if !defined(USE_SAPHI) //don't use vanilla SFX in online
                 // If you did not just beat N Tropy in Time Trial
                 if ((gGT->unknownFlags_1d44 & 0x10000000) == 0)
                 {
@@ -289,7 +290,6 @@ void DECOMP_Audio_Update1(void)
                         uVar1 = 4;
                     }
                 }
-
                 // If you just beat N Tropy in Time Trial
                 else
                 {
@@ -328,8 +328,9 @@ void DECOMP_Audio_Update1(void)
                         uVar1 = 0x43;
                     }
                 }
+				#endif
             }
-
+			#if !defined(USE_SAPHI)
             // if n tropy just opened
             else
             {
@@ -340,6 +341,14 @@ void DECOMP_Audio_Update1(void)
                 // "Think your fast eh, well, lets see if you can beat my fastest time"
                 uVar1 = 0x46;
             }
+			#endif
+
+			#if defined(USE_SAPHI)
+			if (d->driverRank == 0)
+				uVar1 = 4; //win sfx
+			else
+				uVar1 = 5; //lose sfx
+			#endif
 
             // desired XA
             sdata->desiredXA_3 = uVar1;

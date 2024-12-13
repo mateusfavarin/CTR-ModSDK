@@ -14,7 +14,7 @@ void DECOMP_VehBirth_EngineAudio_AllPlayers(void)
   {
 	struct Driver* d = th->object;
 	
-	#ifdef USE_ONLINE
+	#if defined(USE_SAPHI)
 	d = gGT->drivers[0];
 	#endif
 	
@@ -27,7 +27,7 @@ void DECOMP_VehBirth_EngineAudio_AllPlayers(void)
     EngineAudio_InitOnce((engine * 4) + driverID, 0x8080);
 	#endif
 
-	#ifdef USE_ONLINE
+	#if defined(USE_SAPHI)
 	return;
 	#endif
   }

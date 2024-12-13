@@ -149,7 +149,7 @@ void ui60_entryHook()
 
 	// Gravity
 	{
-		#ifndef USE_ONLINE
+		#if !defined(USE_SAPHI)
 		// decrease from 900 to xxx,
 		// otherwise Hot Air Skyway C-T-R token is impossible,
 		// and some shortcuts are impossible (HAS USF jump to startline)

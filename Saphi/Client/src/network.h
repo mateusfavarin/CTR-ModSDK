@@ -1,7 +1,7 @@
 #pragma once
 
 #include <enet/enet.h>
-#include <OnlineCTR/global.h>
+#include <Saphi/global.h>
 
 #include <string>
 #include <unordered_map>

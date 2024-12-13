@@ -90,7 +90,7 @@ void DECOMP_LOAD_DriverMPK(unsigned int param_1,int levelLOD,unsigned int param_
 	int i;
 	int gameMode1;
 		
-#ifdef USE_ONLINE
+#if defined(USE_SAPHI)
 	goto ForceOnlineLoad8;
 #endif
 		
