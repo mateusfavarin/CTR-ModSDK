@@ -57,6 +57,17 @@ char* gamemodeMenuLabels[NUM_SERVER_PAGES] =
 	"Mashup"
 };
 
+char* gameModifiers[] =
+{
+	"ITEMS",
+	"ICY",
+	"STP",
+	"MIRROR",
+	"RETROFUELED",
+	"DEMOCAM",
+	"CATCHUP"
+};
+
 RECT drawTimeRECT =
 {
 	.x = 0xffec,
@@ -224,6 +235,60 @@ void StatePS1_Lobby_AssignRole()
 	//reset menu label (from when we chose our room)
 	strcpy(sdata->lngStrings[0x4e], "Saphi");
 }
+#pragma endregion
+
+#pragma region Lobby_HostModifiersPick
+#define GMMCOUNT (sizeof(gameModifiers) / sizeof(char*))
+void StatePS1_Lobby_HostModifiersPick()
+{
+	void Draw_Lobby_HostModifiersPick(uint8_t);
+	#define GMMPC ((GMMCOUNT / ELEMENTS_PER_PAGE) + ((GMMCOUNT % ELEMENTS_PER_PAGE) ? 1 : 0))
+	SetMenuContents(Draw_Lobby_HostModifiersPick, GMMPC, true);
+	PrintCharacterStats();
+
+	uint8_t state, row, pageNumber;
+	MenuTick(&state, &row, &pageNumber);
+	if (state & MENUSTATE_PRESSED_CROSS)
+	{
+		int modifierId = row + (ELEMENTS_PER_PAGE * pageNumber);
+		if (modifierId == GMMCOUNT)
+		{
+			SetMenuShow(false);
+			octr->boolSelectedModifiers = true;
+		}
+		else
+			octr->onlineGameModifiers ^= (1 << modifierId);
+	}
+}
+
+void Draw_Lobby_HostModifiersPick(uint8_t pageNumber)
+{
+	//set the menu position
+	uint16_t x = 0x70, y = 0x84;
+	SetMenuPosition(&x, &y, NULL, NULL);
+	//set menu contents
+	for (int i = 0; i < ELEMENTS_PER_PAGE; i++)
+	{
+		int modifierId = i + (ELEMENTS_PER_PAGE * pageNumber);
+		int modifierPresent = (octr->onlineGameModifiers >> modifierId) & 1;
+		if (i < GMMCOUNT)
+		{
+			SetRowSelectable(i, modifierPresent);
+			SetRowString(i, gameModifiers + (ELEMENTS_PER_PAGE * pageNumber));
+		}
+		else if (i == GMMCOUNT)
+		{
+			SetRowSelectable(i, true);
+			SetRowString(i, "CONFIRM");
+		}
+		else
+		{
+			SetRowSelectable(i, false);
+			SetRowString(i, "-");
+		}
+	}
+}
+#undef GMMCOUNT
 #pragma endregion
 
 #pragma region Lobby_HostTrackPick

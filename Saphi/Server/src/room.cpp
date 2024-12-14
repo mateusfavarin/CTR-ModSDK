@@ -18,6 +18,9 @@ static inline constexpr SG_Message Message(ServerMessageType type = ServerMessag
 	case ServerMessageType::SG_NAME:
 		msg.id.type = static_cast<uint8_t>(type);
 		break;
+	case ServerMessageType::SG_MODIFIERS:
+		msg.id.type = static_cast<uint8_t>(type);
+		break;
 	case ServerMessageType::SG_TRACK:
 		msg.track.type = static_cast<uint8_t>(type);
 		break;
@@ -91,6 +94,7 @@ void Room::ResetControlVariables()
 	m_state = OnlineState::LOBBY;
 	m_trackSelected = false;
 	m_dnfTimerActive = false;
+	m_onlineGameModifiers = 0;
 }
 
 MessageAction Room::NewRoom(const CG_Message message, const Network& net, Client& client)
@@ -181,6 +185,16 @@ MessageAction Room::Name(const CG_Message message, const Network& net, Client& c
 		strncpy(peerName.name.name, value.name.c_str(), sizeof(peerName.name.name));
 		net.Send(peerName, client.peer);
 	}
+	return MessageAction::NONE;
+}
+
+MessageAction Room::Modifiers(const CG_Message message, const Network& net, Client& client)
+{
+	SG_Message msg = Message(ServerMessageType::SG_MODIFIERS);
+	msg.modifiers.onlineGameModifiers = m_onlineGameModifiers;
+	logd("Room::Modifiers() modifiers broadcasted = [{0}}", m_onlineGameModifiers);
+	exception_map exceptions = { client.peer };
+	Broadcast(net, msg, exceptions);
 	return MessageAction::NONE;
 }
 

@@ -50,6 +50,7 @@ enum ClientState
 	LAUNCH_PICK_ROOM,
 	LAUNCH_ERROR,
 	LOBBY_ASSIGN_ROLE,
+	LOBBY_HOST_MODIFIERS_PICK,
 	LOBBY_HOST_TRACK_PICK,
 	LOBBY_GUEST_TRACK_WAIT,
 	LOBBY_CHARACTER_PICK,
@@ -125,7 +126,8 @@ struct OnlineCTR
 	uint8_t boolJoiningServer;
 	uint8_t boolSelectedRoom;
 	uint8_t boolPlanetLEV;
-	uint8_t onlineGameModifiers; //this may need to be expanded to more than 8 flags
+	uint32_t onlineGameModifiers;
+	uint8_t boolSelectedModifiers;
 	uint8_t windowsClientSync;
 	uint8_t lastWindowsClientSync;
 	uint8_t desiredFPS;
@@ -177,12 +179,15 @@ void EndOfRace_Icons();
 
 #ifdef CLIENT_SERVER
 
+//SG_ packets = servers send to clients
+
 enum ServerMessageType
 {
 	SG_ROOMS, // connection
 	SG_NEWCLIENT, // assign to room
 	SG_UPDATEID,
 	SG_NAME, // lobby
+	SG_MODIFIERS,
 	SG_TRACK,
 	SG_CHARACTER,
 	SG_STARTLOADING,
@@ -237,6 +242,12 @@ struct SG_MessageName
 	uint8_t clientID;
 	uint8_t numClientsTotal;
 	char name[NAME_LEN + 1];
+};
+
+struct SG_MessageModifiers
+{
+	uint8_t type;
+	uint32_t onlineGameModifiers;
 };
 
 // get track, assigned by host
@@ -308,6 +319,7 @@ struct SG_Message
 		struct SG_MessageNewClient clientStatus;	// SG_NEWCLIENT
 		struct SG_MessageClientID id;				// SG_UPDATEID
 		struct SG_MessageName name;					// SG_NAME
+		struct SG_MessageModifiers modifiers;       // SG_MODIFIERS
 		struct SG_MessageTrack track;				// SG_TRACK
 		struct SG_MessageCharacter character;		// SG_CHARACTER
 		struct SG_MessageKart kart;					// SG_KART
@@ -317,9 +329,12 @@ struct SG_Message
 	};
 };
 
+//CG_ packets = clients send to servers
+
 enum ClientMessageType
 {
 	CG_JOINROOM,
+	CG_MODIFIERS,
 	CG_NAME,
 	CG_TRACK,
 	CG_CHARACTER,
@@ -343,6 +358,12 @@ struct CG_MessageRoom
 {
 	uint8_t type;
 	uint8_t room;
+};
+
+struct CG_MessageModifiers
+{
+	uint8_t type;
+	uint32_t onlineGameModifiers;
 };
 
 struct CG_MessageName
@@ -412,14 +433,15 @@ struct CG_Message
 	void* peer;
 	union
 	{
-		CG_MessageRoom room;		   // CG_JOINROOM
-		CG_MessageName name;		   // CG_NAME
-		CG_MessageTrack track;		   // CG_TRACK
-		CG_MessageCharacter character; // CG_CHARACTER
-		CG_MessageKart kart;		   // CG_KART
-		CG_MessageWeapon weapon;	   // CG_WEAPON
-		CG_MessageEndRace endRace;	   // CG_ENDRACE
-		ServerInfo server;			   // CG_CONNECT
+		struct CG_MessageRoom room;		          // CG_JOINROOM
+		struct CG_MessageModifiers modifiers;     // CG_MODIFIERS
+		struct CG_MessageName name;		          // CG_NAME
+		struct CG_MessageTrack track;		      // CG_TRACK
+		struct CG_MessageCharacter character;     // CG_CHARACTER
+		struct CG_MessageKart kart;		          // CG_KART
+		struct CG_MessageWeapon weapon;	          // CG_WEAPON
+		struct CG_MessageEndRace endRace;	      // CG_ENDRACE
+		ServerInfo server;			              // CG_CONNECT
 	};
 };
 
@@ -435,6 +457,7 @@ struct CG_Message
 	void StatePS1_Launch_PickRoom();
 	void StatePS1_Launch_Error();
 	void StatePS1_Lobby_AssignRole();
+	void StatePS1_Lobby_HostModifiersPick();
 	void StatePS1_Lobby_HostTrackPick();
 	void StatePS1_Lobby_GuestTrackWait();
 	void StatePS1_Lobby_CharacterPick();

@@ -55,6 +55,7 @@ private:
 		BIND_RECV(ServerMessageType::SG_NEWCLIENT,	  Message::NewClient),
 		BIND_RECV(ServerMessageType::SG_UPDATEID,	  Message::UpdateID),
 		BIND_RECV(ServerMessageType::SG_NAME,		  Message::Name),
+		BIND_RECV(ServerMessageType::SG_MODIFIERS,    Message::Modifiers),
 		BIND_RECV(ServerMessageType::SG_TRACK,		  Message::Track),
 		BIND_RECV(ServerMessageType::SG_CHARACTER,	  Message::Character),
 		BIND_RECV(ServerMessageType::SG_STARTLOADING, Message::StartLoading),
