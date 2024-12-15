@@ -42,6 +42,7 @@ void Message::NewClient(const SG_Message& message, OnlineCTR& octr)
   octr.boolSelectedLevel = msg.trackSelected;
   octr.boolSelectedLap = false;
   octr.raceOver = false;
+  octr.boolSelectedModifiers = false;
   octr.boolSelectedCharacter = 0;
   octr.numDriversEnded = 0;
   octr.dnfTimer = 0;
@@ -77,6 +78,12 @@ void Message::Name(const SG_Message& message, OnlineCTR& octr)
   strncpy(octr.nameBuffer[slot], msg.name, sizeof(msg.name));
 
   if (msg.name[0] == 0) { PlayerHoldSquare(slot); }
+}
+
+void Message::Modifiers(const SG_Message& message, OnlineCTR& octr)
+{
+  const SG_MessageModifiers msg = message.modifiers;
+  octr.onlineGameModifiers = msg.onlineGameModifiers;
 }
 
 void Message::Track(const SG_Message& message, OnlineCTR& octr)

@@ -10,6 +10,7 @@ namespace Message
 	void NewClient(const SG_Message& message, OnlineCTR& octr);
 	void UpdateID(const SG_Message& message, OnlineCTR& octr);
 	void Name(const SG_Message& message, OnlineCTR& octr);
+	void Modifiers(const SG_Message& message, OnlineCTR& octr);
 	void Track(const SG_Message& message, OnlineCTR& octr);
 	void Character(const SG_Message& message, OnlineCTR& octr);
 	void StartLoading(const SG_Message& message, OnlineCTR& octr);

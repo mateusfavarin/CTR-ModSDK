@@ -9,6 +9,7 @@ namespace State
 	const CG_Message Launch_PickRoom(OnlineCTR& octr);
 	const CG_Message Launch_Error(OnlineCTR& octr);
 	const CG_Message Lobby_AssignRole(OnlineCTR& octr);
+	const CG_Message Lobby_HostModifiersPick(OnlineCTR& octr);
 	const CG_Message Lobby_HostTrackPick(OnlineCTR& octr);
 	const CG_Message Lobby_GuestTrackWait(OnlineCTR& octr);
 	const CG_Message Lobby_CharacterPick(OnlineCTR& octr);

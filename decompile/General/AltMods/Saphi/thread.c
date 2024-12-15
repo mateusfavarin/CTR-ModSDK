@@ -10,6 +10,7 @@ void (*funcs[NUM_STATES_FUNCS]) () =
 	StatePS1_Launch_PickRoom,
 	StatePS1_Launch_Error,
 	StatePS1_Lobby_AssignRole,
+	StatePS1_Lobby_HostModifiersPick,
 	StatePS1_Lobby_HostTrackPick,
 	StatePS1_Lobby_GuestTrackWait,
 	StatePS1_Lobby_CharacterPick,

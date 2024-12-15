@@ -27,6 +27,7 @@ void Client::Run()
   if (m_stateFuncs.contains(state))
   {
     const CG_Message msg = m_stateFuncs[state](octr);
+    //printf("state %d\n", octr.CurrState);
     if (msg.type == ClientMessageType::CG_CONNECT)
     {
       octr.CurrState = ClientState::LAUNCH_WAIT_SERVER;

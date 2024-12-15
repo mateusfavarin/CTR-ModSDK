@@ -66,6 +66,7 @@ private:
 	MessageAction NewRoom(const CG_Message message, const Network& net, Client& client);
 	MessageAction Disconnect(const CG_Message message, const Network& net, Client& client);
 	MessageAction Name(const CG_Message message, const Network& net, Client& client);
+	MessageAction Modifiers(const CG_Message message, const Network& net, Client& client);
 	MessageAction Track(const CG_Message message, const Network& net, Client& client);
 	MessageAction Character(const CG_Message message, const Network& net, Client& client);
 	MessageAction StartRace(const CG_Message message, const Network& net, Client& client);
@@ -83,6 +84,7 @@ private:
 	bool m_dnfTimerActive = false;
 	uint16_t m_lapCount = 0;
 	uint8_t m_trackId = 0;
+	uint32_t m_onlineGameModifiers = 0;
 	bool m_trackSelected = false;
 	OnlineState m_state = OnlineState::LOBBY;
 	std::unordered_map<const void*, Client> m_clients;
@@ -90,6 +92,7 @@ private:
 		BIND_MSG(ClientMessageType::CG_JOINROOM, NewRoom),
 		BIND_MSG(ClientMessageType::CG_DISCONNECT, Disconnect),
 		BIND_MSG(ClientMessageType::CG_NAME, Name),
+		BIND_MSG(ClientMessageType::CG_MODIFIERS, Modifiers),
 		BIND_MSG(ClientMessageType::CG_TRACK, Track),
 		BIND_MSG(ClientMessageType::CG_CHARACTER, Character),
 		BIND_MSG(ClientMessageType::CG_STARTRACE, StartRace),
