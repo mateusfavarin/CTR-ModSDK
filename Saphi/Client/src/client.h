@@ -40,6 +40,7 @@ private:
 		BIND_STATE(ClientState::LAUNCH_PICK_ROOM,		State::Launch_PickRoom),
 		BIND_STATE(ClientState::LAUNCH_ERROR,			State::Launch_Error),
 		BIND_STATE(ClientState::LOBBY_ASSIGN_ROLE,		State::Lobby_AssignRole),
+		BIND_STATE(ClientState::LOBBY_HOST_MODIFIERS_PICK, State::Lobby_HostModifiersPick),
 		BIND_STATE(ClientState::LOBBY_HOST_TRACK_PICK,	State::Lobby_HostTrackPick),
 		BIND_STATE(ClientState::LOBBY_GUEST_TRACK_WAIT, State::Lobby_GuestTrackWait),
 		BIND_STATE(ClientState::LOBBY_CHARACTER_PICK,	State::Lobby_CharacterPick),

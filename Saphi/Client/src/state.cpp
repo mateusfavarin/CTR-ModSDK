@@ -1,6 +1,7 @@
 #include "state.h"
 #include "psx.h"
 #include "data.h"
+#include <fmtlog.h>
 
 #include <string>
 
@@ -102,6 +103,16 @@ const CG_Message State::Lobby_AssignRole(OnlineCTR& octr)
 	memcpy(&msg.name.name[0], g_gameData.m_username.data(), g_gameData.m_username.size());
 	if (octr.boolSelectedLevel) { octr.CurrState = ClientState::LOBBY_CHARACTER_PICK; }
 	else { octr.DriverID == 0 ? octr.CurrState = ClientState::LOBBY_HOST_MODIFIERS_PICK : octr.CurrState = ClientState::LOBBY_GUEST_TRACK_WAIT; }
+	return msg;
+}
+
+const CG_Message State::Lobby_HostModifiersPick(OnlineCTR& octr)
+{
+	if (!octr.boolSelectedModifiers) { return Message(); }
+
+	CG_Message msg = Message(ClientMessageType::CG_MODIFIERS);
+	msg.modifiers.onlineGameModifiers = octr.onlineGameModifiers;
+	octr.CurrState = ClientState::LOBBY_HOST_TRACK_PICK;
 	return msg;
 }
 

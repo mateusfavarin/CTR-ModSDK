@@ -191,8 +191,9 @@ MessageAction Room::Name(const CG_Message message, const Network& net, Client& c
 MessageAction Room::Modifiers(const CG_Message message, const Network& net, Client& client)
 {
 	SG_Message msg = Message(ServerMessageType::SG_MODIFIERS);
+	m_onlineGameModifiers = message.modifiers.onlineGameModifiers;
 	msg.modifiers.onlineGameModifiers = m_onlineGameModifiers;
-	logd("Room::Modifiers() modifiers broadcasted = [{0}}", m_onlineGameModifiers);
+	logd("Room::Modifiers() modifiers broadcasted = [{0}]", m_onlineGameModifiers);
 	exception_map exceptions = { client.peer };
 	Broadcast(net, msg, exceptions);
 	return MessageAction::NONE;

@@ -59,13 +59,13 @@ char* gamemodeMenuLabels[NUM_SERVER_PAGES] =
 
 char* gameModifiers[] =
 {
-	"ITEMS",
-	"ICY",
-	"STP",
-	"MIRROR",
-	"RETROFUELED",
-	"DEMOCAM",
-	"CATCHUP"
+	"  ITEMS",
+	"  ICY",
+	"  STP",
+	"  MIRROR",
+	"  RETROFUELED",
+	"  DEMOCAM",
+	"  CATCH UP"
 };
 
 RECT drawTimeRECT =
@@ -273,8 +273,9 @@ void Draw_Lobby_HostModifiersPick(uint8_t pageNumber)
 		int modifierPresent = (octr->onlineGameModifiers >> modifierId) & 1;
 		if (i < GMMCOUNT)
 		{
-			SetRowSelectable(i, modifierPresent);
-			SetRowString(i, gameModifiers + (ELEMENTS_PER_PAGE * pageNumber));
+			gameModifiers[modifierId][0] = (modifierPresent ? 'E' : 'D');
+			SetRowSelectable(i, true); //was modifierPresent
+			SetRowString(i, gameModifiers[modifierId]);
 		}
 		else if (i == GMMCOUNT)
 		{
