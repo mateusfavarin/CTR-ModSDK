@@ -241,8 +241,11 @@ void StatePS1_Lobby_AssignRole()
 #define GMMCOUNT (sizeof(gameModifiers) / sizeof(char*))
 void StatePS1_Lobby_HostModifiersPick()
 {
-	void Draw_Lobby_HostModifiersPick(uint8_t);
+	//show the menu
+	SetMenuShow(true);
 	#define GMMPC ((GMMCOUNT / ELEMENTS_PER_PAGE) + ((GMMCOUNT % ELEMENTS_PER_PAGE) ? 1 : 0))
+	//set the draw function
+	void Draw_Lobby_HostModifiersPick(uint8_t);
 	SetMenuContents(Draw_Lobby_HostModifiersPick, GMMPC, true);
 	PrintCharacterStats();
 

@@ -109,7 +109,7 @@ struct OnlineCTR
 	int32_t ver_psx;
 	int32_t ver_pc;
 	int32_t ver_server;
-	int32_t CurrState;
+	int32_t CurrState; //offsetof = 12
 	uint8_t CountPressX;
 	uint8_t NumDrivers;
 	uint8_t DriverID;
@@ -126,7 +126,7 @@ struct OnlineCTR
 	uint8_t boolJoiningServer;
 	uint8_t boolSelectedRoom;
 	uint8_t boolPlanetLEV;
-	uint32_t onlineGameModifiers;
+	uint32_t onlineGameModifiers; //offsetof = 32
 	uint8_t boolSelectedModifiers;
 	uint8_t windowsClientSync;
 	uint8_t lastWindowsClientSync;
