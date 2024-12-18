@@ -68,6 +68,15 @@ char* gameModifiers[] =
 	"  CATCH UP"
 };
 
+char* engineTypes[] =
+{
+	"VANILLA",
+	"BALANCED",
+	"SPEED",
+	"TURN",
+	"ACCEL"
+};
+
 RECT drawTimeRECT =
 {
 	.x = 0xffec,
@@ -239,11 +248,11 @@ void StatePS1_Lobby_AssignRole()
 
 #pragma region Lobby_HostModifiersPick
 #define GMMCOUNT (sizeof(gameModifiers) / sizeof(char*))
+#define GMMPC ((GMMCOUNT / ELEMENTS_PER_PAGE) + ((GMMCOUNT % ELEMENTS_PER_PAGE) ? 1 : 0))
 void StatePS1_Lobby_HostModifiersPick()
 {
 	//show the menu
 	SetMenuShow(true);
-	#define GMMPC ((GMMCOUNT / ELEMENTS_PER_PAGE) + ((GMMCOUNT % ELEMENTS_PER_PAGE) ? 1 : 0))
 	//set the draw function
 	void Draw_Lobby_HostModifiersPick(uint8_t);
 	SetMenuContents(Draw_Lobby_HostModifiersPick, GMMPC, true);
@@ -293,6 +302,7 @@ void Draw_Lobby_HostModifiersPick(uint8_t pageNumber)
 	}
 }
 #undef GMMCOUNT
+#undef GMMPC
 #pragma endregion
 
 #pragma region Lobby_HostTrackPick
@@ -475,13 +485,33 @@ void StatePS1_Lobby_GuestTrackWait()
 #pragma endregion
 
 #pragma region Lobby_CharacterPick
+#define ETCOUNT (sizeof(engineTypes) / sizeof(char*)) //number of engine types
+#define ETPC ((ETCOUNT / ELEMENTS_PER_PAGE) + ((ETCOUNT % ELEMENTS_PER_PAGE) ? 1 : 0)) //number of engine types pages
 void StatePS1_Lobby_CharacterPick()
-{	
+{
+	//0 = choose engine type (if enabled)
+	//1 = choose character
+	static char step = 0;
+
 	//show the menu
 	SetMenuShow(true);
-	//set the draw function
-	void Draw_Lobby_CharacterPick(uint8_t);
-	SetMenuContents(Draw_Lobby_CharacterPick, NUM_CHARACTER_PAGES, true);
+	switch (step)
+	{
+		case 0: //engine type
+		{
+			//set the draw function to engine pick
+			void Draw_Lobby_EnginePick(uint8_t);
+			SetMenuContents(Draw_Lobby_EnginePick, ETPC, false);
+		}
+		break;
+		case 1: //character
+		{
+			//set the draw function to character pick
+			void Draw_Lobby_CharacterPick(uint8_t);
+			SetMenuContents(Draw_Lobby_CharacterPick, NUM_CHARACTER_PAGES, true);
+		}
+		break;
+	}
 
 	PrintCharacterStats();
 	PrintRecvTrack();
@@ -490,11 +520,49 @@ void StatePS1_Lobby_CharacterPick()
 	MenuTick(&state, &row, &pageNumber);
 	if (state & MENUSTATE_PRESSED_CROSS)
 	{
-		//disable the menu.
-		SetMenuShow(false);
-		//graduate to next state
-		data.characterIDs[0] = row + (pageNumber * ELEMENTS_PER_PAGE);
-		octr->boolClientSelectedCharacters[octr->DriverID] = true;
+		switch (step)
+		{
+			case 0:
+			{
+				int engineType = (pageNumber * ELEMENTS_PER_PAGE) + row;
+				octr->perPlayerEngineType[octr->DriverID] = engineType;
+				step = 1;
+			}
+			break;
+			case 1:
+			{
+				//reset step for next time
+				step = 0;
+				//disable the menu.
+				SetMenuShow(false);
+				//graduate to next state
+				data.characterIDs[0] = row + (pageNumber * ELEMENTS_PER_PAGE);
+				octr->boolClientSelectedCharacters[octr->DriverID] = true;
+			}
+			break;
+		}
+	}
+}
+
+void Draw_Lobby_EnginePick(uint8_t pageNumber)
+{
+	//set the menu position
+	uint16_t x = 0x70, y = 0x84;
+	SetMenuPosition(&x, &y, NULL, NULL);
+	//set menu contents
+	for (int i = 0; i < ELEMENTS_PER_PAGE; i++)
+	{
+		int id = (pageNumber * ELEMENTS_PER_PAGE) + i;
+		if (id < EMCOUNT)
+		{
+			SetRowSelectable(i, true);
+			SetRowString(i, engineTypes[id]);
+		}
+		else
+		{
+			SetRowSelectable(i, false);
+			SetRowString(i, "-");
+		}
 	}
 }
 
@@ -521,6 +589,8 @@ void Draw_Lobby_CharacterPick(uint8_t pageNumber)
 		//}
 	}
 }
+#undef ETCOUNT
+#undef ETPC
 #pragma endregion
 
 #pragma region Lobby_WaitForLoading

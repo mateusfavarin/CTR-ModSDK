@@ -141,6 +141,7 @@ const CG_Message State::Lobby_CharacterPick(OnlineCTR& octr)
 	CG_Message msg = Message(ClientMessageType::CG_CHARACTER);
 	const uint8_t charID = g_psx.Read<uint8_t>(ADDR_CHARACTER);
 	msg.character.characterID = charID;
+	msg.character.engineType = octr.perPlayerEngineType[octr.DriverID];
 	octr.CurrState = ClientState::LOBBY_WAIT_FOR_LOADING;
 	return msg;
 }

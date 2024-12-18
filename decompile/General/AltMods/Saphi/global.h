@@ -63,6 +63,15 @@ enum ClientState
 	NUM_STATES_FUNCS
 };
 
+enum EngineTypes
+{
+	VANILLA = 0,
+	BALANCED,
+	SPEED,
+	TURN,
+	ACCEL
+};
+
 //NOTICE: currently "MODIFIER_MIRROR"'s functionality is enabled, but this is a substantial byte budget hit.
 //to disable it, comment the '#include "Saphi/zMirrorMode.c"' at the top of Mods1.c, and comment the
 //"&& 0" from the "#if defined(USE_SAPHI) && 0" at the bottom of MainFrame_RenderFrame.c
@@ -139,6 +148,7 @@ struct OnlineCTR
 	uint8_t roomClientCount[SERVER_NUM_ROOMS];
 	uint8_t roomLocked[SERVER_NUM_ROOMS];
 	uint8_t boolClientSelectedCharacters[ROOM_MAX_NUM_PLAYERS];
+	uint8_t perPlayerEngineType[ROOM_MAX_NUM_PLAYERS];
 	char nameBuffer[ROOM_MAX_NUM_PLAYERS][NAME_LEN + 1]; //+1 for nullterm
 	RaceStats raceStats[ROOM_MAX_NUM_PLAYERS];
 
@@ -227,6 +237,7 @@ struct SG_MessageNewClient
 	uint8_t trackSelected;
 	uint8_t trackId;
 	uint16_t lapCount;
+	uint32_t onlineGameModifiers;
 };
 
 struct SG_MessageClientID
@@ -264,6 +275,7 @@ struct SG_MessageCharacter
 	uint8_t type;
 	uint8_t clientID;
 	uint8_t characterID;
+	uint8_t engineType;
 };
 
 struct SG_MessageKart
@@ -385,6 +397,7 @@ struct CG_MessageCharacter
 {
 	uint8_t type;
 	uint8_t characterID;
+	uint8_t engineType;
 };
 
 struct CG_MessageKart

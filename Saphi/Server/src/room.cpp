@@ -108,6 +108,7 @@ MessageAction Room::NewRoom(const CG_Message message, const Network& net, Client
 	msg.clientStatus.trackSelected = m_trackSelected;
 	msg.clientStatus.trackId = m_trackId;
 	msg.clientStatus.lapCount = m_lapCount;
+	msg.clientStatus.onlineGameModifiers = m_onlineGameModifiers;
 	net.Send(msg, client.peer);
 	return MessageAction::CONNECT;
 }
@@ -219,6 +220,7 @@ MessageAction Room::Character(const CG_Message message, const Network& net, Clie
 	msg.character.characterID = message.character.characterID;
 	logd("Room::Character() player [{0}] selected character [{1}]", client.name, message.character.characterID);
 	msg.character.clientID = client.id;
+	msg.character.engineType = message.character.engineType;
 	exception_map exceptions = { client.peer };
 	Broadcast(net, msg, exceptions);
 	client.state = OnlineState::RACE_READY;
