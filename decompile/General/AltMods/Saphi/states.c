@@ -72,9 +72,9 @@ char* engineTypes[] =
 {
 	"VANILLA",
 	"BALANCED",
+	"ACCEL"
 	"SPEED",
 	"TURN",
-	"ACCEL"
 };
 
 RECT drawTimeRECT =
@@ -553,7 +553,7 @@ void Draw_Lobby_EnginePick(uint8_t pageNumber)
 	for (int i = 0; i < ELEMENTS_PER_PAGE; i++)
 	{
 		int id = (pageNumber * ELEMENTS_PER_PAGE) + i;
-		if (id < EMCOUNT)
+		if (id < ETCOUNT)
 		{
 			SetRowSelectable(i, true);
 			SetRowString(i, engineTypes[id]);

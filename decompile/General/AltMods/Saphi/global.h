@@ -63,15 +63,6 @@ enum ClientState
 	NUM_STATES_FUNCS
 };
 
-enum EngineTypes
-{
-	VANILLA = 0,
-	BALANCED,
-	SPEED,
-	TURN,
-	ACCEL
-};
-
 //NOTICE: currently "MODIFIER_MIRROR"'s functionality is enabled, but this is a substantial byte budget hit.
 //to disable it, comment the '#include "Saphi/zMirrorMode.c"' at the top of Mods1.c, and comment the
 //"&& 0" from the "#if defined(USE_SAPHI) && 0" at the bottom of MainFrame_RenderFrame.c
