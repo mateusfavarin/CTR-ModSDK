@@ -38,6 +38,9 @@ const CG_Message Network::Recv()
       case ClientMessageType::CG_JOINROOM:
         msg.room = *reinterpret_cast<CG_MessageRoom*>(event.packet->data);
         break;
+      case ClientMessageType::CG_MODIFIERS:
+        msg.modifiers = *reinterpret_cast<CG_MessageModifiers*>(event.packet->data);
+        break;
       case ClientMessageType::CG_NAME:
         msg.name = *reinterpret_cast<CG_MessageName*>(event.packet->data);
         break;
@@ -100,6 +103,10 @@ void Network::Send(const SG_Message& message, const void* peer, bool reliable) c
   case ServerMessageType::SG_NAME:
     data = static_cast<const void*>(&message.name);
     size = sizeof(SG_MessageName);
+    break;
+  case ServerMessageType::SG_MODIFIERS:
+    data = static_cast<const void*>(&message.modifiers);
+    size = sizeof(SG_MessageModifiers);
     break;
   case ServerMessageType::SG_TRACK:
     data = static_cast<const void*>(&message.track);

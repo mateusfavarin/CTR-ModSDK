@@ -40,8 +40,10 @@ void Message::NewClient(const SG_Message& message, OnlineCTR& octr)
   octr.NumDrivers = msg.numClientsTotal;
   if (msg.trackSelected) { octr.levelID = msg.trackId; octr.lapCount = msg.lapCount; }
   octr.boolSelectedLevel = msg.trackSelected;
+  octr.onlineGameModifiers = msg.onlineGameModifiers;
   octr.boolSelectedLap = false;
   octr.raceOver = false;
+  octr.boolSelectedModifiers = false;
   octr.boolSelectedCharacter = 0;
   octr.numDriversEnded = 0;
   octr.dnfTimer = 0;
@@ -79,6 +81,12 @@ void Message::Name(const SG_Message& message, OnlineCTR& octr)
   if (msg.name[0] == 0) { PlayerHoldSquare(slot); }
 }
 
+void Message::Modifiers(const SG_Message& message, OnlineCTR& octr)
+{
+  const SG_MessageModifiers msg = message.modifiers;
+  octr.onlineGameModifiers = msg.onlineGameModifiers;
+}
+
 void Message::Track(const SG_Message& message, OnlineCTR& octr)
 {
   const SG_MessageTrack msg = message.track;
@@ -92,10 +100,10 @@ void Message::Character(const SG_Message& message, OnlineCTR& octr)
   const SG_MessageCharacter msg = message.character;
   const uint8_t driverID = octr.DriverID;
   if (msg.clientID == driverID) { return; }
-
   int slot = msg.clientID < driverID ? msg.clientID + 1 : msg.clientID;
   g_psx.Read<int16_t>(ADDR_CHARACTER + sizeof(int16_t) * slot) = msg.characterID;
   octr.boolClientSelectedCharacters[msg.clientID] = true;
+  octr.perPlayerEngineType[msg.clientID] = msg.engineType;
 }
 
 void Message::StartLoading(const SG_Message& message, OnlineCTR& octr)

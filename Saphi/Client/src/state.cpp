@@ -1,6 +1,7 @@
 #include "state.h"
 #include "psx.h"
 #include "data.h"
+#include <fmtlog.h>
 
 #include <string>
 
@@ -101,7 +102,17 @@ const CG_Message State::Lobby_AssignRole(OnlineCTR& octr)
 	CG_Message msg = Message(ClientMessageType::CG_NAME);
 	memcpy(&msg.name.name[0], g_gameData.m_username.data(), g_gameData.m_username.size());
 	if (octr.boolSelectedLevel) { octr.CurrState = ClientState::LOBBY_CHARACTER_PICK; }
-	else { octr.DriverID == 0 ? octr.CurrState = ClientState::LOBBY_HOST_TRACK_PICK : octr.CurrState = ClientState::LOBBY_GUEST_TRACK_WAIT; }
+	else { octr.DriverID == 0 ? octr.CurrState = ClientState::LOBBY_HOST_MODIFIERS_PICK : octr.CurrState = ClientState::LOBBY_GUEST_TRACK_WAIT; }
+	return msg;
+}
+
+const CG_Message State::Lobby_HostModifiersPick(OnlineCTR& octr)
+{
+	if (!octr.boolSelectedModifiers) { return Message(); }
+
+	CG_Message msg = Message(ClientMessageType::CG_MODIFIERS);
+	msg.modifiers.onlineGameModifiers = octr.onlineGameModifiers;
+	octr.CurrState = ClientState::LOBBY_HOST_TRACK_PICK;
 	return msg;
 }
 
@@ -130,6 +141,7 @@ const CG_Message State::Lobby_CharacterPick(OnlineCTR& octr)
 	CG_Message msg = Message(ClientMessageType::CG_CHARACTER);
 	const uint8_t charID = g_psx.Read<uint8_t>(ADDR_CHARACTER);
 	msg.character.characterID = charID;
+	msg.character.engineType = octr.perPlayerEngineType[octr.DriverID];
 	octr.CurrState = ClientState::LOBBY_WAIT_FOR_LOADING;
 	return msg;
 }

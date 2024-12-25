@@ -56,6 +56,10 @@ bool Network::Send(const CG_Message msg)
 			data = static_cast<const void*>(&msg.room);
 			size = sizeof(CG_MessageRoom);
 			break;
+		case CG_MODIFIERS:
+			data = static_cast<const void*>(&msg.modifiers);
+			size = sizeof(CG_MessageModifiers);
+			break;
 		case CG_NAME:
 			data = static_cast<const void*>(&msg.name);
 			size = sizeof(CG_MessageName);
@@ -126,6 +130,9 @@ const SG_Message Network::Recv()
 						break;
 					case ServerMessageType::SG_NAME:
 						msg.name = *reinterpret_cast<SG_MessageName*>(event.packet->data);
+						break;
+					case ServerMessageType::SG_MODIFIERS:
+						msg.modifiers = *reinterpret_cast<SG_MessageModifiers*>(event.packet->data);
 						break;
 					case ServerMessageType::SG_TRACK:
 						msg.track = *reinterpret_cast<SG_MessageTrack*>(event.packet->data);

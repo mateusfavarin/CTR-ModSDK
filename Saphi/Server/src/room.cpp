@@ -18,6 +18,9 @@ static inline constexpr SG_Message Message(ServerMessageType type = ServerMessag
 	case ServerMessageType::SG_NAME:
 		msg.id.type = static_cast<uint8_t>(type);
 		break;
+	case ServerMessageType::SG_MODIFIERS:
+		msg.id.type = static_cast<uint8_t>(type);
+		break;
 	case ServerMessageType::SG_TRACK:
 		msg.track.type = static_cast<uint8_t>(type);
 		break;
@@ -91,6 +94,7 @@ void Room::ResetControlVariables()
 	m_state = OnlineState::LOBBY;
 	m_trackSelected = false;
 	m_dnfTimerActive = false;
+	m_onlineGameModifiers = 0;
 }
 
 MessageAction Room::NewRoom(const CG_Message message, const Network& net, Client& client)
@@ -104,6 +108,7 @@ MessageAction Room::NewRoom(const CG_Message message, const Network& net, Client
 	msg.clientStatus.trackSelected = m_trackSelected;
 	msg.clientStatus.trackId = m_trackId;
 	msg.clientStatus.lapCount = m_lapCount;
+	msg.clientStatus.onlineGameModifiers = m_onlineGameModifiers;
 	net.Send(msg, client.peer);
 	return MessageAction::CONNECT;
 }
@@ -184,6 +189,17 @@ MessageAction Room::Name(const CG_Message message, const Network& net, Client& c
 	return MessageAction::NONE;
 }
 
+MessageAction Room::Modifiers(const CG_Message message, const Network& net, Client& client)
+{
+	SG_Message msg = Message(ServerMessageType::SG_MODIFIERS);
+	m_onlineGameModifiers = message.modifiers.onlineGameModifiers;
+	msg.modifiers.onlineGameModifiers = m_onlineGameModifiers;
+	logd("Room::Modifiers() modifiers broadcasted = [{0}]", m_onlineGameModifiers);
+	exception_map exceptions = { client.peer };
+	Broadcast(net, msg, exceptions);
+	return MessageAction::NONE;
+}
+
 MessageAction Room::Track(const CG_Message message, const Network& net, Client& client)
 {
 	SG_Message msg = Message(ServerMessageType::SG_TRACK);
@@ -204,6 +220,7 @@ MessageAction Room::Character(const CG_Message message, const Network& net, Clie
 	msg.character.characterID = message.character.characterID;
 	logd("Room::Character() player [{0}] selected character [{1}]", client.name, message.character.characterID);
 	msg.character.clientID = client.id;
+	msg.character.engineType = message.character.engineType;
 	exception_map exceptions = { client.peer };
 	Broadcast(net, msg, exceptions);
 	client.state = OnlineState::RACE_READY;
